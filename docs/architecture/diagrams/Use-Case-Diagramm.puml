@@ -1,0 +1,24 @@
+@startuml
+left to right direction
+
+actor Benutzer
+
+(Benutzer) --> (Registrieren)
+(Benutzer) --> (Anmelden/Abmelden)
+
+(Benutzer) --> (Medium hinzufuegen)
+(Benutzer) --> (Medium bearbeiten)
+(Benutzer) --> (Medium loeschen)
+
+
+(Benutzer) --> (Status setzen)
+
+' Suchen, Filtern, Sortieren getrennt
+(Benutzer) --> (Suchen)
+(Benutzer) --> (Filtern)
+(Benutzer) --> (Sortieren)
+
+' Dekomposition: Hinzufuegen kann via API oder manuell erfolgen
+(Medium hinzufuegen) --> (Via API hinzufuegen) : <<include>>
+(Medium hinzufuegen) --> (Manuell anlegen)     : <<include>>
+@enduml

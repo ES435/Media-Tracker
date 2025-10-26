@@ -1,0 +1,15 @@
+# IntelliJ / JetBrains
+.idea/
+*.iml
+out/
+target/
+
+# OS / Build
+.DS_Store
+*.log
+
+# Node
+node_modules/
+
+# Docker
+*.env
