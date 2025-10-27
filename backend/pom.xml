@@ -11,11 +11,11 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.example</groupId>
-    <artifactId>backend</artifactId>
+    <groupId>app.mediatracker</groupId>
+    <artifactId>media-tracker-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>backend</name>
-    <description>Backend project</description>
+    <name>media-tracker-app</name>
+    <description>Backend for Media-Tracker-3</description>
 
     <properties>
         <java.version>21</java.version>
