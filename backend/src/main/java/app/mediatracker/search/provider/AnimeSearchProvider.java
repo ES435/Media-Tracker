@@ -11,6 +11,14 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+/**
+ * Such-Provider für Anime-Inhalte (Jikan API für MyAnimeList).
+ *
+ * Zweck: Ruft die Jikan-API auf und übersetzt die Ergebnisse in das interne
+ * {@link SearchResult}-Format, damit das Frontend sie einheitlich darstellen kann.
+ *
+ * Aktivierung: Wird nur geladen, wenn "search.anime.enabled=true" gesetzt ist.
+ */
 @Slf4j
 @Component
 @ConditionalOnProperty(prefix = "search.anime", name = "enabled", havingValue = "true")
@@ -19,13 +27,34 @@ public class AnimeSearchProvider implements SearchProvider {
     private final JikanClient jikan;
     private final ObjectMapper mapper; // von Spring Boot bereitgestellt
 
+    /**
+     * Konstruktor mit Abhängigkeiten.
+     *
+     * @param jikan  HTTP-Client für die Jikan-API
+     * @param mapper Jackson-Mapper zum Parsen der JSON-Antworten
+     */
     public AnimeSearchProvider(JikanClient jikan, ObjectMapper mapper) {
         this.jikan = jikan;
         this.mapper = mapper;
     }
 
+    /**
+     * Liefert den Typnamen dieses Providers.
+     *
+     * @return "anime"
+     */
     @Override public String getType() { return "anime"; }
 
+    /**
+     * Sucht Anime über die Jikan-API.
+     *
+     * Verhalten: Parst die Antwort, extrahiert relevante Felder und liefert
+     * eine normalisierte Liste. Fehler werden geloggt und führen zu einer leeren Liste.
+     *
+     * @param q     Suchbegriff
+     * @param limit maximale Anzahl der Treffer
+     * @return Liste von {@link SearchResult}
+     */
     @Override
     public List<SearchResult> search(String q, int limit) {
         try {

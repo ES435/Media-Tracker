@@ -5,9 +5,15 @@ spring:
 server:
   port: 8080
 
+# ---- API  ----
 search:
   anime:
+    enabled: true
+  music:
     enabled: true
 
 jikan:
   base-url: https://api.jikan.moe/v4
+
+itunes:
+  base-url: https://itunes.apple.com
