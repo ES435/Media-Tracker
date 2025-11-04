@@ -22,10 +22,63 @@
     </properties>
 
     <dependencies>
-        <!-- Backend  -->
+        <!-- Web (Spring MVC) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- WebClient (reaktiv) ohne reaktiven Server -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+
+        <!-- Validation: @Valid, @NotBlank, ... -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- Actuator: /actuator/health, /actuator/info, /actuator/metrics -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- OpenAPI/Swagger UI: http://localhost:8080/swagger-ui.html -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.6.0</version>
+        </dependency>
+
+        <!-- Optional: Caching für externe API-Ergebnisse -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+
+        <!-- Lombok (Getter/Setter/Builder). IDE-neutral. -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Metadata für application.yml Autocomplete (optional) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Devtools (Hot-Reload, wird im finalen Jar automatisch ausgeschlossen) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
         </dependency>
 
         <!-- Tests -->
@@ -35,16 +88,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Dev convenience (optional hot reload) -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <scope>runtime</scope>
-            <optional>true</optional>
-        </dependency>
-
-        <!-- === SPÄTER AKTIVIEREN, WENN DB KOMMT === -->
-        <!--
+        <!-- === Später für DB einschalten (auskommentiert lassen) ===
         <dependency>
           <groupId>org.springframework.boot</groupId>
           <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -52,53 +96,6 @@
         <dependency>
           <groupId>org.postgresql</groupId>
           <artifactId>postgresql</artifactId>
-          <scope>runtime</scope>
-        </dependency>
-        -->
-        <!-- Optional für lokale Dev-DB ohne Docker -->
-        <!--
-        <dependency>
-          <groupId>com.h2database</groupId>
-          <artifactId>h2</artifactId>
-          <scope>runtime</scope>
-        </dependency>
-        -->
-
-        <!-- === OPTIONALE ERGÄNZUNGEN, WENN BENÖTIGT === -->
-        <!-- Bean Validation (@Valid, @NotBlank, ...) -->
-        <!--
-        <dependency>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-starter-validation</artifactId>
-        </dependency>
-        -->
-        <!-- Security/JWT-Basis -->
-        <!--
-        <dependency>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-        -->
-        <!-- Actuator (Health, Metrics) -->
-        <!--
-        <dependency>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-        -->
-        <!-- OpenAPI/Swagger UI -->
-        <!--
-        <dependency>
-          <groupId>org.springdoc</groupId>
-          <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-          <version>2.6.0</version>
-        </dependency>
-        -->
-        <!-- Docker Compose Autostart (erst wenn Compose-Datei da ist) -->
-        <!--
-        <dependency>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-docker-compose</artifactId>
           <scope>runtime</scope>
         </dependency>
         -->
@@ -112,7 +109,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
-            <!-- Guardrails: erzwingt Java/Maven-Versionen im Team -->
+            <!-- Guardrails: erzwinge Java 21+ und Maven 3.9+ -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
