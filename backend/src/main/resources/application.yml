@@ -13,6 +13,8 @@ search:
     enabled: true
   game:
     enabled: true
+  book:
+    enabled: true
 
 jikan:
   base-url: https://api.jikan.moe/v4
@@ -23,3 +25,6 @@ itunes:
 rawg:
   base-url: https://rawg.io/api
   api-key: "${RAWG_API_KEY:ff51c125cfc14b7abce7c70740910d24}"
+
+openlibrary:
+  base-url: https://openlibrary.org

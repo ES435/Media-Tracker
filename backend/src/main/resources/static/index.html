@@ -25,6 +25,7 @@
     <input id="q" type="text" placeholder="z. B. Naruto oder Daft Punk" />
     <button id="search">Suchen</button>
     <label><input id="tAnime" type="checkbox" checked> Anime</label>
+    <label><input id="tBook" type="checkbox" checked> Book</label>
     <label><input id="tMusic" type="checkbox" checked> Music</label>
     <label><input id="tGame" type="checkbox" checked> Game</label>
     <label class="muted">Limit:
@@ -42,6 +43,7 @@
     function buildTypesParam() {
         const types = [];
         if ($("tAnime").checked) types.push("anime");
+        if ($("tBook").checked) types.push("book");
         if ($("tMusic").checked) types.push("music");
         if ($("tGame").checked) types.push("game");
         return types.length ? "&types=" + encodeURIComponent(types.join(",")) : "";
@@ -64,6 +66,24 @@
       `;
     }
 
+    function bookCard(r){
+        const img = r.imageUrl || "";
+        const title = r.title || "";
+        const authors = r.meta && r.meta.authors ? r.meta.authors.join(", ") : "Unbekannt";
+        const year = r.meta && r.meta.year ? r.meta.year : "–";
+
+        return `
+    <div class="card" onclick="window.open('${r.sourceUrl}','_blank')">
+      <img src="${img}" alt="${title}" onerror="this.style.display='none'">
+      <div class="meta">
+        <span>Book</span>
+        <span>${authors} • ${year}</span>
+      </div>
+      <div class="title">${title}</div>
+    </div>
+    `;
+    }
+
     $("search").onclick = async () => {
         const q = $("q").value.trim();
         const limit = $("limit").value;
@@ -75,7 +95,7 @@
             if (!res.ok) throw new Error("HTTP " + res.status);
             const data = await res.json();
             $("results").innerHTML = (data && data.length)
-                ? data.map(card).join("")
+                ? data.map(r => r.type === "book" ? bookCard(r) : card(r)).join("")
                 : "<p class='muted'>Keine Treffer.</p>";
         } catch (e) {
             console.error(e);
