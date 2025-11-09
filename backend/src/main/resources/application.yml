@@ -17,6 +17,8 @@ search:
     enabled: true
   manga:
     enabled: true
+  movie:
+    enabled: true
 
 jikan:
   base-url: https://api.jikan.moe/v4
@@ -33,3 +35,6 @@ rawg:
 
 openlibrary:
   base-url: https://openlibrary.org
+
+imdb:
+  base-url: https://api.imdbapi.dev
