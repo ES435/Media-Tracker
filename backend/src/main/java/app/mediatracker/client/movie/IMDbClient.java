@@ -16,7 +16,10 @@ public class IMDbClient {
 
     public String searchMovie(String query, int limit) {
         return web.get()
-                .uri(u -> u.path("/search/titles").queryParam("query", query).build())
+                .uri(u -> u.path("/search/titles")
+                    .queryParam("query", query)
+                    .queryParam("limit", limit)
+                    .build())
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
