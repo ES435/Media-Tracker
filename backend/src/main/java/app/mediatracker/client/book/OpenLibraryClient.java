@@ -1,10 +1,14 @@
 package app.mediatracker.client.book;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * HTTP-Client für die OpenLibrary API.
@@ -18,6 +22,7 @@ import java.util.Optional;
 public class OpenLibraryClient {
 
     private final WebClient webClient;
+    private final ObjectMapper mapper = new ObjectMapper();
 
     /**
      * Erstellt einen Client mit vordefinierter Basis-URL.
@@ -33,13 +38,11 @@ public class OpenLibraryClient {
     /**
      * Sucht Bücher nach Titel, optional Autor und ISBN, mit Limit.
      */
-    public String searchBook(String title, String author, String isbn, int limit) {
+    public String searchBook(String query, int limit) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/search.json")
-                        .queryParamIfPresent("title", Optional.ofNullable(title))
-                        .queryParamIfPresent("author", Optional.ofNullable(author))
-                        .queryParamIfPresent("isbn", Optional.ofNullable(isbn))
+                        .queryParam("q", query)
                         .queryParam("limit", limit)
                         .build())
                 .retrieve()

@@ -55,13 +55,19 @@ public class BookSearchProvider implements SearchProvider {
     @Override
     public List<SearchResult> search(String q, int limit) {
         try {
-            // JSON von Open Library abrufen
-            String json = client.searchBook(q, null, null, limit);
+            // JSON von OpenLibrary abrufen
+            String json = client.searchBook(q, limit);
             JsonNode docs = mapper.readTree(json).path("docs");
 
             List<SearchResult> results = new ArrayList<>();
             for (JsonNode n : docs) {
-                String id = n.path("key").asText(); // "/works/OL82563W"
+                String combined = (n.path("title").asText("") + " " +
+                        n.path("subtitle").asText("") + " " +
+                        n.path("subject").toString() + " " +
+                        n.path("publisher").toString() + " " +
+                        n.path("series").toString()).toLowerCase();
+
+                String id = n.path("key").asText();
                 String title = n.path("title").asText("");
 
                 // Cover-URL
