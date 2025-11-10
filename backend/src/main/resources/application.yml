@@ -23,9 +23,6 @@ search:
 jikan:
   base-url: https://api.jikan.moe/v4
 
-mangadex:
-  base-url: https://api.mangadex.org
-
 itunes:
   base-url: https://itunes.apple.com
 

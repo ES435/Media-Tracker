@@ -13,7 +13,7 @@ import org.springframework.web.reactive.function.client.WebClient;
  * Konfiguration: Basis-URL kann über "jikan.base-url" überschrieben werden.
  */
 @Component
-public class JikanClient {
+public class JikanAnimeClient {
 
     private final WebClient web;
 
@@ -23,8 +23,8 @@ public class JikanClient {
      * @param builder von Spring bereitgestellter {@link WebClient.Builder}
      * @param baseUrl Basis-URL der Jikan-API (Default: https://api.jikan.moe/v4)
      */
-    public JikanClient(WebClient.Builder builder,
-                       @Value("${jikan.base-url:https://api.jikan.moe/v4}") String baseUrl) {
+    public JikanAnimeClient(WebClient.Builder builder,
+                            @Value("${jikan.base-url:https://api.jikan.moe/v4}") String baseUrl) {
         this.web = builder.baseUrl(baseUrl).build();
     }
 

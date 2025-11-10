@@ -1,6 +1,6 @@
 package app.mediatracker.search.provider;
 
-import app.mediatracker.client.anime.JikanClient;
+import app.mediatracker.client.anime.JikanAnimeClient;
 import app.mediatracker.core.dto.SearchResult;
 import app.mediatracker.core.provider.SearchProvider;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -24,7 +24,7 @@ import java.util.*;
 @ConditionalOnProperty(prefix = "search.anime", name = "enabled", havingValue = "true")
 public class AnimeSearchProvider implements SearchProvider {
 
-    private final JikanClient jikan;
+    private final JikanAnimeClient jikan;
     private final ObjectMapper mapper; // von Spring Boot bereitgestellt
 
     /**
@@ -33,7 +33,7 @@ public class AnimeSearchProvider implements SearchProvider {
      * @param jikan  HTTP-Client für die Jikan-API
      * @param mapper Jackson-Mapper zum Parsen der JSON-Antworten
      */
-    public AnimeSearchProvider(JikanClient jikan, ObjectMapper mapper) {
+    public AnimeSearchProvider(JikanAnimeClient jikan, ObjectMapper mapper) {
         this.jikan = jikan;
         this.mapper = mapper;
     }
