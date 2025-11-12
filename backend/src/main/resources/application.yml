@@ -19,6 +19,8 @@ search:
     enabled: true
   movie:
     enabled: true
+  series:
+    enabled: true
 
 jikan:
   base-url: https://api.jikan.moe/v4
