@@ -1,9 +1,9 @@
-package app.mediatracker.library.controller;
+package app.mediatracker.db.controller;
 
-import app.mediatracker.library.api.AddLibraryEntryRequest;
-import app.mediatracker.library.api.LibraryEntryResponse;
-import app.mediatracker.library.domain.LibraryEntryStatus;
-import app.mediatracker.library.service.LibraryService;
+import app.mediatracker.db.api.AddLibraryEntryRequest;
+import app.mediatracker.db.api.LibraryEntryResponse;
+import app.mediatracker.db.domain.LibraryEntryStatus;
+import app.mediatracker.db.service.LibraryService;
 import app.mediatracker.core.dto.SearchResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

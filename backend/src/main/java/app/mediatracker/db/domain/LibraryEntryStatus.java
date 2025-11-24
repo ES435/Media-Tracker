@@ -1,4 +1,4 @@
-package app.mediatracker.library.domain;
+package app.mediatracker.db.domain;
 
 /**
  * Status eines Bibliothekseintrags aus Sicht des Users.

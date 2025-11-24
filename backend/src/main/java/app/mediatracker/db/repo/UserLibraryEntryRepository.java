@@ -1,13 +1,13 @@
-package app.mediatracker.library.repo;
+package app.mediatracker.db.repo;
 
-import app.mediatracker.library.domain.UserLibraryEntry;
+import app.mediatracker.db.domain.UserLibraryEntry;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Spring Data Repository für {@link app.mediatracker.library.domain.UserLibraryEntry}.
+ * Spring Data Repository für {@link app.mediatracker.db.domain.UserLibraryEntry}.
  * <p>
  * Stellt CRUD-Operationen bereit und enthält abgeleitete Query-Methoden zum Filtern nach User und
  * referenziertem MediaItem.

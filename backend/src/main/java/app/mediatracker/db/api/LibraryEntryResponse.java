@@ -1,6 +1,6 @@
-package app.mediatracker.library.api;
+package app.mediatracker.db.api;
 
-import app.mediatracker.library.domain.LibraryEntryStatus;
+import app.mediatracker.db.domain.LibraryEntryStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

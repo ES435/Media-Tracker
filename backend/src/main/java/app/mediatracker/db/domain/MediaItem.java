@@ -1,4 +1,4 @@
-package app.mediatracker.library.domain;
+package app.mediatracker.db.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

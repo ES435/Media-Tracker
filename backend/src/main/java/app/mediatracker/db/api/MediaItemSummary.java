@@ -1,4 +1,4 @@
-package app.mediatracker.library.api;
+package app.mediatracker.db.api;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

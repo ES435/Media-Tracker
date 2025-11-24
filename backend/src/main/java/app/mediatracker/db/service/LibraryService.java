@@ -1,13 +1,13 @@
-package app.mediatracker.library.service;
+package app.mediatracker.db.service;
 
 import app.mediatracker.core.dto.SearchResult;
-import app.mediatracker.library.api.LibraryEntryResponse;
-import app.mediatracker.library.api.MediaItemSummary;
-import app.mediatracker.library.domain.LibraryEntryStatus;
-import app.mediatracker.library.domain.MediaItem;
-import app.mediatracker.library.domain.UserLibraryEntry;
-import app.mediatracker.library.repo.MediaItemRepository;
-import app.mediatracker.library.repo.UserLibraryEntryRepository;
+import app.mediatracker.db.api.LibraryEntryResponse;
+import app.mediatracker.db.api.MediaItemSummary;
+import app.mediatracker.db.domain.LibraryEntryStatus;
+import app.mediatracker.db.domain.MediaItem;
+import app.mediatracker.db.domain.UserLibraryEntry;
+import app.mediatracker.db.repo.MediaItemRepository;
+import app.mediatracker.db.repo.UserLibraryEntryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
