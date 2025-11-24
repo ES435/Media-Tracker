@@ -9,6 +9,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
 
+/**
+ * Persistierter Eintrag in der Benutzerbibliothek.
+ * <p>
+ * Verknüpft einen User ({@code userId}) mit einem gespeicherten Medium ({@code mediaItemId}) und
+ * hält individuelle Informationen wie Status, optionale Bewertung und Notizen fest. Zusätzlich werden
+ * Erstell- und Änderungszeitpunkt gespeichert.
+ * </p>
+ */
 @Data
 @Builder
 @NoArgsConstructor
@@ -20,24 +28,24 @@ public class UserLibraryEntry {
     private String id;
 
     /**
-     * Technical user identifier (e.g. subject from JWT).
+     * Technischer Benutzer-Identifikator (z. B. Subject aus einem JWT).
      */
     private String userId;
 
     /**
-     * Reference to the stored MediaItem.
+     * Referenz auf das gespeicherte MediaItem.
      */
     private String mediaItemId;
 
     private LibraryEntryStatus status;
 
     /**
-     * Optional rating, e.g. 1-10 scale. May be null.
+     * Optionale Bewertung, z. B. auf einer Skala von 1 bis 10. Darf null sein.
      */
     private Integer rating;
 
     /**
-     * Optional free-form notes per user and media item.
+     * Optionale Freitextnotizen pro Benutzer und Medium.
      */
     private String notes;
 

@@ -9,7 +9,11 @@ import lombok.NoArgsConstructor;
 import java.time.Instant;
 
 /**
- * API response for a single library entry including media item data.
+ * API-Response für einen einzelnen Bibliothekseintrag inklusive zugehöriger MediaItem-Daten.
+ * <p>
+ * Dieses DTO ist für die Darstellung im Frontend optimiert. Es fasst die Daten des User-Eintrags und
+ * eine schlanke Ansicht des verknüpften Mediums ({@link MediaItemSummary}) zusammen.
+ * </p>
  */
 @Data
 @Builder

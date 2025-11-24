@@ -6,7 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Lightweight view of a MediaItem for API responses.
+ * Schlanke Darstellung eines MediaItem für API-Responses.
+ * <p>
+ * Enthält nur die für die UI relevanten Basisinformationen, nicht jedoch die gesamte
+ * flexible Metadatenstruktur des persistierten MediaItem.
+ * </p>
  */
 @Data
 @Builder

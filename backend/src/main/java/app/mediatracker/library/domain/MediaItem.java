@@ -9,6 +9,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Map;
 
+/**
+ * Persistiertes Domain-Objekt für ein Medium (z. B. Anime, Buch, Spiel, Film, Musik).
+ * <p>
+ * Ein MediaItem repräsentiert die kanonische Speicherung eines extern gefundenen Mediums. Es wird
+ * über die Kombination aus {@code type} und {@code externalId} eindeutig identifiziert. Zusätzliche
+ * Informationen, die von verschiedenen Such-Providern kommen können, werden in {@code meta}
+ * schemalos abgelegt.
+ * </p>
+ */
 @Data
 @Builder
 @NoArgsConstructor
@@ -20,13 +29,13 @@ public class MediaItem {
     private String id;
 
     /**
-     * Logical type of the media, e.g. "anime", "music", "movie", ...
+     * Logischer Medientyp, z. B. "anime", "music", "movie", ...
      */
     private String type;
 
     /**
-     * External provider id (e.g. Jikan / iTunes / RAWG id).
-     * Combination of (type, externalId) should be unique.
+     * Externe Provider-ID (z. B. Jikan-/iTunes-/RAWG-ID).
+     * Die Kombination aus (type, externalId) sollte eindeutig sein.
      */
     private String externalId;
 
@@ -35,7 +44,7 @@ public class MediaItem {
     private String sourceUrl;
 
     /**
-     * Flexible meta information coming from external APIs.
+     * Flexible Metainformationen aus externen APIs.
      */
     private Map<String, Object> meta;
 }

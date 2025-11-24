@@ -15,6 +15,19 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Anwendungslogik für die persönliche Medienbibliothek.
+ * <p>
+ * Diese Service-Klasse koordiniert die Speicherung und Abfrage von Bibliothekseinträgen eines Users.
+ * Sie sorgt dafür, dass zu einem gewählten Suchergebnis (SearchResult) genau ein MediaItem in der Datenbank
+ * existiert (identifiziert durch Kombination aus Typ und externer ID) und legt bzw. aktualisiert den
+ * dazugehörigen UserLibraryEntry. Außerdem werden die Daten für API-Antworten in ein kompaktes DTO
+ * (LibraryEntryResponse) transformiert.
+ * </p>
+ * <p>
+ * Persistenz: MongoDB über Spring Data Repositories. Zeitstempel werden serverseitig mit Instant gesetzt.
+ * </p>
+ */
 @Service
 @RequiredArgsConstructor
 public class LibraryService {
@@ -22,6 +35,16 @@ public class LibraryService {
     private final MediaItemRepository mediaItemRepository;
     private final UserLibraryEntryRepository userLibraryEntryRepository;
 
+    /**
+     * Liefert alle Bibliothekseinträge eines Users inkl. zugehöriger MediaItem-Daten.
+     *
+     * Die Methode lädt zunächst die UserLibraryEntries, ermittelt daraus die referenzierten MediaItem-IDs
+     * und liest diese in einem Schwung aus, um N+1-Zugriffe zu vermeiden. Anschließend werden die Daten in
+     * LibraryEntryResponse-DTOs transformiert.
+     *
+     * @param userId technische User-ID (z. B. aus dem Security-Kontext)
+     * @return Liste mit allen Einträgen des Users in Anzeigeform
+     */
     public List<LibraryEntryResponse> getLibraryForUser(String userId) {
         List<UserLibraryEntry> entries = userLibraryEntryRepository.findByUserId(userId);
         List<String> mediaItemIds = entries.stream()
@@ -36,6 +59,22 @@ public class LibraryService {
                 .toList();
     }
 
+    /**
+     * Legt anhand eines Suchergebnisses (SearchResult) einen Bibliothekseintrag für einen User an
+     * oder aktualisiert einen vorhandenen Eintrag.
+     * <p>
+     * Dabei wird sichergestellt, dass für die Kombination aus Medientyp und externer ID genau ein
+     * MediaItem existiert (Upsert-Semantik). Anschließend wird der UserLibraryEntry mit Status,
+     * Rating und Notizen gespeichert und als API-DTO zurückgegeben.
+     * </p>
+     *
+     * @param userId        technische User-ID
+     * @param searchResult  das gewählte Suchergebnis (Quelle: externe Provider)
+     * @param status        neuer Status des Eintrags (z. B. PLANNED, COMPLETED)
+     * @param rating        optionale Bewertung; kann null sein
+     * @param notes         optionale Notizen
+     * @return angelegter bzw. aktualisierter Eintrag als LibraryEntryResponse
+     */
     public LibraryEntryResponse addOrUpdateEntryFromSearchResult(
             String userId,
             SearchResult searchResult,
@@ -62,6 +101,12 @@ public class LibraryService {
         return toResponse(saved, mediaItem);
     }
 
+    /**
+     * Entfernt einen Bibliothekseintrag eines Users, falls der Eintrag diesem User gehört.
+     *
+     * @param userId  technische User-ID
+     * @param entryId ID des zu löschenden Eintrags
+     */
     public void removeEntry(String userId, String entryId) {
         Optional<UserLibraryEntry> maybeEntry = userLibraryEntryRepository.findById(entryId);
 
