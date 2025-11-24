@@ -16,9 +16,8 @@ import java.util.Map;
 
 @Slf4j
 @Component
-@ConditionalOnProperty(prefix = "search.movie", name = "enabled", havingValue = "true")
-public class MovieSearchProvider implements SearchProvider {
-
+@ConditionalOnProperty(prefix = "search.series", name = "enabled", havingValue = "true")
+public class SeriesSearchProvider implements SearchProvider {
     private final IMDbClient imdb;
     private final ObjectMapper mapper;
 
@@ -28,7 +27,7 @@ public class MovieSearchProvider implements SearchProvider {
      * @param imdb  HTTP-Client für die IMDbAPI
      * @param mapper Jackson-Mapper zum Parsen der JSON-Antworten
      */
-    public MovieSearchProvider(IMDbClient imdb, ObjectMapper mapper) {
+    public SeriesSearchProvider(IMDbClient imdb, ObjectMapper mapper) {
         this.imdb = imdb;
         this.mapper = mapper;
     }
@@ -40,11 +39,11 @@ public class MovieSearchProvider implements SearchProvider {
      */
     @Override
     public String getType() {
-        return "movie";
+        return "series";
     }
 
     /**
-     * Sucht Filme über die IMDbAPI.
+     * Sucht Serien über die IMDbAPI.
      *
      * Verhalten: Parst die Antwort, extrahiert relevante Felder und liefert
      * eine normalisierte Liste. Fehler werden geloggt und führen zu einer leeren Liste.
@@ -61,7 +60,7 @@ public class MovieSearchProvider implements SearchProvider {
 
             List<SearchResult> searchResults = new ArrayList<>();
             for(JsonNode n : titles) {
-                if(n.path("type").asText().equals("movie")) {
+                if(n.path("type").asText().equals("tvSeries")) {
                     String id    = n.path("id").asText();
                     String title = n.path("primaryTitle").asText("");
                     String img   = n.path("primaryImage").path("url").asText("");
@@ -72,7 +71,7 @@ public class MovieSearchProvider implements SearchProvider {
                     if (n.hasNonNull("startYear")) meta.put("year", n.get("startYear").asInt());
 
                     searchResults.add(SearchResult.builder()
-                            .type("movie")
+                            .type("series")
                             .id(id)
                             .title(title)
                             .imageUrl(img)
@@ -86,7 +85,7 @@ public class MovieSearchProvider implements SearchProvider {
 
             return searchResults;
         } catch (Exception e) {
-            log.warn("Movie search failed: {}", e.getMessage());
+            log.warn("Series search failed: {}", e.getMessage());
             return List.of();
         }
     }
