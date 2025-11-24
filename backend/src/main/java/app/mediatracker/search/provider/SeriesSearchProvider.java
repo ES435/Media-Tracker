@@ -1,6 +1,6 @@
 package app.mediatracker.search.provider;
 
-import app.mediatracker.client.movie.IMDbClient;
+import app.mediatracker.client.movie_and_series.IMDbClient;
 import app.mediatracker.core.dto.SearchResult;
 import app.mediatracker.core.provider.SearchProvider;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -55,7 +55,7 @@ public class SeriesSearchProvider implements SearchProvider {
     @Override
     public List<SearchResult> search(String q, int limit) {
         try {
-            String json = imdb.searchMovie(q, limit);
+            String json = imdb.searchMovieAndSeries(q);
             JsonNode titles = mapper.readTree(json).path("titles");
 
             List<SearchResult> searchResults = new ArrayList<>();

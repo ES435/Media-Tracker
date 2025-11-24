@@ -1,4 +1,4 @@
-package app.mediatracker.client.movie;
+package app.mediatracker.client.movie_and_series;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -30,7 +30,7 @@ public class IMDbClient {
     }
 
     /**
-     * Sucht Filme bei IMDb und liefert die rohe JSON-Antwort.
+     * Sucht Filme und Serien bei IMDb und liefert die rohe JSON-Antwort.
      *
      * Hinweis: Blockiert den aufrufenden Thread bis zur Antwort (vereinfachte Nutzung).
      *
@@ -38,11 +38,10 @@ public class IMDbClient {
      * @return JSON als String
      */
     @Cacheable("IMDbSearch")
-    public String searchMovie(String query, int limit) {
+    public String searchMovieAndSeries(String query) {
         return web.get()
                 .uri(u -> u.path("/search/titles")
                     .queryParam("query", query)
-                    .queryParam("limit", limit)
                     .build())
                 .retrieve()
                 .bodyToMono(String.class)
