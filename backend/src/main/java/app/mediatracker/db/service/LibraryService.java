@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -99,6 +100,44 @@ public class LibraryService {
         UserLibraryEntry saved = userLibraryEntryRepository.save(entry);
 
         return toResponse(saved, mediaItem);
+    }
+
+    /**
+     * Legt anhand einer Manual Entry Eingabe des Users einen Bibliothekseintrag für einen User an.
+     * <p>
+     * Dabei wird sichergestellt, dass für die Kombination aus Medientyp und ID genau ein
+     * MediaItem existiert (Upsert-Semantik). 
+     * Diese ID wird für manual Entry Einträge generiert.
+     * Anschließend wird der UserLibraryEntry mit Status,
+     * Rating und Notizen gespeichert und als API-DTO zurückgegeben.
+     * </p>
+     *
+     * @param userId        technische User-ID
+     * @param type          vom User gewählter Medientyp
+     * @param title         vom User gewählter Titel
+     * @param author        vom User gewählter Autor
+     * @param imageUrl      vom User gewähltes Bild (URL)
+     * @param meta          weitere evtl Metadaten
+     * @param status        neuer Status des Eintrags (z. B. PLANNED, COMPLETED)
+     * @param rating        optionale Bewertung; kann null sein
+     * @param notes         optionale Notizen
+     * @return angelegter bzw. aktualisierter Eintrag als LibraryEntryResponse
+     */
+    public LibraryEntryResponse addEntryFromManualEntry(
+            String userId, 
+            String type, 
+            String title,
+            String author, 
+            String imageUrl, 
+            Map<String,Object> meta, 
+            LibraryEntryStatus status, 
+            Integer rating,
+            String notes
+    ) {
+        // TODO 
+        // Generate ID for Manual Entry
+        // create new mediaitem/UserlibraryEntry and add it to list
+        throw new UnsupportedOperationException("Unimplemented method 'addOrUpdateEntryFromManualEntry'");
     }
 
     /**

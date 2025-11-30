@@ -1,6 +1,7 @@
 package app.mediatracker.db.controller;
 
 import app.mediatracker.db.api.AddLibraryEntryRequest;
+import app.mediatracker.db.api.AddManualEntryRequest;
 import app.mediatracker.db.api.LibraryEntryResponse;
 import app.mediatracker.db.domain.LibraryEntryStatus;
 import app.mediatracker.db.service.LibraryService;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 /**
  * REST-Controller für die persönliche Medienbibliothek.
  * <p>
@@ -65,6 +67,36 @@ public class LibraryController {
 
         return ResponseEntity.ok(response);
     }
+
+    /**
+     * Legt basierend auf Manual Entry Daten einen neuen Bibliothekseintrag (MediaItem) für den Demo-User an.
+     * <p>
+     * Zusätzlich werden (Status, Rating, Notizen) gespeichert.
+     * </p>
+     *
+     * @param request Payload mit Status/Rating/Notizen sowie dem ausgewählten SearchResult
+     * @return 200 OK mit dem gespeicherten/aktualisierten Eintrag
+     */
+    @PostMapping("/addManualEntry")
+    public ResponseEntity<LibraryEntryResponse> addManualEntry(
+            @RequestBody AddManualEntryRequest request
+        ) {
+            LibraryEntryResponse response = libraryService.addEntryFromManualEntry(
+                DEMO_USER_ID,
+                request.getType(),
+                request.getTitle(),
+                request.getAuthor(),
+                // request.getGenre(),
+                request.getImageUrl(),
+                request.getMeta(),
+                request.getStatus(),
+                request.getRating(),
+                request.getNotes()
+            );
+        
+            return ResponseEntity.ok(response);
+    }
+    
 
     /**
      * Entfernt einen Bibliothekseintrag des Demo-Users, sofern er dem User gehört.
