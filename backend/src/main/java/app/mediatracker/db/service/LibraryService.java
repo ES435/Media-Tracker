@@ -15,6 +15,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Anwendungslogik für die persönliche Medienbibliothek.
@@ -86,7 +87,7 @@ public class LibraryService {
         // WICHTIG: Getter benutzen, nicht direkt auf Felder zugreifen
         MediaItem mediaItem = mediaItemRepository
                 .findByTypeAndExternalId(searchResult.getType(), searchResult.getId())
-                .orElseGet(() -> createMediaItemFromSearchResult(searchResult));
+                .orElseGet(() -> createMediaItem(searchResult));
 
         UserLibraryEntry entry = userLibraryEntryRepository
                 .findByUserIdAndMediaItemId(userId, mediaItem.getId())
@@ -134,10 +135,23 @@ public class LibraryService {
             Integer rating,
             String notes
     ) {
-        // TODO 
-        // Generate ID for Manual Entry
-        // create new mediaitem/UserlibraryEntry and add it to list
-        throw new UnsupportedOperationException("Unimplemented method 'addOrUpdateEntryFromManualEntry'");
+        String manualId = "manual-" + UUID.randomUUID();
+        MediaItem mediaItem = mediaItemRepository
+                .findByTypeAndExternalId(type, manualId)
+                .orElseGet(() -> createMediaItem(type, manualId, title, author, imageUrl, meta));
+
+        UserLibraryEntry entry = userLibraryEntryRepository
+                .findByUserIdAndMediaItemId(userId, mediaItem.getId())
+                .orElseGet(() -> newUserLibraryEntry(userId, mediaItem.getId()));
+
+        entry.setStatus(status);
+        entry.setRating(rating);
+        entry.setNotes(notes);
+        entry.setUpdatedAt(Instant.now());
+
+        UserLibraryEntry saved = userLibraryEntryRepository.save(entry);
+
+        return toResponse(saved, mediaItem);
     }
 
     /**
@@ -156,7 +170,7 @@ public class LibraryService {
         });
     }
 
-    private MediaItem createMediaItemFromSearchResult(SearchResult searchResult) {
+    private MediaItem createMediaItem(SearchResult searchResult) {
         // Auch hier: nur Getter
         MediaItem mediaItem = MediaItem.builder()
                 .type(searchResult.getType())
@@ -165,6 +179,21 @@ public class LibraryService {
                 .imageUrl(searchResult.getImageUrl())
                 .sourceUrl(searchResult.getSourceUrl())
                 .meta(searchResult.getMeta())
+                .build();
+
+        return mediaItemRepository.save(mediaItem);
+    }
+
+    //Overload createMediaItem() um auch mit Manual Entry Daten ein MediaItem erstellen zu können
+    private MediaItem createMediaItem(String type, String manualId, String title, String author, String imageUrl, Map<String, Object> meta) {
+        // Auch hier: nur Getter
+        MediaItem mediaItem = MediaItem.builder()
+                .type(type)
+                .externalId(manualId)
+                .title(title)
+                .imageUrl(imageUrl)
+                .sourceUrl(null)
+                .meta(meta)
                 .build();
 
         return mediaItemRepository.save(mediaItem);
