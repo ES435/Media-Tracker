@@ -6,7 +6,12 @@ import app.mediatracker.db.api.LibraryEntryResponse;
 import app.mediatracker.db.domain.LibraryEntryStatus;
 import app.mediatracker.db.service.LibraryService;
 import app.mediatracker.core.dto.SearchResult;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,10 +46,21 @@ public class LibraryController {
     }
 
     /**
+     * Paginierte Ansicht der Bibliothek, standardmäßig nach updatedAt DESC sortiert.
+     */
+    @GetMapping("/page")
+    public ResponseEntity<Page<LibraryEntryResponse>> getLibraryPage(
+            @PageableDefault(sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        Page<LibraryEntryResponse> page = libraryService.getLibraryForUser(DEMO_USER_ID, pageable);
+        return ResponseEntity.ok(page);
+    }
+
+    /**
      * Legt einen neuen Bibliothekseintrag an oder aktualisiert einen bestehenden für den Demo-User.
      * <p>
-     * Falls das zugehörige MediaItem (definiert durch Typ und externe ID aus dem SearchResult) noch nicht existiert,
-     * wird es angelegt. Anschließend wird der Eintrag des Users (Status, Rating, Notizen) gespeichert.
+     * Medien-Basisdaten (Typ, externe ID, Titel, Bild, Quelle) werden als Snapshot direkt im Eintrag gespeichert,
+     * es gibt keine separate MediaItem-Collection mehr.
      * </p>
      *
      * @param request Payload mit Status/Rating/Notizen sowie dem ausgewählten SearchResult
@@ -52,7 +68,7 @@ public class LibraryController {
      */
     @PostMapping
     public ResponseEntity<LibraryEntryResponse> addOrUpdateEntry(
-            @RequestBody AddLibraryEntryRequest request
+            @Valid @RequestBody AddLibraryEntryRequest request
     ) {
         SearchResult searchResult = request.getSearchResult();
         LibraryEntryStatus status = request.getStatus();
