@@ -1,8 +1,8 @@
 package app.mediatracker.search.provider;
 
-import app.mediatracker.client.book.OpenLibraryClient;
-import app.mediatracker.core.dto.SearchResult;
-import app.mediatracker.core.provider.SearchProvider;
+import app.mediatracker.search.client.book.OpenLibraryClient;
+import app.mediatracker.search.core.dto.SearchResult;
+import app.mediatracker.search.core.provider.SearchProvider;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;

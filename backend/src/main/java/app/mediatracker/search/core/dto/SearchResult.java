@@ -1,4 +1,4 @@
-package app.mediatracker.core.dto;
+package app.mediatracker.search.core.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotBlank;

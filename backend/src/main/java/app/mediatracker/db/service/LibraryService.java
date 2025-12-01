@@ -1,6 +1,6 @@
 package app.mediatracker.db.service;
 
-import app.mediatracker.core.dto.SearchResult;
+import app.mediatracker.search.core.dto.SearchResult;
 import app.mediatracker.db.api.LibraryEntryResponse;
 import app.mediatracker.db.api.MediaItemSummary;
 import app.mediatracker.db.domain.LibraryEntryStatus;

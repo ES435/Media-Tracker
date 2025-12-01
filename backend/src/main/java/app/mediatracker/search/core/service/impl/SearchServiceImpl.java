@@ -1,8 +1,8 @@
-package app.mediatracker.core.service.impl;
+package app.mediatracker.search.core.service.impl;
 
-import app.mediatracker.core.dto.SearchResult;
-import app.mediatracker.core.provider.SearchProvider;
-import app.mediatracker.core.service.SearchService;
+import app.mediatracker.search.core.dto.SearchResult;
+import app.mediatracker.search.core.provider.SearchProvider;
+import app.mediatracker.search.core.service.SearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

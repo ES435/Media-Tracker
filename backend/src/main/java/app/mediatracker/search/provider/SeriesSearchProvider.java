@@ -1,8 +1,8 @@
 package app.mediatracker.search.provider;
 
-import app.mediatracker.client.movie_and_series.IMDbClient;
-import app.mediatracker.core.dto.SearchResult;
-import app.mediatracker.core.provider.SearchProvider;
+import app.mediatracker.search.client.movie_and_series.IMDbClient;
+import app.mediatracker.search.core.dto.SearchResult;
+import app.mediatracker.search.core.provider.SearchProvider;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;

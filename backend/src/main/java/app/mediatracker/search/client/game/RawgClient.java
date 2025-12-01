@@ -1,4 +1,4 @@
-package app.mediatracker.client.game;
+package app.mediatracker.search.client.game;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

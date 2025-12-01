@@ -1,6 +1,6 @@
 package app.mediatracker.db.api;
 
-import app.mediatracker.core.dto.SearchResult;
+import app.mediatracker.search.core.dto.SearchResult;
 import app.mediatracker.db.domain.LibraryEntryStatus;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;

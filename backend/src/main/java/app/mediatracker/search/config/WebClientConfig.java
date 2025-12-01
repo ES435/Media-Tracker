@@ -1,4 +1,4 @@
-package app.mediatracker.config;
+package app.mediatracker.search.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

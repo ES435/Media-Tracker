@@ -4,7 +4,7 @@ import app.mediatracker.db.api.AddLibraryEntryRequest;
 import app.mediatracker.db.api.LibraryEntryResponse;
 import app.mediatracker.db.domain.LibraryEntryStatus;
 import app.mediatracker.db.service.LibraryService;
-import app.mediatracker.core.dto.SearchResult;
+import app.mediatracker.search.core.dto.SearchResult;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

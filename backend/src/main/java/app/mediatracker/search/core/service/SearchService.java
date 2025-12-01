@@ -1,6 +1,6 @@
-package app.mediatracker.core.service;
+package app.mediatracker.search.core.service;
 
-import app.mediatracker.core.dto.SearchResult;
+import app.mediatracker.search.core.dto.SearchResult;
 import java.util.List;
 import java.util.Set;
 

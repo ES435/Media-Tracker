@@ -1,7 +1,7 @@
-package app.mediatracker.controller;
+package app.mediatracker.search.controller;
 
-import app.mediatracker.core.dto.SearchResult;
-import app.mediatracker.core.service.SearchService;
+import app.mediatracker.search.core.dto.SearchResult;
+import app.mediatracker.search.core.service.SearchService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

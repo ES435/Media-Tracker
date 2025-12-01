@@ -1,19 +1,20 @@
-package app.mediatracker.client.manga;
+package app.mediatracker.search.client.movie_and_series;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 /**
- * Leichter HTTP-Client für die Jikan API (MyAnimeList-Proxy).
+ * Leichter HTTP-Client für die IMDb-API.
  *
  * Zweck: Kapselt die HTTP-Kommunikation und bietet eine einfache Methode,
- * um Manga-Suche als JSON-String abzurufen.
+ * um Film-Suche als JSON-String abzurufen.
  *
- * Konfiguration: Basis-URL kann über "jikan.base-url" überschrieben werden.
+ * Konfiguration: Basis-URL kann über "imdb.base-url" überschrieben werden.
  */
 @Component
-public class JikanMangaClient {
+public class IMDbClient {
 
     private final WebClient web;
 
@@ -21,29 +22,27 @@ public class JikanMangaClient {
      * Erstellt einen Client mit vordefinierter Basis-URL.
      *
      * @param builder von Spring bereitgestellter {@link WebClient.Builder}
-     * @param baseUrl Basis-URL der Jikan-API (Default: https://api.jikan.moe/v4)
+     * @param baseUrl Basis-URL der IMDb-API (Default: https://api.imdbapi.dev)
      */
-    public JikanMangaClient(WebClient.Builder builder,
-                            @Value("${jikan.base-url:https://api.jikan.moe/v4}") String baseUrl) {
+    public IMDbClient(WebClient.Builder builder,
+                      @Value("${imdb.base-url:https://api.imdbapi.dev}") String baseUrl) {
         this.web = builder.baseUrl(baseUrl).build();
     }
 
     /**
-     * Sucht Manga bei Jikan und liefert die rohe JSON-Antwort.
+     * Sucht Filme und Serien bei IMDb und liefert die rohe JSON-Antwort.
      *
      * Hinweis: Blockiert den aufrufenden Thread bis zur Antwort (vereinfachte Nutzung).
      *
      * @param query Suchbegriff
      * @return JSON als String
      */
-
-    public String searchManga(String query) {
+    @Cacheable("IMDbSearch")
+    public String searchMovieAndSeries(String query) {
         return web.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/manga")
-                        .queryParam("q", query)
-                        .queryParam("limit", 10)
-                        .build())
+                .uri(u -> u.path("/search/titles")
+                    .queryParam("query", query)
+                    .build())
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
