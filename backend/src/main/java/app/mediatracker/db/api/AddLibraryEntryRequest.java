@@ -2,6 +2,8 @@ package app.mediatracker.db.api;
 
 import app.mediatracker.core.dto.SearchResult;
 import app.mediatracker.db.domain.LibraryEntryStatus;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 
 /**
@@ -20,14 +22,20 @@ public class AddLibraryEntryRequest {
      */
     //private String userId;  für später wenn mehrere User
 
+    @NotNull
     private LibraryEntryStatus status;
 
+    @Min(1)
+    @Max(10)
     private Integer rating;
 
+    @Size(max = 2000)
     private String notes;
 
     /**
      * Das ausgewählte Suchergebnis, das in der Bibliothek gespeichert werden soll.
      */
+    @NotNull
+    @Valid
     private SearchResult searchResult;
 }

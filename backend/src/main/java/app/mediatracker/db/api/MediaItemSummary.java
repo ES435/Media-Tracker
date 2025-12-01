@@ -6,10 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Schlanke Darstellung eines MediaItem für API-Responses.
+ * Schlanke Darstellung der Medien-Basisinformationen für API-Responses.
  * <p>
- * Enthält nur die für die UI relevanten Basisinformationen, nicht jedoch die gesamte
- * flexible Metadatenstruktur des persistierten MediaItem.
+ * Dieses DTO spiegelt die Felder wider, die als Snapshot in {@code UserLibraryEntry}
+ * gespeichert werden (kein separates, persistiertes MediaItem). Es enthält nur die für die
+ * UI relevanten Basisinformationen.
  * </p>
  */
 @Data
@@ -18,7 +19,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MediaItemSummary {
 
-    private String id;
     private String type;
     private String externalId;
     private String title;
