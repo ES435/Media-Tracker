@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>MT3 – Techstuff</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        :root {
+            --bg-page: #f6efe8;
+            --bg-card: #ffffff;
+            --bg-soft: #fdf7f0;
+            --accent: #f59e85;
+            --accent-strong: #f97373;
+            --accent-soft: #ffe6dd;
+            --text-main: #262626;
+            --text-muted: #8a7a6d;
+            --border-soft: #e1d5c8;
+            --shadow-soft: 0 20px 45px rgba(148, 118, 94, 0.25);
+            --shadow-card: 0 12px 28px rgba(148, 118, 94, 0.18);
+            --radius-lg: 18px;
+            --radius-xl: 24px;
+            --radius-pill: 999px;
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+            background: radial-gradient(circle at top, #fef8f0 0, #f6efe8 40%, #f1e5d8 100%);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            padding: 14px;
+        }
+
+        .app-shell {
+            width: 100%;
+            max-width: 1180px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* HEADER */
+
+        .app-header {
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 14px;
+            border-radius: var(--radius-pill);
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid rgba(225, 213, 200, 0.95);
+            box-shadow: 0 16px 36px rgba(148, 118, 94, 0.28);
+            backdrop-filter: blur(12px);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-pill {
+            width: 36px;
+            height: 36px;
+            border-radius: 14px;
+            background: radial-gradient(circle at 0 0, #f97373, #fbbf77 40%, #fde3b2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #fff;
+            box-shadow: 0 8px 16px rgba(244, 114, 94, 0.6);
+        }
+
+        .app-name {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .app-name-main {
+            font-size: 0.98rem;
+            font-weight: 600;
+        }
+
+        .app-name-sub {
+            font-size: 0.74rem;
+            color: var(--text-muted);
+        }
+
+        .header-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .tab-link {
+            position: relative;
+            border-radius: var(--radius-pill);
+            padding: 7px 16px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            text-decoration: none;
+            color: var(--text-muted);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.08s ease;
+        }
+
+        .tab-link::after {
+            content: "";
+            position: absolute;
+            left: 18px;
+            right: 18px;
+            bottom: 3px;
+            height: 2px;
+            border-radius: 999px;
+            background: transparent;
+            opacity: 0;
+            transform: translateY(3px);
+            transition: opacity 0.15s ease, transform 0.15s ease;
+        }
+
+        .tab-link:hover {
+            background: #fbf2e7;
+            color: var(--text-main);
+            box-shadow: 0 4px 10px rgba(148, 118, 94, 0.16);
+        }
+
+        .tab-link.active {
+            background: #faeee3;
+            color: #b45309;
+            box-shadow: 0 10px 22px rgba(148, 118, 94, 0.24);
+        }
+
+        .tab-link.active::after {
+            background: var(--accent);
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .header-right {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .user-avatar {
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 9px 4px 4px;
+            border-radius: 999px;
+            background: #fff7f0;
+            border: 1px solid rgba(221, 204, 188, 0.95);
+            box-shadow: 0 4px 10px rgba(148, 118, 94, 0.18);
+            transition: transform 0.08s ease, box-shadow 0.15s ease, background 0.15s ease;
+        }
+
+        .user-avatar:hover {
+            transform: translateY(-1px);
+            background: #fff1e8;
+            box-shadow: 0 7px 16px rgba(148, 118, 94, 0.24);
+        }
+
+        .user-avatar-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #f97373, #fb923c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .user-avatar-name {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        /* MAIN */
+
+        .app-main {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.94);
+            border-radius: 26px;
+            border: 1px solid rgba(225, 213, 200, 0.95);
+            box-shadow: var(--shadow-soft);
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .tech-page {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            min-height: 100%;
+        }
+
+        /* Karten allgemein */
+
+        .card {
+            border-radius: 20px;
+            background: #fffaf4;
+            border: 1px solid rgba(225, 213, 200, 0.95);
+            box-shadow: var(--shadow-card);
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.92rem;
+            font-weight: 600;
+        }
+
+        .card-title span.icon {
+            font-size: 1rem;
+        }
+
+        .card-sub {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .badge-soft {
+            border-radius: 999px;
+            padding: 4px 10px;
+            background: #fff0e2;
+            border: 1px solid rgba(225, 213, 200, 0.95);
+            font-size: 0.76rem;
+            color: #7d6048;
+        }
+
+        /* Status Card */
+
+        .status-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            margin-top: 4px;
+        }
+
+        .status-endpoint {
+            flex: 1;
+            min-width: 120px;
+            border-radius: var(--radius-pill);
+            border: 1px solid var(--border-soft);
+            padding: 6px 11px;
+            background: #fffbf6;
+            font-size: 0.82rem;
+            outline: none;
+        }
+
+        .status-endpoint:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 1px rgba(243, 134, 134, 0.28);
+            background: #fffdf9;
+        }
+
+        .status-label {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        /* API Playground */
+
+        .api-form {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .api-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .api-method {
+            border-radius: var(--radius-pill);
+            border: 1px solid var(--border-soft);
+            padding: 5px 10px;
+            background: #fffdf9;
+            font-size: 0.8rem;
+        }
+
+        .api-endpoint {
+            flex: 1;
+            border-radius: var(--radius-pill);
+            border: 1px solid var(--border-soft);
+            padding: 6px 11px;
+            background: #fffbf6;
+            font-size: 0.82rem;
+            outline: none;
+            min-width: 120px;
+        }
+
+        .api-endpoint:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 1px rgba(243, 134, 134, 0.28);
+            background: #fffdf9;
+        }
+
+        .chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .chip-btn {
+            border-radius: 999px;
+            border: 1px solid rgba(221, 204, 188, 0.95);
+            padding: 4px 10px;
+            font-size: 0.78rem;
+            cursor: pointer;
+            background: #fff7f0;
+            color: var(--text-main);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.08s ease;
+        }
+
+        .chip-btn:hover {
+            background: #fff2e8;
+            box-shadow: 0 4px 10px rgba(148, 118, 94, 0.18);
+            transform: translateY(-1px);
+        }
+
+        .chip-btn span.icon {
+            font-size: 0.9rem;
+        }
+
+        .api-body-label {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .api-body {
+            width: 100%;
+            min-height: 110px;
+            border-radius: 14px;
+            border: 1px solid var(--border-soft);
+            background: #fffdf9;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.8rem;
+            padding: 8px 10px;
+            resize: vertical;
+            outline: none;
+        }
+
+        .api-body:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 1px rgba(243, 134, 134, 0.28);
+        }
+
+        .primary-button {
+            border-radius: var(--radius-pill);
+            border: none;
+            padding: 7px 16px;
+            font-size: 0.84rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: linear-gradient(135deg, var(--accent-strong), var(--accent));
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 10px 24px rgba(244, 114, 94, 0.48);
+            transition: transform 0.08s ease, box-shadow 0.15s ease, filter 0.15s ease;
+        }
+
+        .primary-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 14px 32px rgba(244, 114, 94, 0.54);
+            filter: brightness(1.02);
+        }
+
+        .primary-button.secondary {
+            background: #fff7f0;
+            color: #7d6048;
+            box-shadow: 0 4px 10px rgba(148, 118, 94, 0.12);
+        }
+
+        .primary-button.secondary:hover {
+            background: #fff2e8;
+            box-shadow: 0 7px 16px rgba(148, 118, 94, 0.2);
+        }
+
+        .api-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 2px;
+            font-size: 0.76rem;
+            color: var(--text-muted);
+        }
+
+        .api-status-pill {
+            border-radius: 999px;
+            padding: 3px 9px;
+            background: #fff0e2;
+            border: 1px solid rgba(225, 213, 200, 0.95);
+        }
+
+        .api-status-pill.ok {
+            background: #dcfce7;
+            border-color: #bbf7d0;
+            color: #166534;
+        }
+
+        .api-status-pill.err {
+            background: #fee2e2;
+            border-color: #fecaca;
+            color: #b91c1c;
+        }
+
+        /* Quick DB Tester */
+
+        .quick-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 2px;
+        }
+
+        /* JSON Viewer */
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.78rem;
+        }
+
+        .toolbar-left,
+        .toolbar-right {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .mini-btn {
+            border-radius: 999px;
+            border: 1px solid rgba(221, 204, 188, 0.95);
+            padding: 3px 9px;
+            font-size: 0.76rem;
+            cursor: pointer;
+            background: #fff7f0;
+            color: var(--text-main);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.08s ease;
+        }
+
+        .mini-btn:hover {
+            background: #fff2e8;
+            box-shadow: 0 3px 8px rgba(148, 118, 94, 0.16);
+            transform: translateY(-1px);
+        }
+
+        .code-view {
+            margin-top: 6px;
+            border-radius: 14px;
+            border: 1px solid rgba(225, 213, 200, 0.95);
+            background: #111827;
+            color: #e5e7eb;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.78rem;
+            padding: 10px 12px;
+            max-height: 260px;
+            overflow: auto;
+            white-space: pre;
+        }
+
+        .code-view.placeholder {
+            color: #6b7280;
+        }
+
+        /* Toast */
+
+        .toast {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 50;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: #111827;
+            color: #e5e7eb;
+            font-size: 0.8rem;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.65);
+        }
+
+        .toast.visible {
+            display: inline-flex;
+        }
+
+        .toast-pill {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 999px;
+            background: #22c55e;
+            color: #022c22;
+        }
+
+        .toast-pill.err {
+            background: #f97373;
+            color: #450a0a;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+
+            .app-header {
+                grid-template-columns: 1fr;
+                padding: 10px 12px;
+            }
+
+            .header-tabs {
+                order: 3;
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 2px;
+            }
+
+            .app-main {
+                padding: 10px 12px 12px;
+                border-radius: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app-shell">
+    <!-- HEADER -->
+    <header class="app-header">
+        <div class="header-left">
+            <div class="logo-pill">MT3</div>
+            <div class="app-name">
+                <div class="app-name-main">Media Tracker 3</div>
+                <div class="app-name-sub">Testzeugs</div>
+            </div>
+        </div>
+
+        <nav class="header-tabs" aria-label="Navigation">
+            <a href="index.html" class="tab-link">Suche</a>
+            <a href="lists.html" class="tab-link">Meine Listen</a>
+            <a href="tech.html" class="tab-link active">Techstuff</a>
+        </nav>
+
+        <div class="header-right">
+            <button class="user-avatar" type="button" id="avatarBtn">
+                <div class="user-avatar-circle">UX</div>
+                <div class="user-avatar-name">User_x</div>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="app-main">
+        <section class="tech-page" aria-label="Techstuff Playground">
+
+            <!-- 1. Systemstatus -->
+            <section class="card" aria-label="Systemstatus">
+                <header class="card-header">
+                    <div>
+                        <div class="card-title">
+                            <span class="icon">🌐</span>
+                            <span>Systemstatus</span>
+                        </div>
+                        <div class="card-sub">
+                            Kurzer Check, ob dein Backend erreichbar ist.
+                        </div>
+                    </div>
+                    <div class="badge-soft" id="statusIndicator">Unbekannt</div>
+                </header>
+
+                <div class="status-row">
+                    <div class="status-label">Endpoint für Status-Check</div>
+                    <input
+                            id="statusEndpoint"
+                            class="status-endpoint"
+                            type="text"
+                            value="/api/library"
+                            spellcheck="false"
+                    >
+                    <button type="button" class="primary-button secondary" id="statusCheckBtn">
+                        <span>🔁</span>
+                        <span>Status testen</span>
+                    </button>
+                </div>
+                <div class="card-sub" id="statusLastCheck">Letzte Prüfung: –</div>
+            </section>
+
+            <!-- 2. API / DB Playground -->
+            <section class="card" aria-label="API Playground">
+                <header class="card-header">
+                    <div>
+                        <div class="card-title">
+                            <span class="icon">🧪</span>
+                            <span>API / DB Playground</span>
+                        </div>
+                        <div class="card-sub">
+                            Requests gegen dein Backend schicken und Antworten ansehen.
+                        </div>
+                    </div>
+                    <div class="badge-soft" id="apiBadge">Bereit</div>
+                </header>
+
+                <div class="api-form">
+                    <div class="api-row">
+                        <select id="apiMethod" class="api-method">
+                            <option value="GET">GET</option>
+                            <option value="POST">POST</option>
+                            <option value="PUT">PUT</option>
+                            <option value="DELETE">DELETE</option>
+                        </select>
+                        <input
+                                id="apiEndpoint"
+                                class="api-endpoint"
+                                type="text"
+                                value="/api/library"
+                                spellcheck="false"
+                        >
+                        <button type="button" class="primary-button secondary" id="apiSendBtn">
+                            <span>▶</span>
+                            <span>Request senden</span>
+                        </button>
+                    </div>
+
+                    <div class="chip-row">
+                        <button type="button" class="chip-btn" data-preset="get-library">
+                            <span class="icon">📚</span>
+                            <span>GET /api/library</span>
+                        </button>
+                        <button type="button" class="chip-btn" data-preset="post-demo-entry">
+                            <span class="icon">➕</span>
+                            <span>POST Demo-Eintrag</span>
+                        </button>
+                        <button type="button" class="chip-btn" data-preset="get-anime-search">
+                            <span class="icon">🍥</span>
+                            <span>GET /api/search?q=naruto</span>
+                        </button>
+                    </div>
+
+                    <div class="api-body-label">
+                        <span>Request-Body (JSON, optional)</span>
+                        <span id="apiBodyHint">Wird bei GET ignoriert.</span>
+                    </div>
+                    <textarea id="apiBody" class="api-body" spellcheck="false"
+                              placeholder='{
+  "status": "PLANNED",
+  "rating": 9,
+  "notes": "Demo-Eintrag von Techstuff.",
+  "searchResult": {
+    "type": "anime",
+    "id": "demo-123",
+    "title": "Demo Anime",
+    "imageUrl": null,
+    "sourceUrl": null,
+    "meta": {}
+  }
+}'></textarea>
+
+                    <div class="api-footer">
+                        <div id="apiStatus" class="api-status-pill">Noch kein Request</div>
+                        <div id="apiMetaInfo">Antwortzeit: –</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Quick DB Tester -->
+            <section class="card" aria-label="Quick DB Tester">
+                <header class="card-header">
+                    <div>
+                        <div class="card-title">
+                            <span class="icon">🗃</span>
+                            <span>Quick DB-Tester</span>
+                        </div>
+                        <div class="card-sub">
+                            Ein Klick zum Überprüfen deiner Bibliothek.
+                        </div>
+                    </div>
+                </header>
+
+                <div class="quick-row">
+                    <button type="button" class="primary-button secondary" id="quickLoadLibBtn">
+                        <span>📥</span>
+                        <span>Bibliothek laden</span>
+                    </button>
+                    <button type="button" class="primary-button secondary" id="quickAddDemoBtn">
+                        <span>✨</span>
+                        <span>Demo-Eintrag anlegen</span>
+                    </button>
+                </div>
+                <div class="card-sub" id="quickInfo" style="margin-top:4px;">
+                    Nutzt intern dieselben Endpunkte wie dein Frontend.
+                </div>
+            </section>
+
+            <!-- 4. JSON Viewer -->
+            <section class="card" aria-label="JSON Viewer">
+                <header class="card-header">
+                    <div>
+                        <div class="card-title">
+                            <span class="icon">📦</span>
+                            <span>JSON Viewer</span>
+                        </div>
+                        <div class="card-sub">
+                            Zeigt die letzte API-Antwort formatiert an.
+                        </div>
+                    </div>
+                </header>
+
+                <div class="toolbar">
+                    <div class="toolbar-left">
+                        <span id="viewerLabel">Noch keine Antwort.</span>
+                    </div>
+                    <div class="toolbar-right">
+                        <button type="button" class="mini-btn" id="viewerPrettyBtn">
+                            <span>✨</span><span>Formatieren</span>
+                        </button>
+                        <button type="button" class="mini-btn" id="viewerMinifyBtn">
+                            <span>⤵</span><span>Minify</span>
+                        </button>
+                        <button type="button" class="mini-btn" id="viewerCopyBtn">
+                            <span>📋</span><span>Kopieren</span>
+                        </button>
+                    </div>
+                </div>
+
+                <pre id="jsonViewer" class="code-view placeholder">Hier erscheint die letzte JSON-Antwort.</pre>
+            </section>
+        </section>
+    </main>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+    <span class="toast-pill" id="toastPill">OK</span>
+    <span id="toastMsg">Nachricht</span>
+</div>
+
+<script>
+    (function () {
+        const qs  = (sel) => document.querySelector(sel);
+        const qsa = (sel) => Array.from(document.querySelectorAll(sel));
+
+        // Elemente
+        const avatarBtn       = qs('#avatarBtn');
+
+        // Status
+        const statusEndpoint  = qs('#statusEndpoint');
+        const statusCheckBtn  = qs('#statusCheckBtn');
+        const statusIndicator = qs('#statusIndicator');
+        const statusLastCheck = qs('#statusLastCheck');
+
+        // API
+        const apiMethod       = qs('#apiMethod');
+        const apiEndpoint     = qs('#apiEndpoint');
+        const apiBody         = qs('#apiBody');
+        const apiSendBtn      = qs('#apiSendBtn');
+        const apiBadge        = qs('#apiBadge');
+        const apiStatus       = qs('#apiStatus');
+        const apiMetaInfo     = qs('#apiMetaInfo');
+        const apiPresetBtns   = qsa('.chip-btn');
+        const apiBodyHint     = qs('#apiBodyHint');
+
+        // Quick DB Tester
+        const quickLoadLibBtn = qs('#quickLoadLibBtn');
+        const quickAddDemoBtn = qs('#quickAddDemoBtn');
+        const quickInfo       = qs('#quickInfo');
+
+        // JSON Viewer
+        const jsonViewer      = qs('#jsonViewer');
+        const viewerLabel     = qs('#viewerLabel');
+        const viewerPrettyBtn = qs('#viewerPrettyBtn');
+        const viewerMinifyBtn = qs('#viewerMinifyBtn');
+        const viewerCopyBtn   = qs('#viewerCopyBtn');
+
+        // Toast
+        const toast           = qs('#toast');
+        const toastPill       = qs('#toastPill');
+        const toastMsg        = qs('#toastMsg');
+        let toastTimeout      = null;
+
+        // interner State
+        let lastResponseText = '';
+        let lastResponseJson = null;
+
+        function showToast(message, mode = 'ok') {
+            toastMsg.textContent = message;
+            toastPill.textContent = mode === 'ok' ? 'OK' : 'ERR';
+            toastPill.className = 'toast-pill' + (mode === 'ok' ? '' : ' err');
+            toast.classList.add('visible');
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => toast.classList.remove('visible'), 2600);
+        }
+
+        function setApiStatus(text, mode) {
+            apiStatus.textContent = text;
+            apiStatus.classList.remove('ok', 'err');
+            if (mode === 'ok') apiStatus.classList.add('ok');
+            if (mode === 'err') apiStatus.classList.add('err');
+        }
+
+        function updateViewer(text, json, label) {
+            lastResponseText = text || '';
+            lastResponseJson = json;
+
+            if (!text) {
+                jsonViewer.textContent = 'Hier erscheint die letzte JSON-Antwort.';
+                jsonViewer.classList.add('placeholder');
+                viewerLabel.textContent = 'Noch keine Antwort.';
+                return;
+            }
+
+            jsonViewer.classList.remove('placeholder');
+            jsonViewer.textContent = text;
+            viewerLabel.textContent = label || 'Letzte Antwort.';
+        }
+
+        function prettyPrint(text) {
+            try {
+                const obj = JSON.parse(text);
+                return JSON.stringify(obj, null, 2);
+            } catch {
+                return text;
+            }
+        }
+
+        function minify(text) {
+            try {
+                const obj = JSON.parse(text);
+                return JSON.stringify(obj);
+            } catch {
+                return text;
+            }
+        }
+
+        async function sendApiRequest() {
+            const method = apiMethod.value;
+            const endpoint = apiEndpoint.value.trim() || '/';
+            const url = endpoint;
+
+            apiBadge.textContent = 'Sende …';
+            apiBadge.style.background = '#fef3c7';
+
+            const start = performance.now();
+            let options = { method };
+
+            if (method !== 'GET' && apiBody.value.trim() !== '') {
+                try {
+                    const parsed = JSON.parse(apiBody.value);
+                    options.headers = { 'Content-Type': 'application/json' };
+                    options.body = JSON.stringify(parsed);
+                } catch (e) {
+                    showToast('Body ist kein gültiges JSON.', 'err');
+                    setApiStatus('Body-Fehler', 'err');
+                    apiBadge.textContent = 'Fehler';
+                    apiBadge.style.background = '#fee2e2';
+                    return;
+                }
+            }
+
+            try {
+                const res = await fetch(url, options);
+                const elapsed = Math.round(performance.now() - start);
+                apiMetaInfo.textContent = 'Antwortzeit: ' + elapsed + ' ms';
+
+                const text = await res.text();
+                let json = null;
+                try {
+                    json = JSON.parse(text);
+                } catch {
+                    // kann auch plain text sein
+                }
+
+                if (res.ok) {
+                    setApiStatus('OK · ' + res.status, 'ok');
+                    apiBadge.textContent = 'Erfolg';
+                    apiBadge.style.background = '#dcfce7';
+                    updateViewer(prettyPrint(text), json, 'Letzte Antwort: ' + method + ' ' + endpoint);
+                    showToast('Request erfolgreich.');
+                } else {
+                    setApiStatus('Fehler · ' + res.status, 'err');
+                    apiBadge.textContent = 'Fehler';
+                    apiBadge.style.background = '#fee2e2';
+                    updateViewer(prettyPrint(text), json, 'Fehler-Antwort: ' + method + ' ' + endpoint);
+                    showToast('Request fehlgeschlagen (' + res.status + ').', 'err');
+                }
+            } catch (err) {
+                console.error(err);
+                setApiStatus('Netzwerkfehler', 'err');
+                apiBadge.textContent = 'Fehler';
+                apiBadge.style.background = '#fee2e2';
+                apiMetaInfo.textContent = 'Antwortzeit: –';
+                updateViewer('', null, 'Noch keine Antwort.');
+                showToast('Netzwerkfehler.', 'err');
+            }
+        }
+
+        // Presets
+        function applyPreset(preset) {
+            if (preset === 'get-library') {
+                apiMethod.value = 'GET';
+                apiEndpoint.value = '/api/library';
+                apiBody.value = '';
+                apiBodyHint.textContent = 'Wird momentan nicht benutzt.';
+            }
+            if (preset === 'post-demo-entry') {
+                apiMethod.value = 'POST';
+                apiEndpoint.value = '/api/library';
+                apiBody.value = `{
+  "status": "PLANNED",
+  "rating": 8,
+  "notes": "Demo-Eintrag von Techstuff.",
+  "searchResult": {
+    "type": "anime",
+    "id": "tech-demo-` + Date.now() + `",
+    "title": "Techstuff Demo Anime",
+    "imageUrl": null,
+    "sourceUrl": null,
+    "meta": {}
+  }
+}`;
+                apiBodyHint.textContent = 'JSON-Body wird an /api/library gesendet.';
+            }
+            if (preset === 'get-anime-search') {
+                apiMethod.value = 'GET';
+                apiEndpoint.value = '/api/search?q=naruto&types=anime&limit=5';
+                apiBody.value = '';
+                apiBodyHint.textContent = 'Wird momentan nicht benutzt.';
+            }
+        }
+
+        // Quick Buttons
+        function quickLoadLibrary() {
+            applyPreset('get-library');
+            sendApiRequest();
+            quickInfo.textContent = 'Bibliothek über GET /api/library geladen.';
+        }
+
+        function quickAddDemoEntry() {
+            applyPreset('post-demo-entry');
+            sendApiRequest();
+            quickInfo.textContent = 'Demo-Eintrag wurde versucht anzulegen.';
+        }
+
+        // JSON Viewer Buttons
+        viewerPrettyBtn.addEventListener('click', () => {
+            if (!lastResponseText) return;
+            jsonViewer.textContent = prettyPrint(lastResponseText);
+        });
+
+        viewerMinifyBtn.addEventListener('click', () => {
+            if (!lastResponseText) return;
+            jsonViewer.textContent = minify(lastResponseText);
+        });
+
+        viewerCopyBtn.addEventListener('click', () => {
+            if (!lastResponseText) {
+                showToast('Keine Antwort zum Kopieren.', 'err');
+                return;
+            }
+            navigator.clipboard.writeText(lastResponseText)
+                .then(() => showToast('Antwort in Zwischenablage kopiert.'))
+                .catch(() => showToast('Konnte nicht kopieren.', 'err'));
+        });
+
+        // Status-Check
+        async function checkStatus() {
+            const endpoint = statusEndpoint.value.trim() || '/';
+            const url = endpoint;
+            const start = performance.now();
+
+            statusIndicator.textContent = 'Prüfe …';
+            statusIndicator.style.background = '#fef3c7';
+            statusIndicator.style.color = '#7d6048';
+            statusIndicator.style.borderColor = 'rgba(225, 213, 200, 0.95)';
+
+            try {
+                const res = await fetch(url, { method: 'GET' });
+                const elapsed = Math.round(performance.now() - start);
+                const ts = new Date().toLocaleTimeString();
+
+                statusLastCheck.textContent = 'Letzte Prüfung: ' + ts + ' (' + elapsed + ' ms)';
+
+                if (res.ok) {
+                    statusIndicator.textContent = 'Online';
+                    statusIndicator.style.background = '#dcfce7';
+                    statusIndicator.style.color = '#166534';
+                    statusIndicator.style.borderColor = '#bbf7d0';
+                    showToast('Backend ist erreichbar.');
+                } else {
+                    statusIndicator.textContent = 'Fehler ' + res.status;
+                    statusIndicator.style.background = '#fee2e2';
+                    statusIndicator.style.color = '#b91c1c';
+                    statusIndicator.style.borderColor = '#fecaca';
+                    showToast('Backend antwortet mit Fehler ' + res.status + '.', 'err');
+                }
+            } catch (err) {
+                console.error(err);
+                statusIndicator.textContent = 'Keine Verbindung';
+                statusIndicator.style.background = '#fee2e2';
+                statusIndicator.style.color = '#b91c1c';
+                statusIndicator.style.borderColor = '#fecaca';
+                statusLastCheck.textContent = 'Letzte Prüfung: Fehler';
+                showToast('Backend nicht erreichbar.', 'err');
+            }
+        }
+
+        // Events binden
+        apiSendBtn.addEventListener('click', sendApiRequest);
+
+        apiMethod.addEventListener('change', () => {
+            if (apiMethod.value === 'GET') {
+                apiBodyHint.textContent = 'Wird momentan nicht benutzt.';
+            } else {
+                apiBodyHint.textContent = 'JSON-Body wird mitgesendet.';
+            }
+        });
+
+        apiPresetBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const preset = btn.dataset.preset;
+                applyPreset(preset);
+            });
+        });
+
+        quickLoadLibBtn.addEventListener('click', quickLoadLibrary);
+        quickAddDemoBtn.addEventListener('click', quickAddDemoEntry);
+
+        statusCheckBtn.addEventListener('click', checkStatus);
+
+        avatarBtn.addEventListener('click', () => {
+            showToast('Demo-User: User_x');
+        });
+
+        // Initialzustand
+        updateViewer('', null, 'Noch keine Antwort.');
+        setApiStatus('Noch kein Request', null);
+        apiMetaInfo.textContent = 'Antwortzeit: –';
+        statusLastCheck.textContent = 'Letzte Prüfung: –';
+        statusIndicator.textContent = 'Unbekannt';
+    })();
+</script>
+</body>
+</html>

@@ -1,6 +1,7 @@
 package app.mediatracker.core.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.Map;
@@ -23,7 +24,9 @@ import java.util.Map;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL) // null-Felder nicht serialisieren
 public class SearchResult {
+    @NotBlank
     private String type;       // z. B. "anime", "movie", "book", "music"
+    @NotBlank
     private String id;         // externe ID/Schlüssel der Quelle
     private String title;      // Titel/Name des Treffers
     private String imageUrl;   // Vorschaubild (optional)
