@@ -54,31 +54,31 @@ public class LibraryService {
      * Legt anhand eines Suchergebnisses (SearchResult) einen Bibliothekseintrag für einen User an
      * oder aktualisiert einen vorhandenen Eintrag.
      */
-    public LibraryEntryResponse addOrUpdateEntryFromSearchResult(
+public LibraryEntryResponse addOrUpdateEntryFromSearchResult(
             String userId,
             SearchResult searchResult,
             LibraryEntryStatus status,
             Integer rating,
             String notes
     ) {
-        // WICHTIG: Getter benutzen, nicht direkt auf Felder zugreifen
-        MediaItem mediaItem = mediaItemRepository
-                .findByTypeAndExternalId(searchResult.getType(), searchResult.getId())
-                .orElseGet(() -> createMediaItem(searchResult));
-
         UserLibraryEntry entry = userLibraryEntryRepository
-                .findByUserIdAndMediaItemId(userId, mediaItem.getId())
-                .orElseGet(() -> newUserLibraryEntry(userId, mediaItem.getId()));
+                .findByUserIdAndMediaTypeAndExternalId(userId, searchResult.getType(), searchResult.getId())
+                .orElseGet(() -> newUserLibraryEntry(userId, searchResult));
 
+        // Aktualisiere nutzerspezifische Felder
         entry.setStatus(status);
         entry.setRating(rating);
         entry.setNotes(notes);
-        entry.setUpdatedAt(Instant.now());
+
+        // Optional: Medien-Snapshot aktualisieren (z. B. Titeländerung)
+        entry.setTitle(searchResult.getTitle());
+        entry.setImageUrl(searchResult.getImageUrl());
+        entry.setSourceUrl(searchResult.getSourceUrl());
 
         UserLibraryEntry saved = userLibraryEntryRepository.save(entry);
-
-        return toResponse(saved, mediaItem);
+        return toResponse(saved);
     }
+
 
     /**
      * Legt anhand einer Manual Entry Eingabe des Users einen Bibliothekseintrag für einen User an.
@@ -113,23 +113,14 @@ public class LibraryService {
             String notes
     ) {
         String manualId = "manual-" + UUID.randomUUID();
-        MediaItem mediaItem = mediaItemRepository
-                .findByTypeAndExternalId(type, manualId)
-                .orElseGet(() -> createMediaItem(type, manualId, title, author, imageUrl, meta));
-
         UserLibraryEntry entry = userLibraryEntryRepository
-                .findByUserIdAndMediaTypeAndExternalId(userId, searchResult.getType(), searchResult.getId())
-                .orElseGet(() -> newUserLibraryEntry(userId, searchResult));
+                .findByUserIdAndMediaTypeAndExternalId(userId, type, manualId)
+                .orElseGet(() -> newUserLibraryEntry(userId, type, manualId, title, author, imageUrl, meta));
 
         // Aktualisiere nutzerspezifische Felder
         entry.setStatus(status);
         entry.setRating(rating);
         entry.setNotes(notes);
-
-        // Optional: Medien-Snapshot aktualisieren (z. B. Titeländerung)
-        entry.setTitle(searchResult.getTitle());
-        entry.setImageUrl(searchResult.getImageUrl());
-        entry.setSourceUrl(searchResult.getSourceUrl());
 
         UserLibraryEntry saved = userLibraryEntryRepository.save(entry);
         return toResponse(saved);
@@ -157,33 +148,18 @@ public class LibraryService {
                 .sourceUrl(searchResult.getSourceUrl())
                 .meta(searchResult.getMeta())
                 .build();
-
-        return mediaItemRepository.save(mediaItem);
     }
 
-    //Overload createMediaItem() um auch mit Manual Entry Daten ein MediaItem erstellen zu können
-    private MediaItem createMediaItem(String type, String manualId, String title, String author, String imageUrl, Map<String, Object> meta) {
-        // Auch hier: nur Getter
-        MediaItem mediaItem = MediaItem.builder()
-                .type(type)
+
+    //Overload newUserLibraryEntry() um auch mit Manual Entry Daten ein LibraryEntry eines MediaItems erstellen zu können
+    private UserLibraryEntry newUserLibraryEntry(String userId, String type, String manualId, String title, String author, String imageUrl, Map<String, Object> meta) {
+        return UserLibraryEntry.builder()
+                .userId(userId)
+                .mediaType(type)
                 .externalId(manualId)
                 .title(title)
                 .imageUrl(imageUrl)
-                .sourceUrl(null)
                 .meta(meta)
-                .build();
-
-        return mediaItemRepository.save(mediaItem);
-    }
-
-    private UserLibraryEntry newUserLibraryEntry(String userId, String mediaItemId) {
-        Instant now = Instant.now();
-
-        return UserLibraryEntry.builder()
-                .userId(userId)
-                .mediaItemId(mediaItemId)
-                .createdAt(now)
-                .updatedAt(now)
                 .build();
     }
 

@@ -80,7 +80,6 @@ public class LibraryController {
                 request.getRating(),
                 request.getNotes()
         );
-
         return ResponseEntity.ok(response);
     }
 

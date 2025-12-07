@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.Map;
 
 import java.time.Instant;
 
@@ -51,6 +52,8 @@ public class UserLibraryEntry {
     private String sourceUrl;
 
     private LibraryEntryStatus status;
+
+    private Map<String, Object> meta;
 
     /**
      * Optionale Bewertung, z. B. auf einer Skala von 1 bis 10. Darf null sein.
