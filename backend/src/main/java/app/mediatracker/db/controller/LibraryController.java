@@ -66,7 +66,7 @@ public class LibraryController {
      * @param request Payload mit Status/Rating/Notizen sowie dem ausgewählten SearchResult
      * @return 200 OK mit dem gespeicherten/aktualisierten Eintrag
      */
-    @PostMapping
+    @PostMapping("/addOrUpdateEntry")
     public ResponseEntity<LibraryEntryResponse> addOrUpdateEntry(
             @Valid @RequestBody AddLibraryEntryRequest request
     ) {
