@@ -13,7 +13,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Anwendungslogik für die Medienbibliothek.
@@ -52,7 +54,7 @@ public class LibraryService {
      * Legt anhand eines Suchergebnisses (SearchResult) einen Bibliothekseintrag für einen User an
      * oder aktualisiert einen vorhandenen Eintrag.
      */
-    public LibraryEntryResponse addOrUpdateEntryFromSearchResult(
+public LibraryEntryResponse addOrUpdateEntryFromSearchResult(
             String userId,
             SearchResult searchResult,
             LibraryEntryStatus status,
@@ -72,6 +74,53 @@ public class LibraryService {
         entry.setTitle(searchResult.getTitle());
         entry.setImageUrl(searchResult.getImageUrl());
         entry.setSourceUrl(searchResult.getSourceUrl());
+
+        UserLibraryEntry saved = userLibraryEntryRepository.save(entry);
+        return toResponse(saved);
+    }
+
+
+    /**
+     * Legt anhand einer Manual Entry Eingabe des Users einen Bibliothekseintrag für einen User an.
+     * <p>
+     * Dabei wird sichergestellt, dass für die Kombination aus Medientyp und ID genau ein
+     * MediaItem existiert (Upsert-Semantik). 
+     * Diese ID wird für manual Entry Einträge generiert.
+     * Anschließend wird der UserLibraryEntry mit Status,
+     * Rating und Notizen gespeichert und als API-DTO zurückgegeben.
+     * </p>
+     *
+     * @param userId        technische User-ID
+     * @param type          vom User gewählter Medientyp
+     * @param title         vom User gewählter Titel
+     * @param author        vom User gewählter Autor
+     * @param imageUrl      vom User gewähltes Bild (URL)
+     * @param meta          weitere evtl Metadaten
+     * @param status        neuer Status des Eintrags (z. B. PLANNED, COMPLETED)
+     * @param rating        optionale Bewertung; kann null sein
+     * @param notes         optionale Notizen
+     * @return angelegter bzw. aktualisierter Eintrag als LibraryEntryResponse
+     */
+    public LibraryEntryResponse addEntryFromManualEntry(
+            String userId, 
+            String type, 
+            String title,
+            String author, 
+            String imageUrl, 
+            Map<String,Object> meta, 
+            LibraryEntryStatus status, 
+            Integer rating,
+            String notes
+    ) {
+        String manualId = "manual-" + UUID.randomUUID();
+        UserLibraryEntry entry = userLibraryEntryRepository
+                .findByUserIdAndMediaTypeAndExternalId(userId, type, manualId)
+                .orElseGet(() -> newUserLibraryEntry(userId, type, manualId, title, author, imageUrl, meta));
+
+        // Aktualisiere nutzerspezifische Felder
+        entry.setStatus(status);
+        entry.setRating(rating);
+        entry.setNotes(notes);
 
         UserLibraryEntry saved = userLibraryEntryRepository.save(entry);
         return toResponse(saved);
@@ -97,6 +146,20 @@ public class LibraryService {
                 .title(searchResult.getTitle())
                 .imageUrl(searchResult.getImageUrl())
                 .sourceUrl(searchResult.getSourceUrl())
+                .meta(searchResult.getMeta())
+                .build();
+    }
+
+
+    //Overload newUserLibraryEntry() um auch mit Manual Entry Daten ein LibraryEntry eines MediaItems erstellen zu können
+    private UserLibraryEntry newUserLibraryEntry(String userId, String type, String manualId, String title, String author, String imageUrl, Map<String, Object> meta) {
+        return UserLibraryEntry.builder()
+                .userId(userId)
+                .mediaType(type)
+                .externalId(manualId)
+                .title(title)
+                .imageUrl(imageUrl)
+                .meta(meta)
                 .build();
     }
 
