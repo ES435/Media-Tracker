@@ -1,7 +1,7 @@
 package app.mediatracker.db.controller;
 
 import app.mediatracker.db.api.AddLibraryEntryRequest;
-import app.mediatracker.db.api.AddManualEntryRequest;
+import app.mediatracker.db.api.ManualEntryRequest;
 import app.mediatracker.db.api.LibraryEntryResponse;
 import app.mediatracker.db.domain.LibraryEntryStatus;
 import app.mediatracker.db.service.LibraryService;
@@ -94,7 +94,7 @@ public class LibraryController {
      */
     @PostMapping("/manualEntry")
     public ResponseEntity<LibraryEntryResponse> addManualEntry(
-            @RequestBody AddManualEntryRequest request
+            @RequestBody ManualEntryRequest request
         ) {
             LibraryEntryResponse response = libraryService.addEntryFromManualEntry(
                 DEMO_USER_ID,
@@ -112,6 +112,32 @@ public class LibraryController {
             return ResponseEntity.ok(response);
     }
     
+   /**
+     * Lässt den User einen bestehenden Manual Entry bearbeiten.
+     * 
+     *
+     * @param request Payload mit Status/Rating/Notizen sowie dem ausgewählten SearchResult
+     * @return 200 OK mit dem aktualisierten Eintrag
+     */
+    @PatchMapping("/manualEntry/{entryId}")
+    public ResponseEntity<LibraryEntryResponse> updateManualEntry(
+            @RequestBody ManualEntryRequest request
+        ) {
+            LibraryEntryResponse response = libraryService.editExistingManualEntry(
+                DEMO_USER_ID,
+                request.getType(),
+                request.getTitle(),
+                request.getAuthor(),
+                // request.getGenre(),
+                request.getImageUrl(),
+                request.getMeta(),
+                request.getStatus(),
+                request.getRating(),
+                request.getNotes()
+            );
+        
+            return ResponseEntity.ok(response);
+    }
 
     /**
      * Entfernt einen Bibliothekseintrag des Demo-Users, sofern er dem User gehört.
