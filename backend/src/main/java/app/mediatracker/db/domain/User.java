@@ -38,11 +38,10 @@ public class User {
      * </p>
      */
     @Indexed(unique = true)
-    private String name;
+    private String username;
 
     /**
-     * Gehashter Passwort-String (z. B. BCrypt).
-     * Niemals ein Klartext-Passwort speichern.
+     * Gehashter Passwort-String
      */
     private String passwordHash;
 
