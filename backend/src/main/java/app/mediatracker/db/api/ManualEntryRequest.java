@@ -13,7 +13,7 @@ import lombok.Data;
  * </p>
  */
 @Data
-public class AddManualEntryRequest {
+public class ManualEntryRequest {
 
     /**
      * Technischer Benutzer-Identifikator. Kann später durch Informationen
