@@ -66,7 +66,7 @@ public class LibraryController {
      * @param request Payload mit Status/Rating/Notizen sowie dem ausgewählten SearchResult
      * @return 200 OK mit dem gespeicherten/aktualisierten Eintrag
      */
-    @PostMapping("/addOrUpdateEntry")
+    @PostMapping()
     public ResponseEntity<LibraryEntryResponse> addOrUpdateEntry(
             @Valid @RequestBody AddLibraryEntryRequest request
     ) {
@@ -89,10 +89,10 @@ public class LibraryController {
      * Zusätzlich werden (Status, Rating, Notizen) gespeichert.
      * </p>
      *
-     * @param request Payload mit Status/Rating/Notizen sowie dem ausgewählten SearchResult
-     * @return 200 OK mit dem gespeicherten/aktualisierten Eintrag
+     * @param request Payload mit Status/Rating/Notizen sowie den anderen vom User gewählten Daten für den Manual Entry
+     * @return 200 OK mit dem gespeicherten Eintrag
      */
-    @PostMapping("/addManualEntry")
+    @PostMapping("/manualEntry")
     public ResponseEntity<LibraryEntryResponse> addManualEntry(
             @RequestBody AddManualEntryRequest request
         ) {
