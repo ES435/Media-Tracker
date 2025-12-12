@@ -7,7 +7,7 @@ function App() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const q = "akame";   // Suchbegriff
+        const q = "psycho-pass";   // Suchbegriff
         const types = "anime";
         const limit = 5;
 

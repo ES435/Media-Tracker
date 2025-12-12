@@ -13,10 +13,10 @@ function MediaCard({ title, cover, url }: MediaCardProps) {
                 width: "180px",
                 borderRadius: "12px",
                 overflow: "hidden",
-                background: "#fff",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                background: "#f4f4f4",
+                boxShadow: "0 4px 12px rgba(192,96,32,8)",
                 textDecoration: "none",
-                color: "inherit"
+                color: "inherit",
             }}
         >
             <img
