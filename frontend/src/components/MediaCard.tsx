@@ -13,10 +13,10 @@ function MediaCard({ title, cover, url }: MediaCardProps) {
                 width: "180px",
                 borderRadius: "12px",
                 overflow: "hidden",
-                background: "#f4f4f4",
-                boxShadow: "0 4px 12px rgba(192,96,32,8)",
+                background: "#202020",
+                boxShadow: "0 4px 12px rgba(192,128,64,8)",
                 textDecoration: "none",
-                color: "inherit",
+                color: "white",
             }}
         >
             <img
@@ -24,7 +24,7 @@ function MediaCard({ title, cover, url }: MediaCardProps) {
                 alt={title}
                 style={{ width: "100%", height: "250px", objectFit: "cover" }}
             />
-            <div style={{ padding: "10px", fontWeight: "bold" }}>
+            <div style={{ padding: "10px", fontFamily: "Consolas, monospace"}}>
                 {title}
             </div>
         </a>
