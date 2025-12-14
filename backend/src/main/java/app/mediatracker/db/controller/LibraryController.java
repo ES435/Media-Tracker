@@ -96,7 +96,7 @@ public class LibraryController {
     public ResponseEntity<LibraryEntryResponse> addManualEntry(
             @RequestBody ManualEntryRequest request
         ) {
-            LibraryEntryResponse response = libraryService.addEntryFromManualEntry(
+            LibraryEntryResponse response = libraryService.addManualEntry(
                 DEMO_USER_ID,
                 request.getType(),
                 request.getTitle(),
@@ -121,10 +121,12 @@ public class LibraryController {
      */
     @PatchMapping("/manualEntry/{entryId}")
     public ResponseEntity<LibraryEntryResponse> updateManualEntry(
-            @RequestBody ManualEntryRequest request
+            @RequestBody ManualEntryRequest request,
+            @PathVariable("entryId") String entryId
         ) {
-            LibraryEntryResponse response = libraryService.editExistingManualEntry(
+            LibraryEntryResponse response = libraryService.updateManualEntry(
                 DEMO_USER_ID,
+                entryId,
                 request.getType(),
                 request.getTitle(),
                 request.getAuthor(),

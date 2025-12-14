@@ -101,7 +101,7 @@ public LibraryEntryResponse addOrUpdateEntryFromSearchResult(
      * @param notes         optionale Notizen
      * @return angelegter bzw. aktualisierter Eintrag als LibraryEntryResponse
      */
-    public LibraryEntryResponse addEntryFromManualEntry(
+    public LibraryEntryResponse addManualEntry(
             String userId, 
             String type, 
             String title,
@@ -112,6 +112,39 @@ public LibraryEntryResponse addOrUpdateEntryFromSearchResult(
             Integer rating,
             String notes
     ) {
+        String manualId = "manual-" + UUID.randomUUID();
+        UserLibraryEntry entry = userLibraryEntryRepository
+                .findByUserIdAndMediaTypeAndExternalId(userId, type, manualId)
+                .orElseGet(() -> newUserLibraryEntry(userId, type, manualId, title, author, imageUrl, meta));
+
+        // Aktualisiere nutzerspezifische Felder
+        entry.setStatus(status);
+        entry.setRating(rating);
+        entry.setNotes(notes);
+
+        UserLibraryEntry saved = userLibraryEntryRepository.save(entry);
+        return toResponse(saved);
+    }
+
+    /**
+     * Legt anhand eines Suchergebnisses (SearchResult) einen Bibliothekseintrag für einen User an
+     * oder aktualisiert einen vorhandenen Eintrag.
+     */
+    public LibraryEntryResponse updateManualEntry(
+            String userId, 
+            String entryId,
+            String type, 
+            String title,
+            String author, 
+            String imageUrl, 
+            Map<String,Object> meta, 
+            LibraryEntryStatus status, 
+            Integer rating,
+            String notes
+    ) {
+        //1. check ob manual entry existiert (und manual entry ist)
+        if()
+        //2. nur felder updaten die nicht null sind in der Request
         String manualId = "manual-" + UUID.randomUUID();
         UserLibraryEntry entry = userLibraryEntryRepository
                 .findByUserIdAndMediaTypeAndExternalId(userId, type, manualId)
