@@ -1,11 +1,14 @@
 package app.mediatracker.db.service;
 
 import app.mediatracker.db.domain.User;
+import app.mediatracker.db.domain.exception.UsernameAlreadyExists;
 import app.mediatracker.db.repo.UserRepository;
 import app.mediatracker.db.domain.exception.InvalidPasswordException;
 import app.mediatracker.db.domain.exception.UserNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.Instant;
 
 @Service
 public class UserService {
@@ -37,5 +40,15 @@ public class UserService {
         }
 
         return user;
+    }
+
+    public void register(String username, String password) {
+        if(userRepository.existsByUsername(username)) {
+            throw new UsernameAlreadyExists("Username " + username + " already exists.");
+        }
+        String hashedPassword = passwordEncoder.encode(password);
+        User user = new User(null, username, hashedPassword, Instant.now(), Instant.now());
+
+        userRepository.insert(user);
     }
 }

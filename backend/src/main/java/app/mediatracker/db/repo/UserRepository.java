@@ -21,4 +21,5 @@ public interface UserRepository extends MongoRepository<User, String> {
      * @return ein Optional mit dem Benutzer, falls vorhanden
      */
     Optional<User> findByUsername(String name);
+    boolean existsByUsername(String username);
 }
