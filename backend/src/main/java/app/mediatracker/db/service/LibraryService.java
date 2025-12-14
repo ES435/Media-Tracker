@@ -10,7 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
@@ -142,22 +144,27 @@ public LibraryEntryResponse addOrUpdateEntryFromSearchResult(
             Integer rating,
             String notes
     ) {
-        //1. check ob manual entry existiert (und manual entry ist)
-        if()
-        //2. nur felder updaten die nicht null sind in der Request
-        String manualId = "manual-" + UUID.randomUUID();
-        UserLibraryEntry entry = userLibraryEntryRepository
-                .findByUserIdAndMediaTypeAndExternalId(userId, type, manualId)
-                .orElseGet(() -> newUserLibraryEntry(userId, type, manualId, title, author, imageUrl, meta));
+        // Check ob manual entry existiert (und ein manual entry ist)
+        UserLibraryEntry entry = userLibraryEntryRepository.findById(entryId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Entry not found"));
 
-        // Aktualisiere nutzerspezifische Felder
-        entry.setStatus(status);
-        entry.setRating(rating);
-        entry.setNotes(notes);
+        if (!entry.getExternalId().startsWith("manual-")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not a manual entry");
+        }
+        //Update
+        if (type != null) entry.setMediaType(type);
+        if (title != null) entry.setTitle(title);
+        if (author != null) entry.setAuthor(author);
+        if (imageUrl != null) entry.setImageUrl(imageUrl);
+        if (meta != null) entry.setMeta(meta);
+        if (status != null) entry.setStatus(status);
+        if (rating != null) entry.setRating(rating);
+        if (notes != null) entry.setNotes(notes);
 
         UserLibraryEntry saved = userLibraryEntryRepository.save(entry);
         return toResponse(saved);
     }
+
 
     /**
      * Entfernt einen Bibliothekseintrag eines Users, falls der Eintrag diesem User gehört.
