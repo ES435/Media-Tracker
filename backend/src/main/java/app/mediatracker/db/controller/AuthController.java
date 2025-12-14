@@ -5,8 +5,12 @@ import app.mediatracker.db.dto.JwtResponse;
 import app.mediatracker.db.dto.LoginRequest;
 import app.mediatracker.db.service.JwtService;
 import app.mediatracker.db.service.UserService;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
 @RestController
 public class AuthController {
@@ -20,13 +24,25 @@ public class AuthController {
     }
 
     @PostMapping("/auth/login")
-    public ResponseEntity<JwtResponse> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<Void> login(@RequestBody LoginRequest loginRequest) {
 
         User user = userService.login(loginRequest.getUsername(), loginRequest.getPassword());
 
         String token = jwtService.generateToken(user.getUsername());
 
-        return ResponseEntity.ok(new JwtResponse(token));
+
+        ResponseCookie cookie = ResponseCookie.from("jwt", token)
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .sameSite("Strict")
+                .maxAge(60 * 60 * 72)
+                .build();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(SET_COOKIE, cookie.toString());
+
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 }
 
