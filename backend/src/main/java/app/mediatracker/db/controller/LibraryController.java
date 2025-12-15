@@ -94,7 +94,7 @@ public class LibraryController {
      */
     @PostMapping("/manualEntry")
     public ResponseEntity<LibraryEntryResponse> addManualEntry(
-            @RequestBody ManualEntryRequest request
+            @Valid @RequestBody ManualEntryRequest request
         ) {
             LibraryEntryResponse response = libraryService.addManualEntry(
                 DEMO_USER_ID,
