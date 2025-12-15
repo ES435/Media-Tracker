@@ -1,7 +1,7 @@
 package app.mediatracker.db.controller;
 
 import app.mediatracker.db.api.AddLibraryEntryRequest;
-import app.mediatracker.db.api.AddManualEntryRequest;
+import app.mediatracker.db.api.ManualEntryRequest;
 import app.mediatracker.db.api.LibraryEntryResponse;
 import app.mediatracker.db.domain.LibraryEntryStatus;
 import app.mediatracker.db.service.LibraryService;
@@ -66,7 +66,7 @@ public class LibraryController {
      * @param request Payload mit Status/Rating/Notizen sowie dem ausgewählten SearchResult
      * @return 200 OK mit dem gespeicherten/aktualisierten Eintrag
      */
-    @PostMapping("/addOrUpdateEntry")
+    @PostMapping()
     public ResponseEntity<LibraryEntryResponse> addOrUpdateEntry(
             @Valid @RequestBody AddLibraryEntryRequest request
     ) {
@@ -89,14 +89,14 @@ public class LibraryController {
      * Zusätzlich werden (Status, Rating, Notizen) gespeichert.
      * </p>
      *
-     * @param request Payload mit Status/Rating/Notizen sowie dem ausgewählten SearchResult
-     * @return 200 OK mit dem gespeicherten/aktualisierten Eintrag
+     * @param request Payload mit Status/Rating/Notizen sowie den anderen vom User gewählten Daten für den Manual Entry
+     * @return 200 OK mit dem gespeicherten Eintrag
      */
-    @PostMapping("/addManualEntry")
+    @PostMapping("/manualEntry")
     public ResponseEntity<LibraryEntryResponse> addManualEntry(
-            @RequestBody AddManualEntryRequest request
+            @Valid @RequestBody ManualEntryRequest request
         ) {
-            LibraryEntryResponse response = libraryService.addEntryFromManualEntry(
+            LibraryEntryResponse response = libraryService.addManualEntry(
                 DEMO_USER_ID,
                 request.getType(),
                 request.getTitle(),
@@ -112,6 +112,34 @@ public class LibraryController {
             return ResponseEntity.ok(response);
     }
     
+   /**
+     * Lässt den User einen bestehenden Manual Entry bearbeiten.
+     * 
+     *
+     * @param request Payload mit Status/Rating/Notizen sowie dem ausgewählten SearchResult
+     * @return 200 OK mit dem aktualisierten Eintrag
+     */
+    @PatchMapping("/manualEntry/{entryId}")
+    public ResponseEntity<LibraryEntryResponse> updateManualEntry(
+            @RequestBody ManualEntryRequest request,
+            @PathVariable("entryId") String entryId
+        ) {
+            LibraryEntryResponse response = libraryService.updateManualEntry(
+                DEMO_USER_ID,
+                entryId,
+                request.getType(),
+                request.getTitle(),
+                request.getAuthor(),
+                // request.getGenre(),
+                request.getImageUrl(),
+                request.getMeta(),
+                request.getStatus(),
+                request.getRating(),
+                request.getNotes()
+            );
+        
+            return ResponseEntity.ok(response);
+    }
 
     /**
      * Entfernt einen Bibliothekseintrag des Demo-Users, sofern er dem User gehört.

@@ -5,6 +5,8 @@ import java.util.Map;
 import app.mediatracker.db.domain.LibraryEntryStatus;
 import lombok.Data;
 
+import jakarta.validation.constraints.NotBlank;
+
 /**
  * Request-Payload zum Anlegen oder Aktualisieren eines Bibliothekseintrags auf Basis eines Manual Entries.
  * <p>
@@ -13,7 +15,7 @@ import lombok.Data;
  * </p>
  */
 @Data
-public class AddManualEntryRequest {
+public class ManualEntryRequest {
 
     /**
      * Technischer Benutzer-Identifikator. Kann später durch Informationen
@@ -26,11 +28,13 @@ public class AddManualEntryRequest {
     private Integer rating;
 
     private String notes;
-
+    
+    @NotBlank
     private String title;
 
     private String author;
 
+    @NotBlank
     private String type;
 
     //private String genre;

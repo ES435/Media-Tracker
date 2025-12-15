@@ -50,6 +50,7 @@ public class UserLibraryEntry {
     private String title;
     private String imageUrl;
     private String sourceUrl;
+    private String author;
 
     private LibraryEntryStatus status;
 
