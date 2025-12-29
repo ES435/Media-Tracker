@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserPageResponse {
 
-    private String name;
+    private String username;
 
     private String profilePictureUrl;
 
