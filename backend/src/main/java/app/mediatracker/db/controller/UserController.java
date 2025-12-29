@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import app.mediatracker.db.api.LibraryEntryResponse;
+import app.mediatracker.db.api.UserPageResponse;
+import app.mediatracker.db.api.UserSearchResponse;
 import app.mediatracker.db.api.UserSummary;
 import app.mediatracker.db.service.UserService;
 import app.mediatracker.search.core.dto.SearchResult;
@@ -36,11 +39,12 @@ public class UserController {
      *
      * Beispiel: /api/user/search?partName=userName
      * @param partName     Suchbegriff (z. B. "user_")
-     * @param limit Maximale Treffer pro Typ. Standard ist 24.
+     * @param limit Maximale Treffer pro Typ. Standard ist 10.
+     * @return 
      * @return Liste kombinierter Suchergebnisse als JSON.
      */
     @GetMapping("/search")
-    public ResponseEntity<List<UserSummary>> searchUser(
+    public ResponseEntity<UserSearchResponse> searchUser(
             @RequestParam String partName,
             @RequestParam(required = false, defaultValue = "10") int limit) {
 
@@ -52,13 +56,14 @@ public class UserController {
      * Gibt die notwendigen Daten für die User-Page eines Users aus.
      * 
      * Diese bestehen aus User-Namen, Profilbild und falls publicList true gesetzt ist auch die Medienliste des Users.
-     * @param username oeffentlicher, einzigartiger Name des Users.
+     * @param username oeffentlicher Name des Users.
      * @return 200 OK mit allen Einträgen des Users in Anzeigeform
      */
     @GetMapping("/{username}")
-    public ResponseEntity<List<UserSummary>> page(
+    public ResponseEntity<UserPageResponse> getUserPage(
         @PathVariable("username") String username
     ) {
+
         return ResponseEntity.ok(userService.getUserPage(username));
     }
     

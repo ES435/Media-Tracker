@@ -31,6 +31,23 @@ public class UserService{
     private final UserRepository userRepository;
 
     /**
+     * Führt eine User-Suche anhand von einem Teilstring aus.
+     *
+     * Beispiel: /api/user/search?partName=userName
+     * @param partName     Suchbegriff (z. B. "user_")
+     * @param limit Maximale Treffer pro Typ. Standard ist 10.
+     * @return Liste kombinierter Suchergebnisse als JSON.
+     */
+    public UserSearchResponse searchUser(String partName, int limit) {
+        List<User> searchResults = userRepository.findByNameContainingIgnoreCase(partName);
+        List<UserSummary> summaries = searchResults.stream()
+            .map(this::toSummary)
+            .limit(limit)
+            .toList();
+        return new UserSearchResponse(summaries);
+    }
+    
+    /**
      * Sucht über alle passenden Provider und kombiniert die Ergebnisse.
      *
      * Verhalten:
@@ -38,20 +55,12 @@ public class UserService{
      * - Pro Provider wird mit {@code limitPerType} begrenzt.
      * - Duplikate werden anhand von {@code type#id} entfernt (stabile Einfüge-Reihenfolge).
      */
-    @Override
-    private UserSearchResponse searchUser(String partName, int limit) {
-        List<User> searchResults = userRepository.findByNameContainingIgnoreCase(partName);
-        return searchResults.stream().map(this::toResponse).toList();
-    }
-    
-
-    private UserPageResponse getUserPage(String username) {
+    public UserPageResponse getUserPage(String username) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getUserPage'");
-    return new PageImpl<>(content, pageable, page.getTotalElements());
     }
 
-    private UserSummary toResponse(User user) {
+    private UserSummary toSummary(User user) {
         return UserSummary.builder()
             .name(user.getUsername())
             .profilePictureUrl(user.getProfilePictureUrl())
