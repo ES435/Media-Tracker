@@ -1,4 +1,6 @@
 package app.mediatracker.db.api;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +21,6 @@ public class UserPageResponse {
 
     private Boolean publicList;
 
-    //private List<MediaEntry> entries;
-    
+    private List<LibraryEntryResponse> mediaList;
+
 }
