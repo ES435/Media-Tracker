@@ -691,7 +691,7 @@
                     </div>
 
                     <div class="api-body-label">
-                        <span>Request-Body (JSON, optional)</span>
+                        <span>Request-Content (JSON, optional)</span>
                         <span id="apiBodyHint">Wird bei GET ignoriert.</span>
                     </div>
                     <textarea id="apiBody" class="api-body" spellcheck="false"
@@ -902,8 +902,8 @@
                     options.headers = { 'Content-Type': 'application/json' };
                     options.body = JSON.stringify(parsed);
                 } catch (e) {
-                    showToast('Body ist kein gültiges JSON.', 'err');
-                    setApiStatus('Body-Fehler', 'err');
+                    showToast('Content ist kein gültiges JSON.', 'err');
+                    setApiStatus('Content-Fehler', 'err');
                     apiBadge.textContent = 'Fehler';
                     apiBadge.style.background = '#fee2e2';
                     return;
@@ -971,7 +971,7 @@
     "meta": {}
   }
 }`;
-                apiBodyHint.textContent = 'JSON-Body wird an /api/library gesendet.';
+                apiBodyHint.textContent = 'JSON-Content wird an /api/library gesendet.';
             }
             if (preset === 'get-anime-search') {
                 apiMethod.value = 'GET';
@@ -1064,7 +1064,7 @@
             if (apiMethod.value === 'GET') {
                 apiBodyHint.textContent = 'Wird momentan nicht benutzt.';
             } else {
-                apiBodyHint.textContent = 'JSON-Body wird mitgesendet.';
+                apiBodyHint.textContent = 'JSON-Content wird mitgesendet.';
             }
         });
 
