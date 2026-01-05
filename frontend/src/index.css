@@ -1,12 +1,17 @@
 
 
-/* Grid  */
+/* universelles "Design"  */
+:root {
+    --background: #565b63;
+    --font-mono: "Roboto Mono", monospace;
+}
+
+/* Responsive Layout Klasse  */
 
 .grid-container {
     height: 100%;
     display: grid;
-    gap: 20px;
-    border: 2px solid red;
+
     color: white;
 
     grid-template-columns: 250px 1fr;
@@ -20,14 +25,15 @@
 #navbar {
     grid-area: navbar;
     display: grid;
-    grid-template-columns: 250px 1fr;
-    background: #333;
+    grid-template-columns: 250px auto 175px;
+    padding: 30px;
+    margin: 10px;
 }
 
 #aside {
     grid-area: aside;
     display: flex;
-    background: #444;
+
     flex-direction: column;
     gap: 12px;
 }
@@ -45,14 +51,43 @@
     background: #333;
 }
 
-/* TBC */
+/* Content Klassen */
 
 .title {
     color: white;
+    grid-column: 1 / -1;
     text-shadow: 0 4px 12px rgba(192,128,64,0.8);
-    margin: 20px;
-    font-family: Consolas, monospace;
-    text-align: center;
+    font-family: var(--font-mono);
+    text-align: left;
+}
+
+.own-column{
+    grid-column: 1 / -1;
+    display: flex;
+
+}
+
+.sort-button{
+    padding: 25px;
+    margin-right: 50px;
+    border-radius: 13px;
+    background: var(--background);
+    outline: none;
+    border: none;
+    font-size: 24px;
+    font-family: var(--font-mono);
+}
+
+.create-button {
+    margin-left: auto;
+    width: 250px;
+    border-radius: 13px;
+    gap: 50px;
+    background: var(--background);
+    outline: none;
+    border: none;
+    font-size: 24px;
+    font-family: var(--font-mono);
 }
 
 .media-grid {
@@ -63,17 +98,19 @@
     margin: 10px;
 }
 
-
-
 .media-card {
     display: block;
-    border-radius: 12px;
+    border-radius: 13px;
     overflow: hidden;
     background: #202020;
-    box-shadow: 0 4px 12px rgba(192, 128, 64, 0.8);
+    transition: box-shadow 0.3s ease;
     text-decoration: none;
     color: white;
     box-sizing: border-box;
+}
+
+.media-card:hover {
+    box-shadow: 4px 4px 12px rgba(255, 139, 30, 0.8);
 }
 
 .media-card__img {
@@ -86,4 +123,64 @@
 .media-card__title {
     padding: 10px;
     font-family: Consolas, monospace;
+}
+
+/* Searchbar Klassen */
+
+.search {
+    --padding: 10px;
+
+    width: auto;
+    margin: auto 30px;
+    display: flex;
+    align-items: center;
+    padding: var(--padding);
+    border-radius: 28px;
+    background: #f6f6f6;
+    transition: box-shadow 0.25s;
+}
+
+.search:focus-within {
+    box-shadow: 0 0 12px rgba(255, 139, 30, 0.8);
+}
+
+.search-input {
+    font-size: 24px;
+    font-family: var(--font-mono);
+    color: #333333;
+    margin-right: auto;
+    outline: none;
+    border: none;
+    background: transparent;
+    flex: 1;
+    padding: var(--padding);
+}
+
+.search-input::placeholder,
+.search-icon{
+    color: rgb(244, 147, 102);
+}
+
+/* NavBar Login */
+
+.login_button {
+    border-radius: 13px;
+    margin-left: auto;
+    background: var(--background);
+    outline: none;
+    border: none;
+    font-size: 24px;
+    font-family: var(--font-mono);
+}
+
+
+
+/* Aside/Friends Klassen */
+
+.friend-title{
+    color: white;
+    grid-column: 1 / -1;
+    display: flex;
+    font-family: var(--font-mono);
+    text-align: left;
 }
