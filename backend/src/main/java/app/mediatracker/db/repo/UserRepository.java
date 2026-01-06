@@ -18,7 +18,7 @@ public interface UserRepository extends MongoRepository<User, String> {
     /**
      * Findet einen Benutzer anhand seines eindeutigen <code>name</code>.
      *
-     * @param username der eindeutige Anzeigename (siehe Unique-Index auf <code>User.name</code>)
+     * @param name der eindeutige Anzeigename (siehe Unique-Index auf <code>User.name</code>)
      * @return ein Optional mit dem Benutzer, falls vorhanden
      */
     Optional<User> findByName(String name);
