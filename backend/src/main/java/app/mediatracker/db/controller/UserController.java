@@ -53,9 +53,9 @@ public class UserController {
 
 
     /**
-     * Gibt die notwendigen Daten für die User-Page eines Users aus.
+     * Gibt auf Anfrage die notwendigen Daten für die User-Page eines Users aus.
      * 
-     * Diese bestehen aus User-Namen, Profilbild und falls publicList true gesetzt ist auch die Medienliste des Users.
+     * Diese bestehen aus User-Namen, Profilbild und falls diese öffentlich gesetzt ist, der Medienliste des Users.
      * @param username oeffentlicher Name des Users.
      * @return 200 OK mit allen Einträgen des Users in Anzeigeform
      */

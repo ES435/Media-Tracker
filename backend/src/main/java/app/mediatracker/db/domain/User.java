@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Builder.Default;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;

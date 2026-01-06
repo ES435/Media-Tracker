@@ -1,9 +1,12 @@
+package app.mediatracker.db.service;
+
 import java.util.List;
-import java.util.Set;
 
-import org.springframework.data.domain.PageImpl;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import app.mediatracker.db.api.LibraryEntryResponse;
 import app.mediatracker.db.api.UserPageResponse;
 import app.mediatracker.db.api.UserSearchResponse;
 import app.mediatracker.db.api.UserSummary;
@@ -11,7 +14,6 @@ import app.mediatracker.db.domain.User;
 import app.mediatracker.db.domain.UserLibraryEntry;
 import app.mediatracker.db.repo.UserLibraryEntryRepository;
 import app.mediatracker.db.repo.UserRepository;
-import app.mediatracker.search.core.dto.SearchResult;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -29,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 public class UserService{
 
     private final UserRepository userRepository;
+    private final UserLibraryEntryRepository userLibraryEntryRepository;
 
     /**
      * Führt eine User-Suche anhand von einem Teilstring aus.
@@ -48,23 +51,51 @@ public class UserService{
     }
     
     /**
-     * Sucht über alle passenden Provider und kombiniert die Ergebnisse.
-     *
-     * Verhalten:
-     * - Wenn {@code types} leer oder {@code null} ist, werden alle Provider verwendet.
-     * - Pro Provider wird mit {@code limitPerType} begrenzt.
-     * - Duplikate werden anhand von {@code type#id} entfernt (stabile Einfüge-Reihenfolge).
-     */
+    * Gibt die notwendigen Daten für die User-Page eines Users aus.
+    * 
+    * Diese bestehen aus User-Namen, Profilbild und – falls die Liste öffentlich ist – der Medienliste des Users.
+    * @param username öffentlicher Name des Users
+    * @return Einträge des Users in Anzeigeform (Profilbild, Name, Liste...)
+    */
     public UserPageResponse getUserPage(String username) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getUserPage'");
+        User user = userRepository.findByName(username)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User" + username + "not found" ));
+        UserSummary userSummary = toSummary(user);
+
+        List<LibraryEntryResponse> userMediaList;
+        if(user.getPublicList() == true) {
+        List<UserLibraryEntry> userLibrary = userLibraryEntryRepository.findByUserId(user.getId());
+        userMediaList = userLibrary.stream()
+            .map(this::toLibraryEntryResponse)
+            .toList();
+        } else {
+            userMediaList = List.of();
+        }
+
+        return UserPageResponse.builder()
+            .user(userSummary)
+            .mediaList(userMediaList)
+            .build();
     }
+
 
     private UserSummary toSummary(User user) {
         return UserSummary.builder()
             .name(user.getUsername())
             .profilePictureUrl(user.getProfilePictureUrl())
             .publicList(user.getPublicList())
+            .build();
+    }
+
+    private LibraryEntryResponse toLibraryEntryResponse(UserLibraryEntry entry) {
+        return LibraryEntryResponse.builder()
+            .id(entry.getId())
+            .userId(entry.getUserId())
+            .status(entry.getStatus())
+            .rating(entry.getRating())
+            .notes(entry.getNotes())
+            .createdAt(entry.getCreatedAt())
+            .updatedAt(entry.getUpdatedAt())
             .build();
     }
 }
