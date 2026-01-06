@@ -15,11 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserPageResponse {
 
-    private String username;
-
-    private String profilePictureUrl;
-
-    private Boolean publicList;
+    private UserSummary user;
 
     private List<LibraryEntryResponse> mediaList;
 
