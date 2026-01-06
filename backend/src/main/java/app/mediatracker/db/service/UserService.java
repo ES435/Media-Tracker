@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import app.mediatracker.db.api.LibraryEntryResponse;
+import app.mediatracker.db.api.MediaItemSummary;
 import app.mediatracker.db.api.UserPageResponse;
 import app.mediatracker.db.api.UserSearchResponse;
 import app.mediatracker.db.api.UserSummary;
@@ -74,20 +75,27 @@ public class UserService{
 
         return UserPageResponse.builder()
             .user(userSummary)
-            .mediaList(userMediaList)
+            .userMediaList(userMediaList)
             .build();
     }
 
 
     private UserSummary toSummary(User user) {
         return UserSummary.builder()
-            .name(user.getUsername())
+            .username(user.getName())
             .profilePictureUrl(user.getProfilePictureUrl())
             .publicList(user.getPublicList())
             .build();
     }
 
     private LibraryEntryResponse toLibraryEntryResponse(UserLibraryEntry entry) {
+        MediaItemSummary mediaSummary = MediaItemSummary.builder()
+            .type(entry.getMediaType())
+            .externalId(entry.getExternalId())
+            .title(entry.getTitle())
+            .imageUrl(entry.getImageUrl())
+            .sourceUrl(entry.getSourceUrl())
+            .build();
         return LibraryEntryResponse.builder()
             .id(entry.getId())
             .userId(entry.getUserId())
@@ -96,6 +104,7 @@ public class UserService{
             .notes(entry.getNotes())
             .createdAt(entry.getCreatedAt())
             .updatedAt(entry.getUpdatedAt())
+            .mediaItem(mediaSummary)
             .build();
     }
 }

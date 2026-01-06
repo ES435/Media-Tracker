@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserSummary {
 
-    private String name;
+    private String username;
     private String profilePictureUrl;
     private Boolean publicList;
 }

@@ -17,6 +17,6 @@ public class UserPageResponse {
 
     private UserSummary user;
 
-    private List<LibraryEntryResponse> mediaList;
+    private List<LibraryEntryResponse> userMediaList;
 
 }
