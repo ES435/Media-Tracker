@@ -1,19 +1,19 @@
 import { useState, useEffect } from "react";
 import type {MediaItem} from "./components/types";
-import "./index.css";
-import Navbar from "./components/Navbar";
-import Aside from "./components/Aside";
-import Content from "./components/Content";
-import Footer from "./components/Footer";
+import Navbar from "./components/Navbar.tsx";
+import Aside from "./components/Aside.tsx";
+import Content from "./components/Content.tsx";
+import Footer from "./components/Footer.tsx";
+import './index.css';
 
 function App() {
     const [items, setItems] = useState<MediaItem[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const q = "one piece";   // Suchbegriff
+        const q = "pancreas";   // Suchbegriff
         const types = "anime";
-        const limit = "";
+        const limit = 6;
 
 
         fetch(`http://localhost:8080/api/search?q=${q}&types=${types}&limit=${limit}`)
@@ -31,14 +31,14 @@ function App() {
     if (loading) return <p>Loading...</p>;
 
     return (
-        <div className="grid-container">
-            <Navbar />
-            <Aside />
-            <Content items={items} loading={loading} />
-            <Footer />
-        </div>
+        <>
+            <h1 className="title">Media-Tracker 3</h1>
+            <Navbar/>
+            <Aside/>
+            <Content items={items} loading={loading}/>
+            <Footer/>
+        </>
     );
-
 }
 
 export default App;

@@ -3,7 +3,7 @@
 /* universelles "Design"  */
 :root {
     --background: #565b63;
-    --font-mono: "Roboto Mono", monospace;
+    --font-mono: "Consolas", monospace;
 }
 
 /* Responsive Layout Klasse  */
@@ -25,7 +25,7 @@
 #navbar {
     grid-area: navbar;
     display: grid;
-    grid-template-columns: 250px auto 175px;
+    grid-template-columns: auto 175px;
     padding: 30px;
     margin: 10px;
 }
@@ -33,9 +33,10 @@
 #aside {
     grid-area: aside;
     display: flex;
-
+    float: left;
     flex-direction: column;
     gap: 12px;
+    padding: 60px;
 }
 
 #content {
@@ -58,7 +59,7 @@
     grid-column: 1 / -1;
     text-shadow: 0 4px 12px rgba(192,128,64,0.8);
     font-family: var(--font-mono);
-    text-align: left;
+    text-align: center;
 }
 
 .own-column{
@@ -68,25 +69,26 @@
 }
 
 .sort-button{
-    padding: 25px;
+    padding: 8px;
+    width: 160px;
     margin-right: 50px;
     border-radius: 13px;
     background: var(--background);
     outline: none;
     border: none;
-    font-size: 24px;
+    font-size: 18px;
     font-family: var(--font-mono);
 }
 
 .create-button {
     margin-left: auto;
-    width: 250px;
+    width: 240px;
     border-radius: 13px;
     gap: 50px;
     background: var(--background);
     outline: none;
     border: none;
-    font-size: 24px;
+    font-size: 18px;
     font-family: var(--font-mono);
 }
 
@@ -95,7 +97,7 @@
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 25px;
     padding: 10px;
-    margin: 10px;
+    margin: 30px;
 }
 
 .media-card {
@@ -128,14 +130,14 @@
 /* Searchbar Klassen */
 
 .search {
-    --padding: 10px;
+    --padding: 8px;
 
     width: auto;
     margin: auto 30px;
     display: flex;
     align-items: center;
     padding: var(--padding);
-    border-radius: 28px;
+    border-radius: 13px;
     background: #f6f6f6;
     transition: box-shadow 0.25s;
 }
@@ -145,7 +147,7 @@
 }
 
 .search-input {
-    font-size: 24px;
+    font-size: 18px;
     font-family: var(--font-mono);
     color: #333333;
     margin-right: auto;
@@ -158,6 +160,7 @@
 
 .search-input::placeholder,
 .search-icon{
+    margin: 6px;
     color: rgb(244, 147, 102);
 }
 
@@ -169,18 +172,30 @@
     background: var(--background);
     outline: none;
     border: none;
-    font-size: 24px;
+    font-size: 18px;
     font-family: var(--font-mono);
 }
 
 
 
 /* Aside/Friends Klassen */
-
 .friend-title{
     color: white;
+    text-shadow: 0 4px 12px rgba(192,128,64,0.8);
     grid-column: 1 / -1;
     display: flex;
     font-family: var(--font-mono);
     text-align: left;
 }
+
+.friend-button{
+    width: 160px;
+    padding: 8px;
+    margin-right: 20px;
+    border-radius: 13px;
+    background: var(--background);
+    outline: none;
+    border: none;
+    font-size: 18px;
+}
+

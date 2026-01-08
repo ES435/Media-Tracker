@@ -8,14 +8,21 @@ export default function Content({items, loading,}: {
         if (loading) return <p>Loading...</p>;
 
         return (
-
             <main id="content">
                 <div className="media-grid">
-                    <h1 className="title">Media-Tracker 3</h1>
                     <div className="own-column">
-                        <button className="sort-button">Order by</button>
-                        <button className="sort-button">Genres</button>
-                        <button className="create-button">welp</button>
+                        <select className="sort-button">
+                            <option selected>Filter 1</option> // Default-Auswahl
+                            <option>Filter 2</option>
+                            <option>Filter 3</option>
+                        </select>
+                        <select className="sort-button">
+                            <option selected>All</option> // Default-Auswahl
+                            <option>Genre 1</option>
+                            <option>Genre 2</option>
+                            <option>Genre 3</option>
+                        </select>
+                        <button className="create-button">Cheeseburger</button>
                     </div>
 
                     {items.map(item => (
@@ -29,5 +36,4 @@ export default function Content({items, loading,}: {
                 </div>
             </main>
         );
-
 }
