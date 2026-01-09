@@ -4,9 +4,9 @@ export type MediaItem = {
     title: string;
     imageUrl: string;
     sourceUrl: string;
-    meta: {
-        year: number;
-        episodes: number;
+    meta?: {
+        year?: number; //? damit nichts crashed, sollte es keinen return der api geben
+        episodes?: number;
     };
 };
 
