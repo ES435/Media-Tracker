@@ -18,13 +18,9 @@ import app.mediatracker.db.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Anwendungslogik für die Medienbibliothek.
+ * Anwendungslogik für die Userbibliothek.
  * <p>
- * Diese Service-Klasse koordiniert die Speicherung und Abfrage von Bibliothekseinträgen eines Users.
- * In dieser Variante werden Medien-Basisdaten direkt im Eintrag als Snapshot gespeichert (kein separates MediaItem).
- * </p>
- * <p>
- * Persistenz: MongoDB über Spring Data Repositories. Zeitstempel werden durch Mongo Auditing gesetzt.
+ * Diese Service-Klasse koordiniert die Abfrage von Suchanfragen zu einem User.
  * </p>
  */
 @Service
