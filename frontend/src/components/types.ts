@@ -5,8 +5,18 @@ export type MediaItem = {
     imageUrl: string;
     sourceUrl: string;
     meta?: {
-        year?: number; //? damit nichts crashed, sollte es keinen return der api geben
+        year?: number; //"?" damit nichts crashed, sollte es keinen return der api geben
         episodes?: number;
     };
 };
+
+export type MediaType =
+    | "anime"
+    | "book"
+    | "game"
+    | "manga"
+    | "movie"
+    | "music"
+    | "series"
+    | "";
 

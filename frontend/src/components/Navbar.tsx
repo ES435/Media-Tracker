@@ -1,4 +1,3 @@
-
 type NavbarProps = {
     query: string;
     onQueryChange: (value: string) => void;
@@ -11,12 +10,7 @@ export default function Navbar({ query, onQueryChange, onSearch }: NavbarProps) 
             <div className="search">
                 <span className="search-icon material-symbols-outlined">search</span>
 
-                <input
-                    className="search-input"
-                    type="search"
-                    placeholder="Search For The Meaning Of Life"
-                    value={query}
-                    onChange={(e) => onQueryChange(e.target.value)}
+                <input className="search-input" type="search" placeholder="Search For The Meaning Of Life" value={query} onChange={(e) => onQueryChange(e.target.value)}
                     onKeyDown={(e) => {
                         if (e.key === "Enter") {
                             onSearch();
@@ -24,7 +18,12 @@ export default function Navbar({ query, onQueryChange, onSearch }: NavbarProps) 
                     }}
                 />
             </div>
-            <button className="login_button">Login Button UwU</button>
+
+            <select className="login_button">
+                <option selected>Profile Button</option>
+                <option>Filter 2</option>
+                <option>Filter 3</option>
+            </select>
         </nav>
     );
 }

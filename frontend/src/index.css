@@ -25,9 +25,10 @@
 
 #header {
     grid-area: title;
-    display: flex;
+    display: grid;
     grid-template-columns: auto;
     margin: auto;
+    padding: 15px;
 }
 
 #navbar {
