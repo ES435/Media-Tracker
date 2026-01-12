@@ -146,7 +146,7 @@ public class UserService{
             throw new UsernameAlreadyExists("Username " + username + " already exists.");
         }
         String hashedPassword = passwordEncoder.encode(password);
-        User user = new User(null, username, hashedPassword, null, null);
+        User user = new User(null, username, hashedPassword, null, null, null, null); //ToDo: userfactory?
 
         userRepository.insert(user);
     }
