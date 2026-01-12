@@ -30,4 +30,6 @@ public interface UserRepository extends MongoRepository<User, String> {
      * @return Liste mit zu dem String passenden Benutzern, falls vorhanden
      */
     List<User> findByUsernameContainingIgnoreCase(String namePart);
+
+    boolean existsByUsername(String username);
 }

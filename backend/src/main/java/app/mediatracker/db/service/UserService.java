@@ -14,8 +14,15 @@ import app.mediatracker.db.api.UserSummary;
 import app.mediatracker.db.domain.User;
 import app.mediatracker.db.domain.UserLibraryEntry;
 import app.mediatracker.db.repo.UserLibraryEntryRepository;
+import app.mediatracker.db.domain.exception.UsernameAlreadyExists;
 import app.mediatracker.db.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
+import app.mediatracker.db.domain.exception.InvalidPasswordException;
+import app.mediatracker.db.domain.exception.UserNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.time.Instant;
 
 /**
  * Anwendungslogik für die Userbibliothek.
@@ -28,6 +35,7 @@ import lombok.RequiredArgsConstructor;
 public class UserService{
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
     private final UserLibraryEntryRepository userLibraryEntryRepository;
 
     /**
@@ -46,10 +54,10 @@ public class UserService{
             .toList();
         return new UserSearchResponse(summaries);
     }
-    
+
     /**
     * Gibt die notwendigen Daten für die User-Page eines Users aus.
-    * 
+    *
     * Diese bestehen aus User-Namen, Profilbild und – falls die Liste öffentlich ist – der Medienliste des Users.
     * @param username öffentlicher Name des Users
     * @return Einträge des Users in Anzeigeform (Profilbild, Name, Liste...)
@@ -102,5 +110,44 @@ public class UserService{
             .updatedAt(entry.getUpdatedAt())
             .mediaItem(mediaSummary)
             .build();
+    }
+
+    /**
+     * Prüft die Login-Daten eines Benutzers und gibt das entsprechende User-Objekt zurück,
+     * wenn die Authentifizierung erfolgreich war.
+     *
+     * @param username der eingegebene Username
+     * @param password das eingegebene Passwort
+     * @return das User Objekt
+     * @throws UserNotFoundException falls kein User mit entsprechendem Username existiert
+     * @throws InvalidPasswordException falls das Passwort nicht übereinstimmt
+     */
+    public User login(String username, String password) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
+
+        if(!passwordEncoder.matches(password, user.getPasswordHash())) {
+            throw new InvalidPasswordException(username);
+        }
+
+        return user;
+    }
+
+    /**
+     * Registriert einen neuen Benutzer in der Datenbank. Der Benutzername muss eindeutig sein.
+     * Das Passwort wird vor der Speicherung gehasht.
+     *
+     * @param username der Benutzername des neuen Benutzers.
+     * @param password das Passwort des neuen Benutzers.
+     * @throws UsernameAlreadyExists wenn der Benutzername bereits existiert.
+     */
+    public void register(String username, String password) {
+        if(userRepository.existsByUsername(username)) {
+            throw new UsernameAlreadyExists("Username " + username + " already exists.");
+        }
+        String hashedPassword = passwordEncoder.encode(password);
+        User user = new User(null, username, hashedPassword, null, null);
+
+        userRepository.insert(user);
     }
 }

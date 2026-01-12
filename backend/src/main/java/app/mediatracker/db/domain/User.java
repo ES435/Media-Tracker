@@ -42,8 +42,7 @@ public class User {
     private String username;
 
     /**
-     * Gehashter Passwort-String (z. B. BCrypt).
-     * Niemals ein Klartext-Passwort speichern.
+     * Gehashter Passwort-String
      */
     private String passwordHash;
 
