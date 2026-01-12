@@ -1,0 +1,214 @@
+
+/* universelles "Design"  */
+:root {
+    --background: #565b63;
+    --font-mono: "Consolas", monospace;
+}
+
+/* Responsive Layout Klasse  */
+
+.grid-container {
+    height: 100%;
+    display: grid;
+    background: #1A1A1A;
+    color: white;
+
+    grid-template-columns: 250px 1fr;
+    grid-template-rows: auto 1fr auto;
+
+    grid-template-areas:    "title title"
+                            "navbar navbar"
+                            "aside content"
+                            "footer footer";
+}
+
+#header {
+    grid-area: title;
+    display: grid;
+    grid-template-columns: auto;
+    margin: auto;
+    padding: 15px;
+}
+
+#navbar {
+    grid-area: navbar;
+    display: grid;
+    grid-template-columns: auto 175px;
+    padding: 30px;
+    margin: 10px;
+}
+
+#aside {
+    grid-area: aside;
+    display: flex;
+    float: left;
+    flex-direction: column;
+    gap: 12px;
+    padding: 60px;
+}
+
+#content {
+    grid-area: content;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    text-align: center;
+}
+
+#footer {
+    grid-area: footer;
+    background: #333;
+}
+
+/* Content Klassen */
+
+.title {
+    color: white;
+    grid-column: 1 / -1;
+    text-shadow: 0 4px 12px rgba(192,128,64,0.8);
+    font-family: var(--font-mono);
+    text-align: center;
+}
+
+.own-column{
+    grid-column: 1 / -1;
+    display: flex;
+    padding: 30px;
+
+}
+
+.sort-button{
+    color: white;
+    padding: 8px;
+    width: 160px;
+    margin-right: 50px;
+    border-radius: 13px;
+    background: var(--background);
+    outline: none;
+    border: none;
+    font-size: 18px;
+    font-family: var(--font-mono);
+}
+
+.create-button {
+    color: white;
+    margin-left: auto;
+    width: 240px;
+    border-radius: 13px;
+    gap: 50px;
+    background: var(--background);
+    outline: none;
+    border: none;
+    font-size: 18px;
+    font-family: var(--font-mono);
+}
+
+.media-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 25px;
+    padding: 10px;
+    margin: 30px;
+}
+
+.media-card {
+    display: block;
+    border-radius: 13px;
+    overflow: hidden;
+    background: #202020;
+    transition: box-shadow 0.3s ease;
+    text-decoration: none;
+    color: white;
+    box-sizing: border-box;
+}
+
+.media-card:hover {
+    box-shadow: 4px 4px 12px rgba(255, 139, 30, 0.8);
+}
+
+.media-card__img {
+    width: 100%;
+    height: 325px;
+    object-fit: cover;
+    display: block;
+}
+
+.media-card__title {
+    padding: 10px;
+    font-family: Consolas, monospace;
+}
+
+/* Searchbar Klassen */
+
+.search {
+    --padding: 8px;
+
+    width: auto;
+    margin: auto 30px;
+    display: flex;
+    align-items: center;
+    padding: var(--padding);
+    border-radius: 13px;
+    background: var(--background);
+    transition: box-shadow 0.25s;
+}
+
+.search:focus-within {
+    box-shadow: 0 0 12px rgba(255, 139, 30, 0.8);
+}
+
+.search-input {
+    font-size: 18px;
+    font-family: var(--font-mono);
+    color: rgb(244, 147, 102);
+    margin-right: auto;
+    outline: none;
+    border: none;
+    background: transparent;
+    flex: 1;
+    padding: var(--padding);
+}
+
+.search-input::placeholder,
+.search-icon{
+    margin: 6px;
+    color: rgb(244, 147, 102);
+}
+
+/* NavBar Login */
+
+.login_button {
+    color: white;
+    border-radius: 13px;
+    background: var(--background);
+    outline: none;
+    border: none;
+    font-size: 18px;
+    text-align: center;
+    font-family: var(--font-mono);
+}
+
+
+
+/* Aside/Friends Klassen */
+.friend-title{
+    color: white;
+    text-shadow: 0 4px 12px rgba(192,128,64,0.8);
+    grid-column: 1 / -1;
+    display: flex;
+    font-family: var(--font-mono);
+    text-align: left;
+}
+
+.friend-button{
+    color: white;
+    width: 160px;
+    padding: 8px;
+    margin-right: 20px;
+    border-radius: 13px;
+    background: var(--background);
+    outline: none;
+    border: none;
+    font-size: 18px;
+}
