@@ -1,44 +1,73 @@
+# ==============================
+#  APPLICATION CONFIG
+# ==============================
 spring:
-  data:
-    mongodb:
-      auto-index-creation: true
-      uri: mongodb://localhost:27017
-      database: mediatracker
   application:
     name: media-tracker-backend
 
+# ==============================
+#  SERVER SETTINGS
+# ==============================
 server:
   port: 8080
 
-# ---- API  ----
-search:
-  anime:
-    enabled: true
-  music:
-    enabled: true
-  game:
-    enabled: true
-  book:
-    enabled: true
-  manga:
-    enabled: true
-  movie:
-    enabled: true
-  series:
-    enabled: true
+# ==============================
+#  DATABASE CONFIGURATION
+# ==============================
+#  Standardmäßig deaktiviert (noch keine DB angebunden)
+#  Wenn Docker mit PostgreSQL läuft, einfach einkommentieren.
+#
+# spring:
+#   datasource:
+#     url: jdbc:postgresql://db:5432/mediatracker
+#     username: postgres
+#     password: postgres
+#   jpa:
+#     hibernate:
+#       ddl-auto: update
+#     show-sql: true
+#     properties:
+#       hibernate.format_sql: true
+#
+# --- LOKAL (ohne Docker) ---
+#   datasource:
+#     url: jdbc:postgresql://localhost:5432/mediatracker
+#     username: postgres
+#     password: postgres
+#   jpa:
+#     hibernate:
+#       ddl-auto: update
+#     show-sql: true
+#     properties:
+#       hibernate.format_sql: true
 
-jikan:
-  base-url: https://api.jikan.moe/v4
+# ==============================
+#  CORS CONFIGURATION
+# ==============================
+# Erlaubt das lokale Frontend (HTML/JS) z. B. auf Port 5500 oder 3000
+cors:
+  allowed-origins: "http://localhost:3000,http://127.0.0.1:5500"
+  allowed-methods: "GET,POST,PUT,DELETE,OPTIONS"
+  allowed-headers: "*"
+  allow-credentials: true
 
-itunes:
-  base-url: https://itunes.apple.com
+# ==============================
+#  LOGGING
+# ==============================
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    org.hibernate.SQL: WARN
+  pattern:
+    console: "%d{HH:mm:ss} %-5level %logger{36} - %msg%n"
 
-rawg:
-  base-url: https://rawg.io/api
-  api-key: "${RAWG_API_KEY:ff51c125cfc14b7abce7c70740910d24}"
-
-openlibrary:
-  base-url: https://openlibrary.org
-
-imdb:
-  base-url: https://api.imdbapi.dev
+# ==============================
+#  PROFILES
+# ==============================
+# Später kann man mehrere Files haben:
+# - application-dev.yml
+# - application-prod.yml
+# Aktivierung via:
+# SPRING_PROFILES_ACTIVE=dev
+# ==============================
