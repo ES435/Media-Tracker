@@ -10,6 +10,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 
+/**
+ * Service-Klasse zum Verwalten von Benutzern, einschließlich Funktionen für Registrierung und Authentifizierung.
+ * Interagiert mit der Datenbank durch das UserRepository und verwendet BCrypt zum Hashen der Passwörter.
+ */
 @Service
 public class UserService {
 
@@ -42,12 +46,20 @@ public class UserService {
         return user;
     }
 
+    /**
+     * Registriert einen neuen Benutzer in der Datenbank. Der Benutzername muss eindeutig sein.
+     * Das Passwort wird vor der Speicherung gehasht.
+     *
+     * @param username der Benutzername des neuen Benutzers.
+     * @param password das Passwort des neuen Benutzers.
+     * @throws UsernameAlreadyExists wenn der Benutzername bereits existiert.
+     */
     public void register(String username, String password) {
         if(userRepository.existsByUsername(username)) {
             throw new UsernameAlreadyExists("Username " + username + " already exists.");
         }
         String hashedPassword = passwordEncoder.encode(password);
-        User user = new User(null, username, hashedPassword, Instant.now(), Instant.now());
+        User user = new User(null, username, hashedPassword, null, null);
 
         userRepository.insert(user);
     }

@@ -68,6 +68,11 @@ public class JwtService {
         }
     }
 
+    /**
+     * Prüft ob der JWT noch gültig ist.
+     * @param decodedJWT
+     * @return true = JWT gültig, false = JWT = expired
+     */
     private boolean isTokenExpired(DecodedJWT decodedJWT) {
         return decodedJWT.getExpiresAt().before(new Date());
     }

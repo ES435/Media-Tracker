@@ -25,6 +25,14 @@ public class AuthController {
         this.jwtService = jwtService;
     }
 
+    /**
+     * Authenticates the user based on the provided login request.
+     * If successful, generates a JWT token, sets it as an HTTP-only cookie,
+     * and returns a response with the token set in the headers.
+     *
+     * @param loginRequest the login request containing the username and password
+     * @return a ResponseEntity with an HTTP-only JWT cookie in the response headers
+     */
     @PostMapping("/login")
     public ResponseEntity<Void> login(@RequestBody LoginRequest loginRequest) {
 
@@ -46,6 +54,13 @@ public class AuthController {
         return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
+    /**
+     * Handles user registration by accepting a registration request.
+     * Calls the UserService to register the user with the provided username and password.
+     *
+     * @param request the registration request containing the username and password
+     * @return a ResponseEntity indicating the success of the registration process
+     */
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegistrationRequest request) {
         userService.register(request.getUsername(), request.getPassword());

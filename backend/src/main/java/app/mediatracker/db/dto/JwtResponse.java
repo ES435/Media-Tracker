@@ -3,6 +3,9 @@ package app.mediatracker.db.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * DTO Object for jwt requests
+ */
 @Setter
 @Getter
 public class JwtResponse {

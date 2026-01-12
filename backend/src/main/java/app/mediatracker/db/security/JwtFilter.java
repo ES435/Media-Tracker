@@ -15,6 +15,13 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Collections;
 
+/**
+ * Filter für die JWT-basierte Authentifizierung.
+ * <p>
+ * Dieser Filter prüft eingehende Requests auf gültige JWT-Tokens in den Cookies
+ * und setzt bei erfolgreicher Validierung den Security-Context.
+ * </p>
+ */
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
@@ -24,6 +31,20 @@ public class JwtFilter extends OncePerRequestFilter {
         this.jwtService = jwtService;
     }
 
+
+    /**
+     * Verarbeitet die eingehende HTTP-Anfrage.
+     * <p>
+     * Extrahiert das JWT-Token aus den Cookies, validiert es und setzt bei
+     * erfolgreicher Validierung den Security-Context mit den Benutzerinformationen.
+     * </p>
+     *
+     * @param request     Die HTTP-Anfrage
+     * @param response    Die HTTP-Antwort
+     * @param filterChain Die Filter-Kette zur Weiterverarbeitung
+     * @throws ServletException Bei Fehlern in der Servlet-Verarbeitung
+     * @throws IOException      Bei Ein-/Ausgabefehlern
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = extractJwtFromCookies(request);
@@ -37,6 +58,12 @@ public class JwtFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    /**
+     * Extrahiert das JWT-Token aus den Cookies der Anfrage.
+     *
+     * @param request Die HTTP-Anfrage
+     * @return Das JWT-Token oder null, wenn kein Token gefunden wurde
+     */
     private String extractJwtFromCookies(HttpServletRequest request) {
         for (Cookie cookie : request.getCookies()) {
             if ("jwt".equals(cookie.getName())) {

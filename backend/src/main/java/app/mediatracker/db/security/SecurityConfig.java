@@ -22,6 +22,13 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Configures a security filter chain for the application.
+     *
+     * @param http the {@link HttpSecurity} object used to configure security settings
+     * @return the configured {@link SecurityFilterChain} instance
+     * @throws Exception if an error occurs during the security configuration process
+     */
     @Bean
     public SecurityFilterChain filterChain (HttpSecurity http) throws Exception {
         http
