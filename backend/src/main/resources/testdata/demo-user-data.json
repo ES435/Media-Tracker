@@ -1,120 +1,120 @@
 [
   {
-    "name": "alice",
+    "username": "alice",
     "passwordHash": "hash1",
     "publicList": true,
     "profilePictureUrl": "https://randomuser.me/api/portraits/women/1.jpg"
   },
   {
-    "name": "bob",
+    "username": "bob",
     "passwordHash": "hash2",
     "publicList": false,
     "profilePictureUrl": "https://randomuser.me/api/portraits/men/2.jpg"
   },
   {
-    "name": "carol",
+    "username": "carol",
     "passwordHash": "hash3",
     "publicList": true,
     "profilePictureUrl": "https://randomuser.me/api/portraits/women/3.jpg"
   },
   {
-    "name": "dave",
+    "username": "dave",
     "passwordHash": "hash4",
     "publicList": false,
     "profilePictureUrl": "https://randomuser.me/api/portraits/men/4.jpg"
   },
   {
-    "name": "eve",
+    "username": "eve",
     "passwordHash": "hash5",
     "publicList": true,
     "profilePictureUrl": "https://randomuser.me/api/portraits/women/5.jpg"
   },
   {
-    "name": "frank",
+    "username": "frank",
     "passwordHash": "hash6",
     "publicList": false,
     "profilePictureUrl": "https://randomuser.me/api/portraits/men/6.jpg"
   },
   {
-    "name": "grace",
+    "username": "grace",
     "passwordHash": "hash7",
     "publicList": true,
     "profilePictureUrl": "https://randomuser.me/api/portraits/women/7.jpg"
   },
   {
-    "name": "heidi",
+    "username": "heidi",
     "passwordHash": "hash8",
     "publicList": false,
     "profilePictureUrl": "https://randomuser.me/api/portraits/women/8.jpg"
   },
   {
-    "name": "ivan",
+    "username": "ivan",
     "passwordHash": "hash9",
     "publicList": true,
     "profilePictureUrl": "https://randomuser.me/api/portraits/men/9.jpg"
   },
   {
-    "name": "judy",
+    "username": "judy",
     "passwordHash": "hash10",
     "publicList": false,
     "profilePictureUrl": "https://randomuser.me/api/portraits/women/10.jpg"
   },
   {
-    "name": "karl",
+    "username": "karl",
     "passwordHash": "hash11",
     "publicList": true,
     "profilePictureUrl": "https://randomuser.me/api/portraits/men/11.jpg"
   },
   {
-    "name": "laura",
+    "username": "laura",
     "passwordHash": "hash12",
     "publicList": false,
     "profilePictureUrl": "https://randomuser.me/api/portraits/women/12.jpg"
   },
   {
-    "name": "mallory",
+    "username": "mallory",
     "passwordHash": "hash13",
     "publicList": true,
     "profilePictureUrl": "https://randomuser.me/api/portraits/women/13.jpg"
   },
   {
-    "name": "nick",
+    "username": "nick",
     "passwordHash": "hash14",
     "publicList": false,
     "profilePictureUrl": "https://randomuser.me/api/portraits/men/14.jpg"
   },
   {
-    "name": "olivia",
+    "username": "olivia",
     "passwordHash": "hash15",
     "publicList": true,
     "profilePictureUrl": "https://randomuser.me/api/portraits/women/15.jpg"
   },
   {
-    "name": "peggy",
+    "username": "peggy",
     "passwordHash": "hash16",
     "publicList": false,
     "profilePictureUrl": "https://randomuser.me/api/portraits/women/16.jpg"
   },
   {
-    "name": "quinn",
+    "username": "quinn",
     "passwordHash": "hash17",
     "publicList": true,
     "profilePictureUrl": "https://randomuser.me/api/portraits/men/17.jpg"
   },
   {
-    "name": "ruth",
+    "username": "ruth",
     "passwordHash": "hash18",
     "publicList": false,
     "profilePictureUrl": "https://randomuser.me/api/portraits/women/18.jpg"
   },
   {
-    "name": "sybil",
+    "username": "sybil",
     "passwordHash": "hash19",
     "publicList": true,
     "profilePictureUrl": "https://randomuser.me/api/portraits/women/19.jpg"
   },
   {
-    "name": "trent",
+    "username": "trent",
     "passwordHash": "hash20",
     "publicList": false,
     "profilePictureUrl": "https://randomuser.me/api/portraits/men/20.jpg"

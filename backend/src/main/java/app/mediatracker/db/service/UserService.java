@@ -39,7 +39,7 @@ public class UserService{
      * @return Liste kombinierter Suchergebnisse als JSON.
      */
     public UserSearchResponse searchUser(String partName, int limit) {
-        List<User> searchResults = userRepository.findByNameContainingIgnoreCase(partName);
+        List<User> searchResults = userRepository.findByUsernameContainingIgnoreCase(partName);
         List<UserSummary> summaries = searchResults.stream()
             .map(this::toSummary)
             .limit(limit)
@@ -55,7 +55,7 @@ public class UserService{
     * @return Einträge des Users in Anzeigeform (Profilbild, Name, Liste...)
     */
     public UserPageResponse getUserPage(String username) {
-        User user = userRepository.findByName(username)
+        User user = userRepository.findByUsername(username)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User" + username + "not found" ));
         UserSummary userSummary = toSummary(user);
 
@@ -78,7 +78,7 @@ public class UserService{
 
     private UserSummary toSummary(User user) {
         return UserSummary.builder()
-            .username(user.getName())
+            .username(user.getUsername())
             .profilePictureUrl(user.getProfilePictureUrl())
             .publicList(user.getPublicList())
             .build();

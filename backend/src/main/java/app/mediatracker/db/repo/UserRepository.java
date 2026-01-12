@@ -18,10 +18,10 @@ public interface UserRepository extends MongoRepository<User, String> {
     /**
      * Findet einen Benutzer anhand seines eindeutigen <code>name</code>.
      *
-     * @param name der eindeutige Anzeigename (siehe Unique-Index auf <code>User.name</code>)
+     * @param username der eindeutige Anzeigename (siehe Unique-Index auf <code>User.name</code>)
      * @return ein Optional mit dem Benutzer, falls vorhanden
      */
-    Optional<User> findByName(String name);
+    Optional<User> findByUsername(String username);
 
     /**
      * Findet registrierte Benutzer anhand eines Teil des Benutzernamens <code>namePart</code>.
@@ -29,5 +29,5 @@ public interface UserRepository extends MongoRepository<User, String> {
      * @param namePart Eingabe; Teil des Anzeigenamens
      * @return Liste mit zu dem String passenden Benutzern, falls vorhanden
      */
-    List<User> findByNameContainingIgnoreCase(String namePart);
+    List<User> findByUsernameContainingIgnoreCase(String namePart);
 }

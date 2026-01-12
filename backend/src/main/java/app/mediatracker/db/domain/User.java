@@ -39,7 +39,7 @@ public class User {
      * </p>
      */
     @Indexed(unique = true)
-    private String name;
+    private String username;
 
     /**
      * Gehashter Passwort-String (z. B. BCrypt).
