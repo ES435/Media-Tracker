@@ -3,6 +3,7 @@ package app.mediatracker.db.repo;
 import app.mediatracker.db.domain.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -21,4 +22,12 @@ public interface UserRepository extends MongoRepository<User, String> {
      * @return ein Optional mit dem Benutzer, falls vorhanden
      */
     Optional<User> findByName(String name);
+
+    /**
+     * Findet registrierte Benutzer anhand eines Teil des Benutzernamens <code>namePart</code>.
+     *
+     * @param namePart Eingabe; Teil des Anzeigenamens
+     * @return Liste mit zu dem String passenden Benutzern, falls vorhanden
+     */
+    List<User> findByNameContainingIgnoreCase(String namePart);
 }
