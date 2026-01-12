@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import Header from "../components/Header.tsx";
 import Navbar from "../components/Navbar.tsx";
-import Aside from "../components/Aside.tsx";
 import Content from "../components/Content.tsx";
 import Footer from "../components/Footer.tsx";
 import type {MediaItem, MediaType} from "../components/types.ts";
@@ -52,11 +50,19 @@ export default function MainPage() {
         search(trimmed, newType);
     }
 
+    //Aside wird eventuell wieder ein Component, je nach Umfang
     return (
         <div className="grid-container">
-            <Header/>
+            <header id="header">
+                <h1 className="title">Media-Tracker 3</h1>
+            </header>
             <Navbar query={query} onQueryChange={setQuery} onSearch={handleSearch} />
-            <Aside />
+            <aside id="aside">
+                <h2 className="friend-title">Friends</h2>
+                <button className="friend-button">Option 1</button>
+                <button className="friend-button">Option 2</button>
+                <button className="friend-button">Option 3</button>
+            </aside>
             <Content
                 items={items}
                 loading={loading}

@@ -20,7 +20,7 @@ export default function Navbar({ query, onQueryChange, onSearch }: NavbarProps) 
             </div>
 
             <select className="login_button">
-                <option selected>Profile Button</option>
+                <option selected>Placeholder</option>
                 <option>Filter 2</option>
                 <option>Filter 3</option>
             </select>
