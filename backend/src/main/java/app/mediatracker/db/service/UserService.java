@@ -146,8 +146,17 @@ public class UserService{
             throw new UsernameAlreadyExists("Username " + username + " already exists.");
         }
         String hashedPassword = passwordEncoder.encode(password);
-        User user = new User(null, username, hashedPassword, null, null, null, null); //ToDo: userfactory?
+        User user = createNewUser(username, hashedPassword);
 
         userRepository.insert(user);
     }
+
+    private User createNewUser(String username, String passwordHash) {
+        return User.builder()
+                .username(username)
+                .passwordHash(passwordHash)
+                .publicList(false)
+                .build();
+    }
+
 }
