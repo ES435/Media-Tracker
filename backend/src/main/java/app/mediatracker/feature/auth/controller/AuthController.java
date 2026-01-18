@@ -1,42 +1,40 @@
 package app.mediatracker.feature.auth.controller;
 
-import app.mediatracker.feature.user.model.User;
 import app.mediatracker.feature.auth.dto.LoginRequest;
 import app.mediatracker.feature.auth.dto.RegistrationRequest;
+import app.mediatracker.feature.auth.service.AuthService; // WICHTIG: AuthService statt UserService
 import app.mediatracker.feature.auth.service.JwtService;
-import app.mediatracker.feature.user.service.UserService;
+import app.mediatracker.feature.user.model.User;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import static org.springframework.http.HttpHeaders.*;
+import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final UserService userService;
+    private final AuthService authService;
     private final JwtService jwtService;
 
-    public AuthController(UserService userService, JwtService jwtService) {
-        this.userService = userService;
+    public AuthController(AuthService authService, JwtService jwtService) {
+        this.authService = authService;
         this.jwtService = jwtService;
     }
 
     /**
      * Authenticates the user based on the provided login request.
-     * If successful, generates a JWT token, sets it as an HTTP-only cookie,
-     * and returns a response with the token set in the headers.
-     *
-     * @param loginRequest the login request containing the username and password
-     * @return a ResponseEntity with an HTTP-only JWT cookie in the response headers
      */
     @PostMapping("/login")
     public ResponseEntity<Void> login(@RequestBody LoginRequest loginRequest) {
 
-        User user = userService.login(loginRequest.getUsername(), loginRequest.getPassword());
+        User user = authService.login(loginRequest.getUsername(), loginRequest.getPassword());
 
         String token = jwtService.generateToken(user.getUsername());
 
@@ -55,16 +53,12 @@ public class AuthController {
     }
 
     /**
-     * Handles user registration by accepting a registration request.
-     * Calls the UserService to register the user with the provided username and password.
-     *
-     * @param request the registration request containing the username and password
-     * @return a ResponseEntity indicating the success of the registration process
+     * Handles user registration.
      */
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegistrationRequest request) {
-        userService.register(request.getUsername(), request.getPassword());
+
+        authService.register(request.getUsername(), request.getPassword());
         return ResponseEntity.ok("User registered");
     }
 }
-

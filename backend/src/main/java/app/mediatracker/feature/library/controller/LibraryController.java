@@ -5,7 +5,8 @@ import app.mediatracker.feature.library.dto.ManualEntryRequest;
 import app.mediatracker.feature.library.dto.LibraryEntryResponse;
 import app.mediatracker.feature.library.model.LibraryEntryStatus;
 import app.mediatracker.feature.library.service.LibraryService;
-import app.mediatracker.search.core.dto.SearchResult;
+import app.mediatracker.feature.library.service.command.ManualEntryCommand; // Neuer Import für Clean Code
+import app.mediatracker.feature.search.core.dto.SearchResult;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,8 +22,6 @@ import java.util.List;
  * REST-Controller für die persönliche Medienbibliothek.
  * <p>
  * Stellt Endpunkte zum Lesen, Anlegen/Aktualisieren und Löschen von Bibliothekseinträgen bereit.
- * Das Frontend greift über diese Endpunkte zu. In dieser Demo wird ein statischer Demo-User verwendet
- * (siehe DEMO_USER_ID); in einer echten Anwendung würde die User-ID aus dem Security-Kontext stammen.
  * </p>
  */
 @RestController
@@ -57,11 +56,7 @@ public class LibraryController {
     }
 
     /**
-     * Legt einen neuen Bibliothekseintrag an oder aktualisiert einen bestehenden für den Demo-User.
-     * <p>
-     * Medien-Basisdaten (Typ, externe ID, Titel, Bild, Quelle) werden als Snapshot direkt im Eintrag gespeichert,
-     * es gibt keine separate MediaItem-Collection mehr.
-     * </p>
+     * Legt einen neuen Bibliothekseintrag an oder aktualisiert einen bestehenden (basierend auf SearchResult).
      *
      * @param request Payload mit Status/Rating/Notizen sowie dem ausgewählten SearchResult
      * @return 200 OK mit dem gespeicherten/aktualisierten Eintrag
@@ -84,68 +79,68 @@ public class LibraryController {
     }
 
     /**
-     * Legt basierend auf Manual Entry Daten einen neuen Bibliothekseintrag (MediaItem) für den Demo-User an.
-     * <p>
-     * Zusätzlich werden (Status, Rating, Notizen) gespeichert.
-     * </p>
+     * Legt basierend auf Manual Entry Daten einen neuen Bibliothekseintrag an.
+     * Nutzt das Clean Code Command Pattern.
      *
-     * @param request Payload mit Status/Rating/Notizen sowie den anderen vom User gewählten Daten für den Manual Entry
+     * @param request Payload mit den manuellen Daten
      * @return 200 OK mit dem gespeicherten Eintrag
      */
     @PostMapping("/manualEntry")
     public ResponseEntity<LibraryEntryResponse> addManualEntry(
             @Valid @RequestBody ManualEntryRequest request
-        ) {
-            LibraryEntryResponse response = libraryService.addManualEntry(
-                DEMO_USER_ID,
-                request.getType(),
-                request.getTitle(),
-                request.getAuthor(),
-                // request.getGenre(),
-                request.getImageUrl(),
-                request.getMeta(),
-                request.getStatus(),
-                request.getRating(),
-                request.getNotes()
-            );
-        
-            return ResponseEntity.ok(response);
+    ) {
+
+        ManualEntryCommand command = ManualEntryCommand.builder()
+                .userId(DEMO_USER_ID)
+                .type(request.getType())
+                .title(request.getTitle())
+                .author(request.getAuthor())
+                .imageUrl(request.getImageUrl())
+                .meta(request.getMeta())
+                .status(request.getStatus())
+                .rating(request.getRating())
+                .notes(request.getNotes())
+                .build();
+
+        LibraryEntryResponse response = libraryService.addManualEntry(command);
+        return ResponseEntity.ok(response);
     }
-    
-   /**
+
+    /**
      * Lässt den User einen bestehenden Manual Entry bearbeiten.
-     * 
+     * Nutzt das Clean Code Command Pattern.
      *
-     * @param request Payload mit Status/Rating/Notizen sowie dem ausgewählten SearchResult
+     * @param request Payload mit den aktualisierten Daten
+     * @param entryId ID des Eintrags
      * @return 200 OK mit dem aktualisierten Eintrag
      */
     @PatchMapping("/manualEntry/{entryId}")
     public ResponseEntity<LibraryEntryResponse> updateManualEntry(
             @RequestBody ManualEntryRequest request,
             @PathVariable("entryId") String entryId
-        ) {
-            LibraryEntryResponse response = libraryService.updateManualEntry(
-                DEMO_USER_ID,
-                entryId,
-                request.getType(),
-                request.getTitle(),
-                request.getAuthor(),
-                // request.getGenre(),
-                request.getImageUrl(),
-                request.getMeta(),
-                request.getStatus(),
-                request.getRating(),
-                request.getNotes()
-            );
-        
-            return ResponseEntity.ok(response);
+    ) {
+
+        ManualEntryCommand command = ManualEntryCommand.builder()
+                .userId(DEMO_USER_ID)
+                .type(request.getType())
+                .title(request.getTitle())
+                .author(request.getAuthor())
+                .imageUrl(request.getImageUrl())
+                .meta(request.getMeta())
+                .status(request.getStatus())
+                .rating(request.getRating())
+                .notes(request.getNotes())
+                .build();
+
+        LibraryEntryResponse response = libraryService.updateManualEntry(entryId, command);
+        return ResponseEntity.ok(response);
     }
 
     /**
-     * Entfernt einen Bibliothekseintrag des Demo-Users, sofern er dem User gehört.
+     * Entfernt einen Bibliothekseintrag des Demo-Users.
      *
      * @param entryId technische ID des Eintrags (MongoDB-ID)
-     * @return 204 No Content, unabhängig davon, ob der Eintrag existierte oder nicht
+     * @return 204 No Content
      */
     @DeleteMapping("/{entryId}")
     public ResponseEntity<Void> removeEntry(

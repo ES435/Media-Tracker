@@ -30,7 +30,6 @@ public class JwtFilter extends OncePerRequestFilter {
         this.jwtService = jwtService;
     }
 
-
     /**
      * Verarbeitet die eingehende HTTP-Anfrage.
      * <p>
@@ -47,11 +46,13 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = extractJwtFromCookies(request);
-        String username = jwtService.extractUsername(token);
 
-        if (jwtService.verifyToken(token, username)) {
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
-            SecurityContextHolder.getContext().setAuthentication(authToken);
+        if (token != null) {
+            String username = jwtService.extractUsername(token);
+            if (username != null && jwtService.verifyToken(token, username)) {
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
         }
 
         filterChain.doFilter(request, response);
@@ -60,7 +61,6 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getServletPath();
-
         return path.startsWith("/auth/");
     }
 
@@ -71,7 +71,14 @@ public class JwtFilter extends OncePerRequestFilter {
      * @return Das JWT-Token oder null, wenn kein Token gefunden wurde
      */
     private String extractJwtFromCookies(HttpServletRequest request) {
-        for (Cookie cookie : request.getCookies()) {
+        Cookie[] cookies = request.getCookies();
+
+        // BUGFIX: Null-Check hinzugefügt.
+        if (cookies == null) {
+            return null;
+        }
+
+        for (Cookie cookie : cookies) {
             if ("jwt".equals(cookie.getName())) {
                 return cookie.getValue();
             }

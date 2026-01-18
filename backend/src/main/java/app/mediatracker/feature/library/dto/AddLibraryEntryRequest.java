@@ -1,6 +1,6 @@
 package app.mediatracker.feature.library.dto;
 
-import app.mediatracker.search.core.dto.SearchResult;
+import app.mediatracker.feature.search.core.dto.SearchResult;
 import app.mediatracker.feature.library.model.LibraryEntryStatus;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -20,7 +20,7 @@ public class AddLibraryEntryRequest {
      * Technischer Benutzer-Identifikator. Kann später durch Informationen
      * aus dem authentifizierten Principal ersetzt werden.
      */
-    //private String userId;  für später wenn mehrere User
+    //private String userId; für später wenn mehrere User
 
     @NotNull
     private LibraryEntryStatus status;
