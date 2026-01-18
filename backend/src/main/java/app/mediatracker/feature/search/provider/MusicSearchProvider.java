@@ -8,14 +8,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Such-Provider für Musik-Inhalte (iTunes Search API).
- *
  * Zweck: Fragt die iTunes-Schnittstelle ab und übersetzt die Ergebnisse in das
  * interne, einheitliche {@link SearchResult}-Format.
- *
  * Aktivierung: Dieser Provider wird nur aktiviert, wenn in der Konfiguration
  * die Eigenschaft "search.music.enabled=true" gesetzt ist (siehe {@link ConditionalOnProperty}).
  */
@@ -46,7 +47,6 @@ public class MusicSearchProvider implements SearchProvider {
 
     /**
      * Sucht Musiktitel über die iTunes Search API.
-     *
      * Verhalten: Parst die Antwort und bildet eine Liste normalisierter Treffer.
      * Fehler werden abgefangen; in diesem Fall wird eine leere Liste zurückgegeben.
      *

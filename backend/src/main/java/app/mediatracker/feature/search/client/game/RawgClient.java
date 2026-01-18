@@ -29,7 +29,6 @@ public class RawgClient {
                         @Value("${rawg.api-key:}") String apiKey ) {
         this.web = builder.baseUrl(baseUrl).build();
         this.apiKey = apiKey;
-    System.out.println("RAWG API KEY: " + apiKey);
     }
 
     /**
@@ -37,13 +36,13 @@ public class RawgClient {
      *
      * Hinweis: 
      *
-     * @param q Suchbegriff
+     * @param query Suchbegriff
      * @return JSON als String
      */
-    public String searchGame(String q) { //TODO: Sobal q zu query geändert wird läst sich nicht mehr nach games suchen
+    public String searchGame(String query) {
         return web.get()
                 .uri(u -> u.path("/games")
-                    .queryParam("search", q)
+                    .queryParam("search", query)
                     .queryParam("key", apiKey)
                     .build())
                 .retrieve()

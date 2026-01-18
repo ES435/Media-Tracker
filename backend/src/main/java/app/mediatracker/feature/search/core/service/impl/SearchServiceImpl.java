@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 /**
  * Implementierung des Such-Services.
- *
  * Zweck: Fragt alle registrierten {@link SearchProvider} ab, filtert optional nach Typen
  * und führt die Ergebnisse in einer Liste zusammen. Doppelte Einträge (gleiche Kombination
  * aus {@code type} und {@code id}) werden entfernt.
@@ -27,7 +26,6 @@ public class SearchServiceImpl implements SearchService {
 
     /**
      * Sucht über alle passenden Provider und kombiniert die Ergebnisse.
-     *
      * Verhalten:
      * - Wenn {@code types} leer oder {@code null} ist, werden alle Provider verwendet.
      * - Pro Provider wird mit {@code limitPerType} begrenzt.

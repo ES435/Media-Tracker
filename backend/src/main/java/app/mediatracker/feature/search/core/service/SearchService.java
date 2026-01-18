@@ -1,12 +1,12 @@
 package app.mediatracker.feature.search.core.service;
 
 import app.mediatracker.feature.search.core.dto.SearchResult;
+
 import java.util.List;
 import java.util.Set;
 
 /**
  * Zentrale Service-Schnittstelle für die Suche über mehrere Medientypen.
- *
  * Zweck: Kapselt die Logik, alle passenden Provider abzufragen und die Ergebnisse
  * in eine gemeinsame Liste zu kombinieren.
  */

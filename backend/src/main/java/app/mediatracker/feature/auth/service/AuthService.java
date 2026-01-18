@@ -1,9 +1,9 @@
 package app.mediatracker.feature.auth.service;
 
-import app.mediatracker.feature.user.model.User;
 import app.mediatracker.feature.auth.exception.InvalidPasswordException;
-import app.mediatracker.feature.user.exception.UserNotFoundException;
 import app.mediatracker.feature.auth.exception.UsernameAlreadyExists;
+import app.mediatracker.feature.user.exception.UserNotFoundException;
+import app.mediatracker.feature.user.model.User;
 import app.mediatracker.feature.user.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

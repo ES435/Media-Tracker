@@ -2,17 +2,18 @@ package app.mediatracker.feature.search.core.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotBlank;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Map;
 
 /**
  * Einfaches Ergebnisobjekt für die Suche.
- *
  * Zweck: Einheitliches, leichtgewichtiges Format für Treffer verschiedener Medientypen
  * (z. B. "anime", "movie", "book"). Das Frontend kann damit eine Liste anzeigen,
  * ohne die Quell-API kennen zu müssen.
- *
  * Hinweise:
  * - {@code type} kennzeichnet den Medientyp (muss zum Provider passen).
  * - {@code meta} bietet Platz für optionale, API-spezifische Zusatzdaten

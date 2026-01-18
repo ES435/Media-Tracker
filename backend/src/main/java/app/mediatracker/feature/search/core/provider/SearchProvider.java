@@ -1,15 +1,14 @@
 package app.mediatracker.feature.search.core.provider;
 
 import app.mediatracker.feature.search.core.dto.SearchResult;
+
 import java.util.List;
 
 /**
  * Basis-Schnittstelle für Such-Provider eines Medientyps.
- *
  * Zweck: Jeder Provider kümmert sich um genau einen Typ (z. B. "anime")
  * und weiß, wie man eine externe Quelle abfragt und die Ergebnisse
  * in unser internes Format {@link SearchResult} übersetzt.
- *
  * Erweiterbarkeit: Um einen neuen Medientyp zu unterstützen, einfach eine neue
  * Implementierung dieser Schnittstelle erstellen, als Spring-Bean annotieren
  * (z. B. mit {@code @Component}) und in {@link #getType()} den Typnamen zurückgeben.

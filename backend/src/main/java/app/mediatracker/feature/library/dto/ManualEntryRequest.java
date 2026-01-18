@@ -1,11 +1,10 @@
 package app.mediatracker.feature.library.dto;
 
-import java.util.Map;
-
 import app.mediatracker.feature.library.model.LibraryEntryStatus;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-import jakarta.validation.constraints.NotBlank;
+import java.util.Map;
 
 /**
  * Request-Payload zum Anlegen oder Aktualisieren eines Bibliothekseintrags auf Basis eines Manual Entries.

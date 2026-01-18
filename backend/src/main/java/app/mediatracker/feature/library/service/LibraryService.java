@@ -1,12 +1,12 @@
 package app.mediatracker.feature.library.service;
 
-import app.mediatracker.feature.search.core.dto.SearchResult;
 import app.mediatracker.feature.library.dto.LibraryEntryResponse;
 import app.mediatracker.feature.library.dto.MediaItemSummary;
 import app.mediatracker.feature.library.model.LibraryEntryStatus;
 import app.mediatracker.feature.library.model.UserLibraryEntry;
 import app.mediatracker.feature.library.repo.UserLibraryEntryRepository;
-import app.mediatracker.feature.library.service.command.ManualEntryCommand; // Neu importiert
+import app.mediatracker.feature.library.service.command.ManualEntryCommand;
+import app.mediatracker.feature.search.core.dto.SearchResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

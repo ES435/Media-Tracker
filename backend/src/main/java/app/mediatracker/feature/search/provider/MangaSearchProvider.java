@@ -9,14 +9,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Such-Provider für Manga-Inhalte (MangaDex API).
- *
  * Zweck: Ruft die MangaDex-API auf und übersetzt die Ergebnisse in das interne
  * {@link SearchResult}-Format.
- *
  * Aktivierung: Wird nur geladen, wenn "search.manga.enabled=true" gesetzt ist.
  */
 @Slf4j

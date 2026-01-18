@@ -45,7 +45,6 @@ public class MovieSearchProvider implements SearchProvider {
 
     /**
      * Sucht Filme über die IMDbAPI.
-     *
      * Verhalten: Parst die Antwort, extrahiert relevante Felder und liefert
      * eine normalisierte Liste. Fehler werden geloggt und führen zu einer leeren Liste.
      *

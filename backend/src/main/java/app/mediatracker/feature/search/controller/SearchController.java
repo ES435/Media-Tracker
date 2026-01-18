@@ -3,7 +3,10 @@ package app.mediatracker.feature.search.controller;
 import app.mediatracker.feature.search.core.dto.SearchResult;
 import app.mediatracker.feature.search.core.service.SearchService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +36,7 @@ public class SearchController {
      *
      * Beispiel: /api/search?q=naruto&types=anime,movie&limit=24
      *
-     * @param q     Suchbegriff (z. B. "Naruto")
+     * @param searchQuery Suchbegriff (z. B. "Naruto")
      * @param types Komma‑getrennte Liste von Typen (z. B. "anime").
      *              Leer oder nicht gesetzt = alle Provider.
      * @param limit Maximale Treffer pro Typ. Standard ist 24.

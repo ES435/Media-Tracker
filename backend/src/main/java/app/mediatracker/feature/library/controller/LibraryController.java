@@ -1,18 +1,18 @@
 package app.mediatracker.feature.library.controller;
 
 import app.mediatracker.feature.library.dto.AddLibraryEntryRequest;
-import app.mediatracker.feature.library.dto.ManualEntryRequest;
 import app.mediatracker.feature.library.dto.LibraryEntryResponse;
+import app.mediatracker.feature.library.dto.ManualEntryRequest;
 import app.mediatracker.feature.library.model.LibraryEntryStatus;
 import app.mediatracker.feature.library.service.LibraryService;
-import app.mediatracker.feature.library.service.command.ManualEntryCommand; // Neuer Import für Clean Code
+import app.mediatracker.feature.library.service.command.ManualEntryCommand;
 import app.mediatracker.feature.search.core.dto.SearchResult;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

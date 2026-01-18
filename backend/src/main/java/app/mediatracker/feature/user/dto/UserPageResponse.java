@@ -1,11 +1,12 @@
 package app.mediatracker.feature.user.dto;
-import java.util.List;
 
 import app.mediatracker.feature.library.dto.LibraryEntryResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 /**
  * API-Response für eine einzelne User-Page inklusive zugehöriger MediaItem-Daten 
  * (falls die Liste auf Public gestellt ist).

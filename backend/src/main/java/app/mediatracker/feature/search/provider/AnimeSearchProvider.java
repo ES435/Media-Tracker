@@ -9,14 +9,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Such-Provider für Anime-Inhalte (Jikan API für MyAnimeList).
- *
  * Zweck: Ruft die Jikan-API auf und übersetzt die Ergebnisse in das interne
  * {@link SearchResult}-Format, damit das Frontend sie einheitlich darstellen kann.
- *
  * Aktivierung: Wird nur geladen, wenn "search.anime.enabled=true" gesetzt ist.
  */
 @Slf4j
@@ -47,7 +48,6 @@ public class AnimeSearchProvider implements SearchProvider {
 
     /**
      * Sucht Anime über die Jikan-API.
-     *
      * Verhalten: Parst die Antwort, extrahiert relevante Felder und liefert
      * eine normalisierte Liste. Fehler werden geloggt und führen zu einer leeren Liste.
      *

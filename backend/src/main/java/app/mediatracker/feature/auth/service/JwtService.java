@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -12,14 +13,12 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    private static final String SECRET_KEY = "tempkey"; //ToDO: nicht hardcoded
-    private static final long EXPIRATION_MS = 1000 * 60 * 60 * 72;
-
     private final Algorithm algorithm;
     private final JWTVerifier verifier;
+    private static final long EXPIRATION_MS = 1000 * 60 * 60 * 72;
 
-    public JwtService() {
-        this.algorithm = Algorithm.HMAC256(SECRET_KEY);
+    public JwtService(@Value("${app.jwt.secret}") String secretKey) {
+        this.algorithm = Algorithm.HMAC256(secretKey);
         this.verifier = JWT.require(algorithm).build();
     }
 

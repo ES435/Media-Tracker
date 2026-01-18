@@ -44,7 +44,6 @@ public class SeriesSearchProvider implements SearchProvider {
 
     /**
      * Sucht Serien über die IMDbAPI.
-     *
      * Verhalten: Parst die Antwort, extrahiert relevante Felder und liefert
      * eine normalisierte Liste. Fehler werden geloggt und führen zu einer leeren Liste.
      *

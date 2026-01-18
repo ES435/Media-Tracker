@@ -9,14 +9,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Such-Provider für Buch-Inhalte (OpenLibrary API).
- *
  * Zweck: Ruft die OpenLibrary API) auf und übersetzt die Ergebnisse in das interne
  * {@link SearchResult}-Format, damit das Frontend sie einheitlich darstellen kann.
- *
  * Aktivierung: Wird nur geladen, wenn "search.book.enabled=true" gesetzt ist.
  */
 @Slf4j
@@ -44,7 +45,6 @@ public class BookSearchProvider implements SearchProvider {
 
     /**
      * Sucht Bücher über die OpenLibrary API.
-     *
      * Verhalten: Parst die Antwort, extrahiert relevante Felder und liefert
      * eine normalisierte Liste. Fehler werden geloggt und führen zu einer leeren Liste.
      *

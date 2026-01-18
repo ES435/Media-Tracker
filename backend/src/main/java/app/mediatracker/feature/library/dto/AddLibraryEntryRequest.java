@@ -1,9 +1,12 @@
 package app.mediatracker.feature.library.dto;
 
-import app.mediatracker.feature.search.core.dto.SearchResult;
 import app.mediatracker.feature.library.model.LibraryEntryStatus;
+import app.mediatracker.feature.search.core.dto.SearchResult;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 /**

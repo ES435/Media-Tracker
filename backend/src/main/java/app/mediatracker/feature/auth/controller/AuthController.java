@@ -2,7 +2,7 @@ package app.mediatracker.feature.auth.controller;
 
 import app.mediatracker.feature.auth.dto.LoginRequest;
 import app.mediatracker.feature.auth.dto.RegistrationRequest;
-import app.mediatracker.feature.auth.service.AuthService; // WICHTIG: AuthService statt UserService
+import app.mediatracker.feature.auth.service.AuthService;
 import app.mediatracker.feature.auth.service.JwtService;
 import app.mediatracker.feature.user.model.User;
 import org.springframework.http.HttpHeaders;
