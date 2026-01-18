@@ -1,9 +1,9 @@
 import { useEffect, useState, } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar.tsx";
 import UserPageContent from "../components/UserPageContent.tsx";
 import Footer from "../components/Footer.tsx";
-import type {MediaItem, MediaType, UserPageResponse} from "../components/types.ts";
+import type { UserPageResponse } from "../components/types.ts";
 
 export default function UserPage() {
     const { username } = useParams<{ username: string }>();
@@ -11,6 +11,7 @@ export default function UserPage() {
     const [mediaList, setMediaList] = useState<UserPageResponse["userMediaList"]>([]);
     const [loading, setLoading] = useState(true);
     const [query, setQuery] = useState("");
+    const navigate = useNavigate();
 
     const limit = "";
     
@@ -32,13 +33,17 @@ export default function UserPage() {
             .finally(() => setLoading(false));
     }, [username]);
 
+    const handleSearch = (query: string) => {
+        navigate("/", { state: { query } });
+    };
+
     return (
     <>
         {loading ? (
             <div>Loading...</div>
         ) : user != null ? (
             <div className="grid-container">
-                <Navbar query={query} onQueryChange={setQuery} onSearch={handleSearch} />
+                <Navbar query={query} onQueryChange={setQuery} onSearch={() => handleSearch(query)} />
 
                 <header id="header">
                 <img src={user.profilePictureUrl} alt={`${user.username}'s profile`} width={100} />
