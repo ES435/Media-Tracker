@@ -15,6 +15,7 @@ export default function UserPageContent({items, loading}: {
                     <div className="own-column">
                             <select className="sort-button" //</div>value={selectedType} onChange={(e) => onTypeChange(e.target.value as MediaType)}
                             >
+                                <option value="all">All</option>
                                 <option value="anime">Anime</option>
                                 <option value="book">Book</option>
                                 <option value="game">Game</option>

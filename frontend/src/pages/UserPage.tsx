@@ -22,6 +22,7 @@ export default function UserPage() {
         fetch(`http://localhost:8080/api/user/${encodeURIComponent(username)}`)
             .then(res => res.json())
             .then((data: UserPageResponse) => {
+                console.log("Fetched data: ", data)
                 setUser(data.user);
                 setMediaList(data.userMediaList)
         })
@@ -39,15 +40,16 @@ export default function UserPage() {
 
     return (
     <>
+    <Navbar query={query} onQueryChange={setQuery} onSearch={() => handleSearch(query)} />
         {loading ? (
             <div>Loading...</div>
         ) : user != null ? (
             <div className="grid-container">
-                <Navbar query={query} onQueryChange={setQuery} onSearch={() => handleSearch(query)} />
-
                 <header id="header">
-                <img src={user.profilePictureUrl} alt={`${user.username}'s profile`} width={100} />
-                <h1 className="title">${username}'s Media List</h1>
+                <center>
+                <img id="profile-picture" src={user.profilePictureUrl} alt={`${user.username}'s profile`} width={100} />
+                </center>
+                <h1 className="title">{username}'s Media List</h1>
                 </header>
 
             <aside id="aside">
