@@ -40,7 +40,7 @@ public class RawgClient {
      * @param q Suchbegriff
      * @return JSON als String
      */
-    public String searchGame(String q) {
+    public String searchGame(String q) { //TODO: Sobal q zu query geändert wird läst sich nicht mehr nach games suchen
         return web.get()
                 .uri(u -> u.path("/games")
                     .queryParam("search", q)

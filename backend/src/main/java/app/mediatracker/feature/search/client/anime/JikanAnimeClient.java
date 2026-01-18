@@ -33,12 +33,12 @@ public class JikanAnimeClient {
      *
      * Hinweis: Blockiert den aufrufenden Thread bis zur Antwort (vereinfachte Nutzung).
      *
-     * @param q Suchbegriff
+     * @param query Suchbegriff
      * @return JSON als String
      */
-    public String searchAnime(String q) {
+    public String searchAnime(String query) {
         return web.get()
-                .uri(u -> u.path("/anime").queryParam("q", q).build())
+                .uri(u -> u.path("/anime").queryParam("q", query).build())
                 .retrieve()
                 .bodyToMono(String.class)
                 .block(); // simpel halten

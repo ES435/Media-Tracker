@@ -14,10 +14,10 @@ public interface SearchService {
     /**
      * Sucht Inhalte über alle passenden Provider.
      *
-     * @param q            Suchbegriff
+     * @param searchQuery            Suchbegriff
      * @param types        erlaubte Typen (z. B. "anime"); null/leer = alle Typen
      * @param limitPerType maximale Trefferzahl pro Typ/Provider
      * @return kombinierte, nach Einfüge-Reihenfolge sortierte Trefferliste (duplikatbereinigt)
      */
-    List<SearchResult> search(String q, Set<String> types, int limitPerType);
+    List<SearchResult> search(String searchQuery, Set<String> types, int limitPerType);
 }

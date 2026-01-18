@@ -48,47 +48,47 @@ public class BookSearchProvider implements SearchProvider {
      * Verhalten: Parst die Antwort, extrahiert relevante Felder und liefert
      * eine normalisierte Liste. Fehler werden geloggt und führen zu einer leeren Liste.
      *
-     * @param q     Suchbegriff
+     * @param searchQuery     Suchbegriff
      * @param limit maximale Anzahl der Treffer
      * @return Liste von {@link SearchResult}
      */
     @Override
-    public List<SearchResult> search(String q, int limit) {
+    public List<SearchResult> search(String searchQuery, int limit) {
         try {
             // JSON von OpenLibrary abrufen
-            String json = client.searchBook(q, limit);
+            String json = client.searchBook(searchQuery, limit);
             JsonNode docs = mapper.readTree(json).path("docs");
 
             List<SearchResult> results = new ArrayList<>();
-            for (JsonNode n : docs) {
-                String combined = (n.path("title").asText("") + " " +
-                        n.path("subtitle").asText("") + " " +
-                        n.path("subject").toString() + " " +
-                        n.path("publisher").toString() + " " +
-                        n.path("series").toString()).toLowerCase();
+            for (JsonNode bookNode : docs) {
+                String combined = (bookNode.path("title").asText("") + " " +
+                        bookNode.path("subtitle").asText("") + " " +
+                        bookNode.path("subject").toString() + " " +
+                        bookNode.path("publisher").toString() + " " +
+                        bookNode.path("series").toString()).toLowerCase();
 
-                String id = n.path("key").asText();
-                String title = n.path("title").asText("");
+                String id = bookNode.path("key").asText();
+                String title = bookNode.path("title").asText("");
 
                 // Cover-URL
-                String img = n.has("cover_i")
-                        ? "https://covers.openlibrary.org/b/id/" + n.get("cover_i").asInt() + "-L.jpg"
+                String imageUrl = bookNode.has("cover_i")
+                        ? "https://covers.openlibrary.org/b/id/" + bookNode.get("cover_i").asInt() + "-L.jpg"
                         : "/images/default-book.png";
 
                 // URL zur Open Library-Seite
-                String url = "https://openlibrary.org" + id;
+                String sourceUrl = "https://openlibrary.org" + id;
 
                 // Meta-Infos (Autoren, Jahr)
                 Map<String, Object> meta = new HashMap<>();
-                if (n.hasNonNull("author_name")) meta.put("authors", n.get("author_name"));
-                if (n.hasNonNull("first_publish_year")) meta.put("year", n.get("first_publish_year").asInt());
+                if (bookNode.hasNonNull("author_name")) meta.put("authors", bookNode.get("author_name"));
+                if (bookNode.hasNonNull("first_publish_year")) meta.put("year", bookNode.get("first_publish_year").asInt());
 
                 results.add(SearchResult.builder()
                         .type("book")
                         .id(id)
                         .title(title)
-                        .imageUrl(img)
-                        .sourceUrl(url)
+                        .imageUrl(imageUrl)
+                        .sourceUrl(sourceUrl)
                         .meta(meta.isEmpty() ? null : meta)
                         .build());
 

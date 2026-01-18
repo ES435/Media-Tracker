@@ -34,15 +34,15 @@ public class SearchServiceImpl implements SearchService {
      * - Duplikate werden anhand von {@code type#id} entfernt (stabile Einfüge-Reihenfolge).
      */
     @Override
-    public List<SearchResult> search(String q, Set<String> types, int limitPerType) {
+    public List<SearchResult> search(String searchQuery, Set<String> types, int limitPerType) {
         // Aggregation + Duplikatbereinigung nach Schlüssel (type#id)
         Map<String, SearchResult> map = providers.stream()
-                .filter(p -> types == null || types.isEmpty() || types.contains(p.getType()))
-                .flatMap(p -> p.search(q, limitPerType).stream())
+                .filter(provider -> types == null || types.isEmpty() || types.contains(provider.getType()))
+                .flatMap(p -> p.search(searchQuery, limitPerType).stream())
                 .collect(Collectors.toMap(
-                        r -> r.getType() + "#" + r.getId(),
-                        r -> r,
-                        (a, b) -> a,
+                        result -> result.getType() + "#" + result.getId(),
+                        result -> result,
+                        (existing, replacement) -> existing,
                         LinkedHashMap::new
                 ));
         return new ArrayList<>(map.values());

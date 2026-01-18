@@ -38,31 +38,31 @@ public class MangaSearchProvider implements SearchProvider {
     }
 
     @Override
-    public List<SearchResult> search(String q, int limit) {
+    public List<SearchResult> search(String searchQuery, int limit) {
         try {
-            String json = jikan.searchManga(q);
+            String json = jikan.searchManga(searchQuery);
             JsonNode data = mapper.readTree(json).path("data");
 
             List<SearchResult> out = new ArrayList<>();
-            for (JsonNode n : data) {
-                String id    = String.valueOf(n.path("mal_id").asInt());
-                String title = n.path("title").asText("");
-                String img   = n.path("images").path("jpg").path("image_url").asText("");
-                if (img.isEmpty()) {
-                    img = n.path("images").path("webp").path("image_url").asText("");
+            for (JsonNode mangaNode : data) {
+                String id    = String.valueOf(mangaNode.path("mal_id").asInt());
+                String title = mangaNode.path("title").asText("");
+                String imageUrl   = mangaNode.path("images").path("jpg").path("image_url").asText("");
+                if (imageUrl.isEmpty()) {
+                    imageUrl = mangaNode.path("images").path("webp").path("image_url").asText("");
                 }
-                String url   = n.path("url").asText("");
+                String url   = mangaNode.path("url").asText("");
 
                 Map<String,Object> meta = new HashMap<>();
-                if (n.hasNonNull("chapters")) meta.put("chapters", n.get("chapters").asInt());
-                if (n.hasNonNull("volumes"))  meta.put("volumes",  n.get("volumes").asInt());
-                if (n.hasNonNull("year"))     meta.put("year",     n.get("year").asInt());
+                if (mangaNode.hasNonNull("chapters")) meta.put("chapters", mangaNode.get("chapters").asInt());
+                if (mangaNode.hasNonNull("volumes"))  meta.put("volumes",  mangaNode.get("volumes").asInt());
+                if (mangaNode.hasNonNull("year"))     meta.put("year",     mangaNode.get("year").asInt());
 
                 out.add(SearchResult.builder()
                         .type("manga")
                         .id(id)
                         .title(title)
-                        .imageUrl(img)
+                        .imageUrl(imageUrl)
                         .sourceUrl(url)
                         .meta(meta.isEmpty() ? null : meta)
                         .build());

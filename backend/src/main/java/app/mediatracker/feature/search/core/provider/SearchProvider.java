@@ -23,9 +23,9 @@ public interface SearchProvider {
     /**
      * Führt die Suche beim jeweiligen externen Dienst aus und liefert normalisierte Ergebnisse.
      *
-     * @param q     Suchbegriff
+     * @param searchQuery     Suchbegriff
      * @param limit maximale Anzahl der Treffer
      * @return Liste von Suchergebnissen
      */
-    List<SearchResult> search(String q, int limit);
+    List<SearchResult> search(String searchQuery, int limit);
 }

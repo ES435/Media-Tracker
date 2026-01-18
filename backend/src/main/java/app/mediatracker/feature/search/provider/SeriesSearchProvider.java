@@ -48,27 +48,27 @@ public class SeriesSearchProvider implements SearchProvider {
      * Verhalten: Parst die Antwort, extrahiert relevante Felder und liefert
      * eine normalisierte Liste. Fehler werden geloggt und führen zu einer leeren Liste.
      *
-     * @param q     Suchbegriff
+     * @param searchQuery     Suchbegriff
      * @param limit maximale Anzahl der Treffer
      * @return Liste von {@link SearchResult}
      */
     @Override
-    public List<SearchResult> search(String q, int limit) {
+    public List<SearchResult> search(String searchQuery, int limit) {
         try {
-            String json = imdb.searchMovieAndSeries(q);
+            String json = imdb.searchMovieAndSeries(searchQuery);
             JsonNode titles = mapper.readTree(json).path("titles");
 
             List<SearchResult> searchResults = new ArrayList<>();
-            for(JsonNode n : titles) {
-                if(n.path("type").asText().equals("tvSeries")) {
-                    String id    = n.path("id").asText();
-                    String title = n.path("primaryTitle").asText("");
-                    String img   = n.path("primaryImage").path("url").asText("");
+            for(JsonNode seriesNode : titles) {
+                if(seriesNode.path("type").asText().equals("tvSeries")) {
+                    String id    = seriesNode.path("id").asText();
+                    String title = seriesNode.path("primaryTitle").asText("");
+                    String img   = seriesNode.path("primaryImage").path("url").asText("");
                     String url   = "https://www.imdb.com/title/" + id;
 
                     // optionale Extras in meta
                     Map<String,Object> meta = new HashMap<>();
-                    if (n.hasNonNull("startYear")) meta.put("year", n.get("startYear").asInt());
+                    if (seriesNode.hasNonNull("startYear")) meta.put("year", seriesNode.get("startYear").asInt());
 
                     searchResults.add(SearchResult.builder()
                             .type("series")

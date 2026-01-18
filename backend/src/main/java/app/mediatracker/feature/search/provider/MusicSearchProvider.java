@@ -50,31 +50,34 @@ public class MusicSearchProvider implements SearchProvider {
      * Verhalten: Parst die Antwort und bildet eine Liste normalisierter Treffer.
      * Fehler werden abgefangen; in diesem Fall wird eine leere Liste zurückgegeben.
      *
-     * @param q     Suchbegriff (z. B. Künstlerin, Songtitel)
+     * @param searchQuery     Suchbegriff (z. B. Künstlerin, Songtitel)
      * @param limit maximale Anzahl von Treffern
      * @return Liste von {@link SearchResult}
      */
     @Override
-    public List<SearchResult> search(String q, int limit) {
+    public List<SearchResult> search(String searchQuery, int limit) {
         try {
-            String json = itunes.searchTracks(q, limit);
+            String json = itunes.searchTracks(searchQuery, limit);
             JsonNode results = mapper.readTree(json).path("results");
 
             List<SearchResult> out = new ArrayList<>();
-            for (JsonNode n : results) {
-                String id     = n.path("trackId").asText("");
-                String title  = n.path("trackName").asText("");
-                String artist = n.path("artistName").asText("");
-                String art    = n.path("artworkUrl100").asText("");
-                String src    = n.path("trackViewUrl").asText("");
+            for (JsonNode musicNode : results) {
+                String id     = musicNode.path("trackId").asText("");
+                String title  = musicNode.path("trackName").asText("");
+                String artist = musicNode.path("artistName").asText("");
+                String imageUrl    = musicNode.path("artworkUrl100").asText("");
+                String sourceUrl    = musicNode.path("trackViewUrl").asText("");
 
                 Map<String,Object> meta = new HashMap<>();
                 if (!artist.isEmpty()) meta.put("artist", artist);
-                if (n.hasNonNull("collectionName")) meta.put("album", n.get("collectionName").asText());
-                if (n.hasNonNull("previewUrl"))     meta.put("previewUrl", n.get("previewUrl").asText());
+                if (musicNode.hasNonNull("collectionName")) meta.put("album", musicNode.get("collectionName").asText());
+                if (musicNode.hasNonNull("previewUrl"))     meta.put("previewUrl", musicNode.get("previewUrl").asText());
 
                 out.add(SearchResult.builder()
-                        .type("music").id(id).title(title).imageUrl(art).sourceUrl(src)
+                        .type("music").id(id)
+                        .title(title)
+                        .imageUrl(imageUrl)
+                        .sourceUrl(sourceUrl)
                         .meta(meta.isEmpty() ? null : meta)
                         .build());
 

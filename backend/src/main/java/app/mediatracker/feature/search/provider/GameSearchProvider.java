@@ -12,11 +12,10 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 /**
- * Such-Provider für Game-Inhalte (Rawg API).
- *
+ * Such-Provider für Game-Inhalte (Rawg API).*
  * Zweck: Ruft die Rawg-API auf und übersetzt die Ergebnisse in das interne
  * {@link SearchResult}-Format, damit das Frontend sie einheitlich darstellen kann.
- *
+
  * Aktivierung: Wird nur geladen, wenn "search.game.enabled=true" gesetzt ist.
  */
 @Slf4j
@@ -30,7 +29,6 @@ public class GameSearchProvider implements SearchProvider {
     /**
      * Konstruktor mit Abhängigkeiten.
      *
-     * @param jikan  HTTP-Client für die Jikan-API
      * @param mapper Jackson-Mapper zum Parsen der JSON-Antworten
      */
     public GameSearchProvider(RawgClient rawg, ObjectMapper mapper) {
@@ -46,37 +44,36 @@ public class GameSearchProvider implements SearchProvider {
     @Override public String getType() { return "game"; }
 
     /**
-     * Sucht Games über die Rawg-API.
-     *
+     * Sucht Games über die Rawg-API.*
      * Verhalten: Parst die Antwort, extrahiert relevante Felder und liefert
      * eine normalisierte Liste. Fehler werden geloggt und führen zu einer leeren Liste.
      *
-     * @param q     Suchbegriff
+     * @param searchQuery     Suchbegriff
      * @param limit maximale Anzahl der Treffer
      * @return Liste von {@link SearchResult}
      */
     @Override
-    public List<SearchResult> search(String q, int limit) {
+    public List<SearchResult> search(String searchQuery, int limit) {
         try {
-            String json = rawg.searchGame(q);
+            String json = rawg.searchGame(searchQuery);
             JsonNode results = mapper.readTree(json).path("results");
 
             List<SearchResult> out = new ArrayList<>();
-            for (JsonNode n : results) {
-                String id    = String.valueOf(n.path("id").asInt());
-                String title = n.path("name").asText("");
-                String img   = n.path("background_image").asText("");
+            for (JsonNode gameNode : results) {
+                String id    = String.valueOf(gameNode.path("id").asInt());
+                String title = gameNode.path("name").asText("");
+                String imageUrl   = gameNode.path("background_image").asText("");
 
                 // optionale Extras in meta
                 Map<String,Object> meta = new HashMap<>();
-                if (n.hasNonNull("platforms")) meta.put("platforms", n.get("platforms"));
-                if (n.hasNonNull("released"))     meta.put("released", n.get("released"));
+                if (gameNode.hasNonNull("platforms")) meta.put("platforms", gameNode.get("platforms"));
+                if (gameNode.hasNonNull("released"))     meta.put("released", gameNode.get("released"));
 
                 out.add(SearchResult.builder()
                         .type("game")
                         .id(id)
                         .title(title)
-                        .imageUrl(img)
+                        .imageUrl(imageUrl)
                         .meta(meta.isEmpty() ? null : meta)
                         .build());
 

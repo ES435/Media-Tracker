@@ -41,7 +41,7 @@ public class SearchController {
      */
     @GetMapping
     public ResponseEntity<List<SearchResult>> search(
-            @RequestParam String q,
+            @RequestParam("q") String searchQuery,
             @RequestParam(required = false, defaultValue = "") String types,
             @RequestParam(required = false, defaultValue = "24") int limit) {
 
@@ -49,6 +49,6 @@ public class SearchController {
                 .map(String::trim).filter(s -> !s.isEmpty())
                 .collect(Collectors.toSet());
 
-        return ResponseEntity.ok(searchService.search(q, typeSet, limit));
+        return ResponseEntity.ok(searchService.search(searchQuery, typeSet, limit));
     }
 }
