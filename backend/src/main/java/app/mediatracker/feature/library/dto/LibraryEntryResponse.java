@@ -8,6 +8,11 @@ import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 
+import org.bson.types.ObjectId;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 /**
  * API-Response für einen einzelnen Bibliothekseintrag inklusive zugehöriger MediaItem-Daten.
  * <p>
@@ -22,7 +27,8 @@ import java.time.Instant;
 public class LibraryEntryResponse {
 
     private String id;
-    private String userId;
+    @JsonSerialize(using = ToStringSerializer.class)
+    private ObjectId userId;
     private LibraryEntryStatus status;
     private Integer rating;
     private String notes;

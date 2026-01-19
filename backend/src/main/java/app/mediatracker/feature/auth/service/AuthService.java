@@ -63,13 +63,13 @@ public class AuthService {
 
     /**
      * Hilfsmethode zum Erstellen einer neuen User-Instanz.
-     * Setzt Standardwerte (z.B. publicList = false).
+     * Setzt Standardwerte (z.B. publicList = true).
      */
     private User createNewUser(String username, String passwordHash) {
         return User.builder()
                 .username(username)
                 .passwordHash(passwordHash)
-                .publicList(false)
+                .publicList(true)
                 .build();
     }
 }

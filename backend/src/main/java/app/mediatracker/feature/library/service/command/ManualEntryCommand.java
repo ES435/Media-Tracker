@@ -6,10 +6,12 @@ import lombok.Data;
 
 import java.util.Map;
 
+import org.bson.types.ObjectId;
+
 @Data
 @Builder
 public class ManualEntryCommand {
-    private String userId;
+    private ObjectId userId;
     private String type;
     private String title;
     private String author;

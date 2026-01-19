@@ -8,6 +8,8 @@ import app.mediatracker.feature.library.repo.UserLibraryEntryRepository;
 import app.mediatracker.feature.library.service.command.ManualEntryCommand;
 import app.mediatracker.feature.search.core.dto.SearchResult;
 import lombok.RequiredArgsConstructor;
+
+import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -24,19 +26,19 @@ public class LibraryService {
 
     private final UserLibraryEntryRepository userLibraryEntryRepository;
 
-    public List<LibraryEntryResponse> getLibraryForUser(String userId) {
+    public List<LibraryEntryResponse> getLibraryForUser(ObjectId userId) {
         List<UserLibraryEntry> entries = userLibraryEntryRepository.findByUserId(userId);
         return entries.stream().map(this::toResponse).toList();
     }
 
-    public Page<LibraryEntryResponse> getLibraryForUser(String userId, Pageable pageable) {
+    public Page<LibraryEntryResponse> getLibraryForUser(ObjectId userId, Pageable pageable) {
         Page<UserLibraryEntry> page = userLibraryEntryRepository.findByUserId(userId, pageable);
         List<LibraryEntryResponse> content = page.getContent().stream().map(this::toResponse).toList();
         return new PageImpl<>(content, pageable, page.getTotalElements());
     }
 
     public LibraryEntryResponse addOrUpdateEntryFromSearchResult(
-            String userId,
+            ObjectId userId,
             SearchResult searchResult,
             LibraryEntryStatus status,
             Integer rating,
@@ -96,7 +98,7 @@ public class LibraryService {
         return toResponse(userLibraryEntryRepository.save(entry));
     }
 
-    public void removeEntry(String userId, String entryId) {
+    public void removeEntry(ObjectId userId, String entryId) {
         userLibraryEntryRepository.findById(entryId).ifPresent(entry -> {
             if (userId.equals(entry.getUserId())) {
                 userLibraryEntryRepository.delete(entry);
@@ -112,7 +114,7 @@ public class LibraryService {
         if (notes != null) entry.setNotes(notes);
     }
 
-    private UserLibraryEntry newUserLibraryEntry(String userId, SearchResult searchResult) {
+    private UserLibraryEntry newUserLibraryEntry(ObjectId userId, SearchResult searchResult) {
         return UserLibraryEntry.builder()
                 .userId(userId)
                 .mediaType(searchResult.getType())

@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -11,6 +13,9 @@ import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 import java.time.Instant;
 import java.util.Map;
@@ -42,7 +47,8 @@ public class UserLibraryEntry {
      * Technischer Benutzer-Identifikator (z. B. Subject aus einem JWT).
      */
     @Indexed(name = "idx_userId")
-    private String userId;
+    @JsonSerialize(using = ToStringSerializer.class)
+    private ObjectId userId;
 
     // Medien-Snapshot Felder (kein separates MediaItem mehr nötig)
     private String mediaType;   // z. B. "anime", "movie", "book", "music"

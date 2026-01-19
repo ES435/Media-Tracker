@@ -1,6 +1,6 @@
 [
   {
-    "userId": "alice",
+    "userId": "696e650665af296c614562e5",
     "mediaType": "anime",
     "externalId": "an1",
     "title": "Attack on Titan",
@@ -15,7 +15,7 @@
     "updatedAt": "2024-01-10T10:00:00Z"
   },
   {
-    "userId": "alice",
+    "userId": "696e650665af296c614562e5",
     "mediaType": "movie",
     "externalId": "mv1",
     "title": "Inception",
@@ -30,7 +30,7 @@
     "updatedAt": "2024-01-11T10:00:00Z"
   },
   {
-    "userId": "alice",
+    "userId": "696e650665af296c614562e5",
     "mediaType": "book",
     "externalId": "bk1",
     "title": "1984",
@@ -45,7 +45,7 @@
     "updatedAt": "2024-01-12T10:00:00Z"
   },
   {
-    "userId": "alice",
+    "userId": "696e650665af296c614562e5",
     "mediaType": "music",
     "externalId": "ms1",
     "title": "Random Access Memories",
@@ -60,7 +60,7 @@
     "updatedAt": "2024-01-13T10:00:00Z"
   },
   {
-    "userId": "alice",
+    "userId": "696e650665af296c614562e5",
     "mediaType": "game",
     "externalId": "gm1",
     "title": "The Legend of Zelda: Breath of the Wild",
@@ -75,7 +75,7 @@
     "updatedAt": "2024-01-14T10:00:00Z"
   },
   {
-    "userId": "carol",
+    "userId": "696e650665af296c614562e5",
     "mediaType": "book",
     "externalId": "bk2",
     "title": "To Kill a Mockingbird",
@@ -90,7 +90,7 @@
     "updatedAt": "2024-01-15T10:00:00Z"
   },
   {
-    "userId": "dave",
+    "userId": "696e650665af296c614562e5",
     "mediaType": "movie",
     "externalId": "mv2",
     "title": "The Matrix",

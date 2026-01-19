@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.bson.types.ObjectId;
 
 import java.util.List;
 
@@ -29,7 +30,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LibraryController {
 
-    private static final String DEMO_USER_ID = "user_x";
+    private static final ObjectId DEMO_USER_ID = new ObjectId("696e49f2b5499b42914e8996");
 
     private final LibraryService libraryService;
 
