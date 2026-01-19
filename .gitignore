@@ -13,3 +13,4 @@ node_modules/
 
 # Docker
 *.env
+db/
