@@ -10,6 +10,28 @@ export type MediaItem = {
     };
 };
 
+export type User = {
+    username: string;
+    profilePictureUrl: string;
+    publicList: boolean;
+};
+
+export type UserMedia = {
+    id: string;
+    userId: string;
+    status: string;
+    rating: number;
+    notes: string;
+    createdAt: string;
+    updatedAt: string;
+    mediaItem: MediaItem;
+};
+
+export type UserPageResponse = {
+    user: User;
+    userMediaList: UserMedia[];
+};
+
 export type MediaType =
     | "anime"
     | "book"
