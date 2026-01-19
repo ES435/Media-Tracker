@@ -1,19 +1,24 @@
 import { useNavigate } from "react-router-dom";
-import type {FormEvent} from "react";
+import {type FormEvent, useState} from "react";
 
 export default function LoginPage() {
-    const navigate = useNavigate(); // Hook für die Navigation
+    const navigate = useNavigate();
+    const [error, setError] = useState<string | null>(null);
 
     async function handleSubmit(event:FormEvent<HTMLFormElement>) {
         event.preventDefault();
+        setError(null)
 
         const formData = new FormData(event.currentTarget);
         const username = formData.get("username") as string;
         const password = formData.get("password") as string;
 
-        login(username, password)
-            .then(() => navigate("/main"))
-            .catch(() => alert("Login fehlgeschlagen!"));
+        try {
+            await login(username, password)
+            navigate("/main")
+        } catch (err) {
+            setError("Falscher Benutzername oder Passwort.")
+        }
     }
 
     return (
@@ -26,6 +31,7 @@ export default function LoginPage() {
                 <div className="input-box">
                     <input name="password" type="password" placeholder="Password" required/>
                 </div>
+                {error && <div className="error-message">Benutzername oder Passwort falsch!</div>}
                 <button type="submit" className="btn">Login</button>
                 <div className="register-link">
                     <p>Don't have an account? <a href="#">Register</a></p>
