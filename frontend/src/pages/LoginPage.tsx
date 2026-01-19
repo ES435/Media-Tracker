@@ -31,7 +31,7 @@ export default function LoginPage() {
                 <div className="input-box">
                     <input name="password" type="password" placeholder="Password" required/>
                 </div>
-                {error && <div className="error-message">Benutzername oder Passwort falsch!</div>}
+                {error && <div className="error-message">{error}</div>}
                 <button type="submit" className="btn">Login</button>
                 <div className="register-link">
                     <p>Don't have an account? <a href="#">Register</a></p>
