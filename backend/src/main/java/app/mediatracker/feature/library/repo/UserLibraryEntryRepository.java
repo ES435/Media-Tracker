@@ -1,6 +1,8 @@
 package app.mediatracker.feature.library.repo;
 
 import app.mediatracker.feature.library.model.UserLibraryEntry;
+
+import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -17,9 +19,9 @@ import java.util.Optional;
  */
 public interface UserLibraryEntryRepository extends MongoRepository<UserLibraryEntry, String> {
 
-    List<UserLibraryEntry> findByUserId(String userId);
+    List<UserLibraryEntry> findByUserId(ObjectId userId);
 
-    Page<UserLibraryEntry> findByUserId(String userId, Pageable pageable);
+    Page<UserLibraryEntry> findByUserId(ObjectId userId, Pageable pageable);
 
-    Optional<UserLibraryEntry> findByUserIdAndMediaTypeAndExternalId(String userId, String mediaType, String externalId);
+    Optional<UserLibraryEntry> findByUserIdAndMediaTypeAndExternalId(ObjectId userId, String mediaType, String externalId);
 }

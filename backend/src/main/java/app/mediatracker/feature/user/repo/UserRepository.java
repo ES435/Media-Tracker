@@ -1,6 +1,8 @@
 package app.mediatracker.feature.user.repo;
 
 import app.mediatracker.feature.user.model.User;
+
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
@@ -14,7 +16,7 @@ import java.util.Optional;
  * daher können Anmeldungen und Registrierungen zuverlässig über den Namen erfolgen.
  * </p>
  */
-public interface UserRepository extends MongoRepository<User, String> {
+public interface UserRepository extends MongoRepository<User, ObjectId> {
     /**
      * Findet einen Benutzer anhand seines eindeutigen <code>name</code>.
      *

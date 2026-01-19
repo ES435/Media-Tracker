@@ -11,6 +11,8 @@ import app.mediatracker.feature.user.exception.UserNotFoundException;
 import app.mediatracker.feature.user.model.User;
 import app.mediatracker.feature.user.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
+
+import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -54,7 +56,9 @@ public class UserService {
 
         List<LibraryEntryResponse> userMediaList;
         if(Boolean.TRUE.equals(user.getPublicList())) { // Null-Safe check
+            System.out.println(user.getId());
             List<UserLibraryEntry> userLibrary = userLibraryEntryRepository.findByUserId(user.getId());
+            System.out.println(userLibrary);
             userMediaList = userLibrary.stream()
                     .map(this::toLibraryEntryResponse)
                     .toList();
