@@ -19,7 +19,9 @@ export default function MainPage() {
 
             const url = `http://localhost:8080/api/search?q=${encodeURIComponent(q)}&types=${encodeURIComponent(type)}&limit=${encodeURIComponent(limit)}`;
 
-            const res = await fetch(url);
+            const res = await fetch(url, {
+                credentials:"include"
+            });
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
             const data: MediaItem[] = await res.json();
