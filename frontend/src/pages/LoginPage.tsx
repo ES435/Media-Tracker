@@ -17,7 +17,7 @@ export default function LoginPage() {
             await login(username, password)
             navigate("/main")
         } catch (err) {
-            setError("Falscher Benutzername oder Passwort.")
+            setError("Incorrect email address or password")
         }
     }
 
@@ -34,7 +34,7 @@ export default function LoginPage() {
                 {error && <div className="error-message">{error}</div>}
                 <button type="submit" className="btn">Login</button>
                 <div className="register-link">
-                    <p>Don't have an account? <a href="#">Register</a></p>
+                    <p>Don't have an account? <a href="/register">Register</a></p>
                 </div>
             </form>
         </div>
