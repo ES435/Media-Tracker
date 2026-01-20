@@ -1,6 +1,9 @@
 package app.mediatracker.db.controller;
 
 import app.mediatracker.db.domain.User;
+import app.mediatracker.db.domain.exception.InvalidPasswordException;
+import app.mediatracker.db.domain.exception.UserNotFoundException;
+import app.mediatracker.db.domain.exception.UsernameAlreadyExists;
 import app.mediatracker.db.dto.JwtResponse;
 import app.mediatracker.db.dto.LoginRequest;
 import app.mediatracker.db.dto.RegistrationRequest;
@@ -11,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.security.auth.login.LoginException;
 
 import static org.springframework.http.HttpHeaders.*;
 
@@ -37,22 +42,26 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<Void> login(@RequestBody LoginRequest loginRequest) {
 
-        User user = userService.login(loginRequest.getUsername(), loginRequest.getPassword());
+        try {
+            User user = userService.login(loginRequest.getUsername(), loginRequest.getPassword());
+            String token = jwtService.generateToken(user.getUsername());
 
-        String token = jwtService.generateToken(user.getUsername());
+            ResponseCookie cookie = ResponseCookie.from("jwt", token)
+                    .httpOnly(true)
+                    .secure(false)
+                    .path("/")
+                    .sameSite("Strict")
+                    .maxAge(60 * 60 * 72)
+                    .build();
 
-        ResponseCookie cookie = ResponseCookie.from("jwt", token)
-                .httpOnly(true)
-                .secure(false)
-                .path("/")
-                .sameSite("Strict")
-                .maxAge(60 * 60 * 72)
-                .build();
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(SET_COOKIE, cookie.toString()); //ToDo: Session Cookie
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(SET_COOKIE, cookie.toString());
+            return new ResponseEntity<>(headers, HttpStatus.OK);
+        } catch (InvalidPasswordException | UserNotFoundException exception ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
-        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
     /**
@@ -64,8 +73,12 @@ public class AuthController {
      */
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegistrationRequest request) {
-        userService.register(request.getUsername(), request.getPassword());
-        return ResponseEntity.ok("User registered");
+        try {
+            userService.register(request.getUsername(), request.getPassword());
+            return ResponseEntity.ok("User registered");
+        }catch (UsernameAlreadyExists exception) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 }
 

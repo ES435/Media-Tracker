@@ -18,7 +18,8 @@ export default function RegisterPage() {
             await register(username, password, passwordrep)
             navigate("/login")
         } catch (err) {
-            setError("Fehler")
+            // @ts-ignore
+            setError(err.message)
         }
     }
 
@@ -61,6 +62,9 @@ async function register(username: string, password: string, passwordrep: string)
     })
 
     if (!response.ok) {
+        if(response.status === 401) {
+            throw new Error("Username already taken.")
+        }
         throw new Error("HTTP Error " + response.status);
     }
 }

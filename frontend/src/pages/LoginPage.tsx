@@ -17,7 +17,8 @@ export default function LoginPage() {
             await login(username, password)
             navigate("/main")
         } catch (err) {
-            setError("Incorrect email address or password")
+            // @ts-ignore
+            setError(err.message)
         }
     }
 
@@ -54,6 +55,10 @@ async function login(username: string, password: string) {
     });
 
     if (!response.ok) {
+        if(response.status === 401) {
+            throw new Error("Incorrect email address or password")
+        }
+
         throw new Error("HTTP Error " + response.status);
     }
 
