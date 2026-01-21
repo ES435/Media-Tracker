@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar.tsx";
 import Content from "../components/Content.tsx";
 import Footer from "../components/Footer.tsx";
 import type {MediaItem, MediaType} from "../components/types.ts";
+import {useNavigate} from "react-router-dom";
 
 
 export default function MainPage() {
@@ -13,14 +14,23 @@ export default function MainPage() {
 
     const limit = "";
 
+    const navigate = useNavigate();
+
     async function search(q: string, type: MediaType) {
         try {
             setLoading(true);
 
             const url = `http://localhost:8080/api/search?q=${encodeURIComponent(q)}&types=${encodeURIComponent(type)}&limit=${encodeURIComponent(limit)}`;
 
-            const res = await fetch(url);
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const res = await fetch(url, {
+                credentials:"include"
+            });
+            if (!res.ok) {
+                if (res.status === 401 || res.status === 403) {
+                    navigate("/login")
+                }
+                throw new Error(`HTTP ${res.status}`);
+            }
 
             const data: MediaItem[] = await res.json();
             setItems(data);
