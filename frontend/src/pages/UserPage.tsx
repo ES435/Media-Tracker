@@ -40,7 +40,7 @@ export default function UserPage() {
 
     return (
     <>
-    <Navbar query={query} onQueryChange={setQuery} onSearch={() => handleSearch(query)} />
+    <Navbar query={query} onQueryChange={setQuery} onSearch={() => handleSearch(query)} showFilter={false} />
         {loading ? (
             <div>Loading...</div>
         ) : user != null ? (
@@ -58,15 +58,12 @@ export default function UserPage() {
                 <button className="friend-button">Option 2</button>
                 <button className="friend-button">Option 3</button>
             </aside>
-
-            <main>
-                <UserPageContent
-                    items={mediaList}
-                    loading={loading}
-                    //selectedType={selectedType}
-                    //onTypeChange={handleTypeChange}
-                />
-            </main>
+            <UserPageContent
+                items={mediaList}
+                loading={loading}
+                //selectedType={selectedType}
+                //onTypeChange={handleTypeChange}
+            />
             
             <Footer />
             </div>
