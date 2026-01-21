@@ -2,8 +2,10 @@ package app.mediatracker.feature.auth.controller;
 
 import app.mediatracker.feature.auth.dto.LoginRequest;
 import app.mediatracker.feature.auth.dto.RegistrationRequest;
+import app.mediatracker.feature.auth.exception.InvalidPasswordException;
 import app.mediatracker.feature.auth.service.AuthService;
 import app.mediatracker.feature.auth.service.JwtService;
+import app.mediatracker.feature.user.exception.UserNotFoundException;
 import app.mediatracker.feature.user.model.User;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -34,22 +36,26 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<Void> login(@RequestBody LoginRequest loginRequest) {
 
-        User user = authService.login(loginRequest.getUsername(), loginRequest.getPassword());
+        try {
+            User user = authService.login(loginRequest.getUsername(), loginRequest.getPassword());
 
-        String token = jwtService.generateToken(user.getUsername());
+            String token = jwtService.generateToken(user.getUsername());
 
-        ResponseCookie cookie = ResponseCookie.from("jwt", token)
-                .httpOnly(true)
-                .secure(false)
-                .path("/")
-                .sameSite("Strict")
-                .maxAge(60 * 60 * 72)
-                .build();
+            ResponseCookie cookie = ResponseCookie.from("jwt", token)
+                    .httpOnly(true)
+                    .secure(false)
+                    .path("/")
+                    .sameSite("Strict")
+                    .maxAge(60 * 60 * 72)
+                    .build();
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(SET_COOKIE, cookie.toString());
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(SET_COOKIE, cookie.toString());
 
-        return new ResponseEntity<>(headers, HttpStatus.OK);
+            return new ResponseEntity<>(headers, HttpStatus.OK);
+        } catch (InvalidPasswordException | UserNotFoundException exception) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
     /**
