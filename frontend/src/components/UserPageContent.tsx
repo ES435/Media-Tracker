@@ -12,7 +12,7 @@ export default function UserPageContent({items, loading}: {
         return (
             <main id="content">
                 <div className="media-grid">
-                    <div className="own-column">
+                    <div className="sort-options">
                             <select className="sort-button" //</div>value={selectedType} onChange={(e) => onTypeChange(e.target.value as MediaType)}
                             >
                                 <option value="all">All</option>
@@ -26,7 +26,7 @@ export default function UserPageContent({items, loading}: {
                                 <option value="manual-entry">Manual Entry</option>
                             </select>
 
-                            <select className="sort-button">
+                            <select className="sort-button" id="right-sort-button">
                                 <option selected>Completed</option>
                                 <option>In Progress</option>
                                 <option>Completed</option>

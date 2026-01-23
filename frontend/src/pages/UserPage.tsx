@@ -40,15 +40,17 @@ export default function UserPage() {
 
     return (
     <>
-    <div id="user-page-navbar"><Navbar query={query} onQueryChange={setQuery} onSearch={() => handleSearch(query)} showFilter={false} /></div>
         {loading ? (
             <div>Loading...</div>
         ) : user != null ? (
             <div className="grid-container">
                 <header id="header">
-                <center id="profile-pic-wrapper">
-                <img id="profile-picture" src={user.profilePictureUrl} alt={`${user.username}'s profile`} width={100} />
-                </center>
+                <div id="user-page-navbar">
+                    <Navbar query={query} onQueryChange={setQuery} onSearch={() => handleSearch(query)} showFilter={false} />
+                </div>
+                <div id="profile-pic-wrapper">
+                    <img id="profile-picture" src={user.profilePictureUrl} alt={`${user.username}'s profile`} />
+                </div>
                 <h1 className="title">{username}'s Media List</h1>
                 </header>
 

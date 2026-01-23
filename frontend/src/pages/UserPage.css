@@ -1,17 +1,34 @@
-.profile-pic-wrapper { 
+#profile-pic-wrapper { 
     width: 150px;
     height: 150px;
-    border-radius: 100%; 
+    border-radius: 50%; 
     overflow: hidden; 
     display: flex; 
     align-items: center; 
     justify-content: center; 
 } 
 
-.profile-picture { 
+#profile-picture { 
     width: 100%; 
     height: 100%; 
     object-fit: cover; 
+}
+
+#header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.search {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    width: 130%; 
+    display: flex; 
 }
 
 .add-friend-button{
@@ -29,4 +46,26 @@
 .user-page-navbar{
     align-items: center; 
     justify-content: center; 
+}
+
+.sort-options{
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    padding-bottom: 30px;
+    padding-right: 0px;
+   
+}
+
+.sort-button{
+    color: white;
+    padding: 8px;
+    width: 160px;
+    margin-right: 50px;
+    border-radius: 13px;
+    background: var(--background);
+    outline: none;
+    border: none;
+    font-size: 18px;
+    font-family: var(--font-mono);
 }
