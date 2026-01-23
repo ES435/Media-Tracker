@@ -13,9 +13,10 @@ export default function LoginPage() {
         const formData = new FormData(event.currentTarget);
         const username = formData.get("username") as string;
         const password = formData.get("password") as string;
+        const isRememberMe = formData.get("remember-me") === "on";
 
         try {
-            await login(username, password)
+            await login(username, password, isRememberMe)
             navigate("/main")
         } catch (err) {
             // @ts-ignore
@@ -34,6 +35,10 @@ export default function LoginPage() {
                     <input name="password" type="password" placeholder="Password" required/>
                 </div>
                 {error && <div className="error-message">{error}</div>}
+                <label>
+                    <input type="checkbox" id="remember-me" name="remember-me" />
+                    Remember Me
+                </label>
                 <button type="submit" className="btn">Login</button>
                 <div className="register-link">
                     <p>Don't have an account? <a href="/register">Register</a></p>

@@ -53,8 +53,10 @@ public class AuthController {
             String accessToken = tokenService.generateAccessToken(user.getId(), user.getUsername());
             String refreshToken = refreshTokenService.createAndStore(user.getId());
 
+            int refreshMaxAge = loginRequest.getRememberMe() ? 60 * 60 * 24 * 14 : -1;
+
             response.addCookie(createCookie("accessToken", accessToken, 60 * 15)); //ToDo: ExpireDates iwo zentral konfigurieren?
-            response.addCookie(createCookie("refreshToken", refreshToken, 60 *60 * 24 * 14 ));
+            response.addCookie(createCookie("refreshToken", refreshToken, refreshMaxAge));
 
             return "Login successful.";
         } catch (InvalidPasswordException | UserNotFoundException exception) {

@@ -11,9 +11,11 @@ import lombok.Setter;
 public class LoginRequest {
     private String username;
     private String password;
+    private Boolean rememberMe;
 
-    public LoginRequest(String username, String password) {
+    public LoginRequest(String username, String password, Boolean rememberMe) {
         this.username = username;
         this.password = password;
+        this.rememberMe = rememberMe;
     }
 }
