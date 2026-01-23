@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import {type FormEvent, useState} from "react";
+import {login} from "../service/authService.ts";
 
 export default function LoginPage() {
     const navigate = useNavigate();
@@ -40,27 +41,4 @@ export default function LoginPage() {
             </form>
         </div>
     );
-}
-
-async function login(username: string, password: string) {
-    const url = "http://localhost:8080/auth/login"
-
-    const response = await fetch(url, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-            'content-type': 'application/json'
-        },
-        body: JSON.stringify({username, password})
-    });
-
-    if (!response.ok) {
-        if(response.status === 401) {
-            throw new Error("Incorrect email address or password")
-        }
-
-        throw new Error("HTTP Error " + response.status);
-    }
-
-    return true;
 }

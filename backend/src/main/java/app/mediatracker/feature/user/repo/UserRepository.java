@@ -34,4 +34,5 @@ public interface UserRepository extends MongoRepository<User, ObjectId> {
     List<User> findByUsernameContainingIgnoreCase(String namePart);
 
     boolean existsByUsername(String username);
+    Optional<User> findUserById(ObjectId userId);
 }

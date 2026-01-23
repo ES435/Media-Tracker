@@ -33,6 +33,8 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .formLogin(login -> login.disable())
+                .httpBasic(basic -> basic.disable())
                 .authorizeHttpRequests(auth -> auth
                         // 1. Authentifizierung (Login/Register) muss immer offen sein
                         .requestMatchers("/auth/**").permitAll()
