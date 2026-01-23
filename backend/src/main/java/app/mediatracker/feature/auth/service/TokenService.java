@@ -5,52 +5,64 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import org.bson.codecs.ObjectIdGenerator;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
 @Service
-public class JwtService {
+public class TokenService {
 
     private final Algorithm algorithm;
     private final JWTVerifier verifier;
-    private static final long EXPIRATION_MS = 1000 * 60 * 60 * 72;
+    private final long accessExpiryMs = 1000 * 60 * 15;
+    private final long refreshExpiryMs = 1000 * 60 * 60 * 24 * 14;
 
-    public JwtService(@Value("${app.jwt.secret}") String secretKey) {
+    public TokenService(@Value("${app.jwt.secret}") String secretKey) {
         this.algorithm = Algorithm.HMAC256(secretKey);
         this.verifier = JWT.require(algorithm).build();
     }
 
     /**
-     * Generiert einen JWT für den angegebenen username
+     * Generiert einen AccessToken für den angegebenen username
      * @param username Benutzername
+     * @param userId Besitzer des Tokens
      * @return JWT-Token als String
      */
-    public String generateToken(String username) {
-        Date now = new Date();
-        Date expiresAt = new Date(now.getTime() + EXPIRATION_MS);
-
+    public String generateAccessToken(ObjectId userId, String username) {
         return JWT.create()
-                .withSubject(username)
-                .withExpiresAt(expiresAt)
+                .withSubject(userId.toString())
+                .withClaim("username", username)
+                .withExpiresAt(new Date(System.currentTimeMillis() + accessExpiryMs))
                 .sign(algorithm);
     }
+
+    /**
+     * Generiert einen RefreshToken für die userId
+     * @param userId Besitzer des Tokens
+     * @return JWT-Token als String
+     */
+    public String generateRefreshToken(ObjectId userId) {
+        return JWT.create()
+                .withSubject(userId.toString())
+                .withExpiresAt(new Date(System.currentTimeMillis() + refreshExpiryMs))
+                .sign(algorithm);
+    }
+
 
     /**
      * Validiert den Token und prüft, ober er für den angegebenen Benutzer gilt.
      *
      * @param token JWT-Token
-     * @param username Benutzername
      * @return true, wenn Token gültig für den Benutzer ist
      */
-    public boolean verifyToken(String token, String username) {
-        try {
-            DecodedJWT decodedJWT = verifier.verify(token);
-            return decodedJWT.getSubject().equals(username) && !isTokenExpired(decodedJWT);
-        } catch (JWTVerificationException e) {
-            return false;
-        }
+    public String verifyTokenAndGetUserId(String token) {
+        return JWT.require(algorithm)
+                .build()
+                .verify(token)
+                .getSubject();
     }
 
     /**
@@ -65,14 +77,5 @@ public class JwtService {
         } catch (JWTVerificationException e) {
             return null;
         }
-    }
-
-    /**
-     * Prüft ob der JWT noch gültig ist.
-     * @param decodedJWT
-     * @return true = JWT gültig, false = JWT = expired
-     */
-    private boolean isTokenExpired(DecodedJWT decodedJWT) {
-        return decodedJWT.getExpiresAt().before(new Date());
     }
 }
