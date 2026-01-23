@@ -23,15 +23,15 @@ export default function UserPageContent({items, loading}: {
                                 <option value="movie">Movie</option>
                                 <option value="music">Music</option>
                                 <option value="series">Series</option>
+                                <option value="manual-entry">Manual Entry</option>
                             </select>
 
                             <select className="sort-button">
-                                <option selected>All</option>
-                                <option>Genre 1</option>
-                                <option>Genre 2</option>
-                                <option>Genre 3</option>
+                                <option selected>Completed</option>
+                                <option>In Progress</option>
+                                <option>Completed</option>
+                                <option>Dropped</option>
                             </select>
-                            <button className="create-button">Cheeseburger</button>
                     </div>
 
                     {items.map(item => (
