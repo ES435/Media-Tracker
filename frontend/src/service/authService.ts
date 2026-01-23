@@ -41,7 +41,7 @@ export async function fetchWithAutoRefresh(url: string, options: RequestInit = {
     return await response;
 }
 
-export async function login(username: string, password: string) {
+export async function login(username: string, password: string, rememberMe: boolean) {
     const url = "http://localhost:8080/auth/login"
 
     const response = await fetch(url, {
@@ -50,7 +50,7 @@ export async function login(username: string, password: string) {
         headers: {
             'content-type': 'application/json'
         },
-        body: JSON.stringify({username, password})
+        body: JSON.stringify({username, password, rememberMe})
     });
 
     if (!response.ok) {
