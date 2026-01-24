@@ -7,6 +7,8 @@ import app.mediatracker.feature.library.model.LibraryEntryStatus;
 import app.mediatracker.feature.library.service.LibraryService;
 import app.mediatracker.feature.library.service.command.ManualEntryCommand;
 import app.mediatracker.feature.search.core.dto.SearchResult;
+import app.mediatracker.feature.user.model.User;
+import app.mediatracker.feature.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,8 +17,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.bson.types.ObjectId;
 
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -30,18 +32,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LibraryController {
 
-    private static final ObjectId DEMO_USER_ID = new ObjectId("696e49f2b5499b42914e8996");
-
+    private final UserService userService;
     private final LibraryService libraryService;
 
     /**
-     * Liefert die komplette Bibliothek des Demo-Users als Liste von LibraryEntryResponse.
+     * Liefert die komplette Bibliothek des aktuell eingeloggten Users.
      *
      * @return 200 OK mit allen Einträgen des Users in Anzeigeform
      */
     @GetMapping
-    public ResponseEntity<List<LibraryEntryResponse>> getLibrary() {
-        List<LibraryEntryResponse> entries = libraryService.getLibraryForUser(DEMO_USER_ID);
+    public ResponseEntity<List<LibraryEntryResponse>> getLibrary(Principal principal) {
+        User user = getCurrentUser(principal);
+        List<LibraryEntryResponse> entries = libraryService.getLibraryForUser(user.getId());
         return ResponseEntity.ok(entries);
     }
 
@@ -50,9 +52,12 @@ public class LibraryController {
      */
     @GetMapping("/page")
     public ResponseEntity<Page<LibraryEntryResponse>> getLibraryPage(
-            @PageableDefault(sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable
+            @PageableDefault(sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable,
+            Principal principal
     ) {
-        Page<LibraryEntryResponse> page = libraryService.getLibraryForUser(DEMO_USER_ID, pageable);
+        User user = getCurrentUser(principal);
+
+        Page<LibraryEntryResponse> page = libraryService.getLibraryForUser(user.getId(), pageable);
         return ResponseEntity.ok(page);
     }
 
@@ -63,14 +68,14 @@ public class LibraryController {
      * @return 200 OK mit dem gespeicherten/aktualisierten Eintrag
      */
     @PostMapping()
-    public ResponseEntity<LibraryEntryResponse> addOrUpdateEntry(
-            @Valid @RequestBody AddLibraryEntryRequest request
-    ) {
+    public ResponseEntity<LibraryEntryResponse> addOrUpdateEntry(@Valid @RequestBody AddLibraryEntryRequest request, Principal principal) {
+        User user = getCurrentUser(principal);
+
         SearchResult searchResult = request.getSearchResult();
         LibraryEntryStatus status = request.getStatus();
 
         LibraryEntryResponse response = libraryService.addOrUpdateEntryFromSearchResult(
-                DEMO_USER_ID,
+                user.getId(),
                 searchResult,
                 status,
                 request.getRating(),
@@ -88,11 +93,13 @@ public class LibraryController {
      */
     @PostMapping("/manualEntry")
     public ResponseEntity<LibraryEntryResponse> addManualEntry(
-            @Valid @RequestBody ManualEntryRequest request
+            @Valid @RequestBody ManualEntryRequest request,
+            Principal principal
     ) {
+        User user = getCurrentUser(principal);
 
         ManualEntryCommand command = ManualEntryCommand.builder()
-                .userId(DEMO_USER_ID)
+                .userId(user.getId())
                 .type(request.getType())
                 .title(request.getTitle())
                 .author(request.getAuthor())
@@ -118,11 +125,13 @@ public class LibraryController {
     @PatchMapping("/manualEntry/{entryId}")
     public ResponseEntity<LibraryEntryResponse> updateManualEntry(
             @RequestBody ManualEntryRequest request,
-            @PathVariable("entryId") String entryId
+            @PathVariable("entryId") String entryId,
+            Principal principal
     ) {
+        User user = getCurrentUser(principal);
 
         ManualEntryCommand command = ManualEntryCommand.builder()
-                .userId(DEMO_USER_ID)
+                .userId(user.getId())
                 .type(request.getType())
                 .title(request.getTitle())
                 .author(request.getAuthor())
@@ -138,16 +147,26 @@ public class LibraryController {
     }
 
     /**
-     * Entfernt einen Bibliothekseintrag des Demo-Users.
+     * Entfernt einen Bibliothekseintrag des aktuellen Users.
      *
      * @param entryId technische ID des Eintrags (MongoDB-ID)
      * @return 204 No Content
      */
     @DeleteMapping("/{entryId}")
     public ResponseEntity<Void> removeEntry(
-            @PathVariable("entryId") String entryId
+            @PathVariable("entryId") String entryId,
+            Principal principal
     ) {
-        libraryService.removeEntry(DEMO_USER_ID, entryId);
+        User user = getCurrentUser(principal);
+
+        libraryService.removeEntry(user.getId(), entryId);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Hilfsmethode zum Laden des aktuellen Users aus dem Security Context.
+     */
+    private User getCurrentUser(Principal principal) {
+        return userService.getUserByUsername(principal.getName());
     }
 }
