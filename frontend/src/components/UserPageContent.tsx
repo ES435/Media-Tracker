@@ -1,20 +1,20 @@
 import MediaCard from "./MediaCard";
-import type { MediaItem, MediaType, UserMedia } from "./types";
+import type { UserMedia, UserMediaSortOption, UserMediaStatus } from "./types";
 
-export default function UserPageContent({items, loading}: {
+export default function UserPageContent({items, loading, selectedSortType, selectedMediaStatus, onSortTypeChange, onMediaStatusChange}: {
     items: UserMedia[];
     loading: boolean;
-    //selectedType: MediaType;
-    //onTypeChange: (value: MediaType) => void;
+    selectedSortType: UserMediaSortOption;
+    selectedMediaStatus: UserMediaStatus;
+    onSortTypeChange: (value: UserMediaSortOption) => void;
+    onMediaStatusChange: (value: UserMediaStatus) => void;
 }) {
         if (loading) return <p>Loading...</p>;
-
         return (
             <main id="content">
                 <div className="media-grid">
                     <div className="sort-options">
-                            <select className="sort-button" //</div>value={selectedType} onChange={(e) => onTypeChange(e.target.value as MediaType)}
-                            >
+                            <select className="sort-button" value={selectedSortType} onChange={(event) => onSortTypeChange(event.target.value as UserMediaSortOption)}>
                                 <option value="all">All</option>
                                 <option value="anime">Anime</option>
                                 <option value="book">Book</option>
@@ -23,18 +23,19 @@ export default function UserPageContent({items, loading}: {
                                 <option value="movie">Movie</option>
                                 <option value="music">Music</option>
                                 <option value="series">Series</option>
-                                <option value="manual-entry">Manual Entry</option>
                             </select>
 
-                            <select className="sort-button" id="right-sort-button">
-                                <option selected>Completed</option>
-                                <option>In Progress</option>
-                                <option>Completed</option>
-                                <option>Dropped</option>
+                            <select className="sort-button" id="right-sort-button" value={selectedMediaStatus} onChange={(event) => onMediaStatusChange(event.target.value as UserMediaStatus)}>
+                                <option value="COMPLETED">Completed</option>
+                                <option value="IN_PROGRESS">In Progress</option>
+                                <option value="PLANNED">Planned</option>
+                                <option value="DROPPED">Dropped</option>
                             </select>
                     </div>
-
-                    {items.map(item => (
+                    {
+                    items.filter(item =>
+                        (selectedSortType === "all" || item.mediaItem.type == selectedSortType) && item.status == selectedMediaStatus
+                    ).map(item => (
                         <MediaCard
                             key={item.mediaItem.id}
                             title={item.mediaItem.title}

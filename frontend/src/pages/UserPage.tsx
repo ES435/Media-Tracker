@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar.tsx";
 import UserPageContent from "../components/UserPageContent.tsx";
 import Footer from "../components/Footer.tsx";
-import type { UserPageResponse } from "../components/types.ts";
+import type { UserMediaSortOption, UserMediaStatus, UserPageResponse } from "../components/types.ts";
 
 export default function UserPage() {
     const { username } = useParams<{ username: string }>();
@@ -11,6 +11,8 @@ export default function UserPage() {
     const [mediaList, setMediaList] = useState<UserPageResponse["userMediaList"]>([]);
     const [loading, setLoading] = useState(true);
     const [query, setQuery] = useState("");
+    const [selectedSortType, setSelectedSortType] = useState<UserMediaSortOption>("all");
+    const [selectedMediaStatus, setSelectedMediaStatus] = useState<UserMediaStatus>("COMPLETED");
     const navigate = useNavigate();
 
     const limit = "";
@@ -22,7 +24,7 @@ export default function UserPage() {
         fetch(`http://localhost:8080/api/user/${encodeURIComponent(username)}`)
             .then(res => res.json())
             .then((data: UserPageResponse) => {
-                console.log("Fetched data: ", data)
+                //console.log("Fetched data: ", data)
                 setUser(data.user);
                 setMediaList(data.userMediaList)
         })
@@ -37,6 +39,15 @@ export default function UserPage() {
     const handleSearch = (query: string) => {
         navigate("/", { state: { query } });
     };
+
+    function handleSortTypeChange(newOption: UserMediaSortOption): void {
+        setSelectedSortType(newOption);
+    }
+
+    function handleMediaStatusChange(newStatus: UserMediaStatus): void {
+        setSelectedMediaStatus(newStatus);
+    }
+
 
     return (
     <>
@@ -65,8 +76,10 @@ export default function UserPage() {
             <UserPageContent
                 items={mediaList}
                 loading={loading}
-                //selectedType={selectedType}
-                //onTypeChange={handleTypeChange}
+                selectedSortType={selectedSortType}
+                selectedMediaStatus={selectedMediaStatus}
+                onSortTypeChange={handleSortTypeChange}
+                onMediaStatusChange={handleMediaStatusChange}
             />
             
             <Footer />
