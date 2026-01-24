@@ -47,3 +47,19 @@ export type MediaStatus =
     | "IN_PROGRESS"
     | "COMPLETED"
     | "DROPPED";
+export type UserMediaStatus =
+    | "COMPLETED"
+    | "IN_PROGRESS"
+    | "PLANNED"
+    | "DROPPED";
+
+export type UserMediaSortOption =
+    | "anime"
+    | "book"
+    | "game"
+    | "manga"
+    | "movie"
+    | "music"
+    | "series"
+    | "all";
+
