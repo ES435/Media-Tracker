@@ -6,7 +6,7 @@
     font-family: "Poppins", sans-serif;
 
 }
-body {
+body.login-page {
     display: flex;
     justify-content: center;
     align-items: center;

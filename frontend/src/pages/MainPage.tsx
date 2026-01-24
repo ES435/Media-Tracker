@@ -16,23 +16,29 @@ export default function MainPage() {
 
     const navigate = useNavigate();
 
-    async function search(q: string, type: MediaType) {
+    useEffect(() => {
+        document.body.classList.add("main-page");
+        document.body.classList.remove("login-page");
+        return () => document.body.classList.remove("main-page");
+    }, []);
+
+    async function search(query: string, type: MediaType) {
         try {
             setLoading(true);
 
-            const url = `http://localhost:8080/api/search?q=${encodeURIComponent(q)}&types=${encodeURIComponent(type)}&limit=${encodeURIComponent(limit)}`;
+            const url = `http://localhost:8080/api/search?q=${encodeURIComponent(query)}&types=${encodeURIComponent(type)}&limit=${encodeURIComponent(limit)}`;
 
-            const res = await fetch(url, {
+            const response = await fetch(url, {
                 credentials:"include"
             });
-            if (!res.ok) {
-                if (res.status === 401 || res.status === 403) {
+            if (!response.ok) {
+                if (response.status === 401 || response.status === 403) {
                     navigate("/login")
                 }
-                throw new Error(`HTTP ${res.status}`);
+                throw new Error(`HTTP ${response.status}`);
             }
 
-            const data: MediaItem[] = await res.json();
+            const data: MediaItem[] = await response.json();
             setItems(data);
         } catch (err) {
             console.error(err);

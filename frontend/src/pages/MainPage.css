@@ -5,29 +5,36 @@
     --font-mono: "Consolas", monospace;
 }
 
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
 /* Responsive Layout Klasse  */
 
 .grid-container {
-    height: 100%;
+    min-height: 100vh;
     display: grid;
-    background: #1A1A1A;
-    color: white;
 
     grid-template-columns: 250px 1fr;
-    grid-template-rows: auto 1fr auto;
+    grid-template-rows: 90px 90px 1fr 60px;
 
-    grid-template-areas:    "title title"
-                            "navbar navbar"
-                            "aside content"
-                            "footer footer";
+    grid-template-areas:
+    "title title"
+    "navbar navbar"
+    "aside content"
+    "footer footer";
+
+    align-items: start;
 }
 
 #header {
     grid-area: title;
-    display: grid;
-    grid-template-columns: auto;
-    margin: auto;
+    margin: 0;
     padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #navbar {
@@ -41,10 +48,10 @@
 #aside {
     grid-area: aside;
     display: flex;
-    float: left;
     flex-direction: column;
     gap: 12px;
     padding: 60px;
+    float: none;
 }
 
 #content {
@@ -53,7 +60,9 @@
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 20px;
     padding: 20px;
-    text-align: center;
+    min-height: 0;
+    overflow-y: auto;
+    align-content: start;
 }
 
 #footer {
@@ -76,6 +85,13 @@
     display: flex;
     padding: 30px;
 
+}
+
+.content-loading {
+    grid-column: 1 / -1;
+    padding: 20px;
+    text-align: left;
+    font-family: var(--font-mono);
 }
 
 .sort-button{
