@@ -2,9 +2,10 @@ type NavbarProps = {
     query: string;
     onQueryChange: (value: string) => void;
     onSearch: () => void;
+    showFilter?: boolean;
 };
 
-export default function Navbar({ query, onQueryChange, onSearch }: NavbarProps) {
+export default function Navbar({ query, onQueryChange, onSearch, showFilter = true }: NavbarProps) {
     return (
         <nav id="navbar">
             <div className="search">
@@ -19,11 +20,13 @@ export default function Navbar({ query, onQueryChange, onSearch }: NavbarProps) 
                 />
             </div>
 
-            <select className="login_button">
-                <option selected>Placeholder</option>
-                <option>Filter 2</option>
-                <option>Filter 3</option>
-            </select>
+            {showFilter && (
+                <select className="login_button">
+                    <option selected>Placeholder</option>
+                    <option>Filter 2</option>
+                    <option>Filter 3</option>
+                </select>
+            )}
         </nav>
     );
 }
