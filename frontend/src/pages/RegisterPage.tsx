@@ -1,10 +1,14 @@
 import {useNavigate} from "react-router-dom";
-import {type FormEvent, useState} from "react";
+import {type FormEvent, useEffect, useState} from "react";
 
 export default function RegisterPage() {
     const navigate = useNavigate()
     const [error, setError] = useState<string | null>(null);
-
+    useEffect(() => {
+        document.body.classList.add("login-page");
+        return () => {document.body.classList.remove("login-page");
+        };
+    }, []);
     async function handleSubmit(event:FormEvent<HTMLFormElement>) {
         event.preventDefault();
         setError(null)

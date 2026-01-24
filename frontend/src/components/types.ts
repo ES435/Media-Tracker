@@ -19,8 +19,8 @@ export type User = {
 export type UserMedia = {
     id: string;
     userId: string;
-    status: string;
-    rating: number;
+    status: MediaStatus;
+    rating?: number;
     notes: string;
     createdAt: string;
     updatedAt: string;
@@ -42,3 +42,8 @@ export type MediaType =
     | "series"
     | "";
 
+export type MediaStatus =
+    | "PLANNED"
+    | "IN_PROGRESS"
+    | "COMPLETED"
+    | "DROPPED";

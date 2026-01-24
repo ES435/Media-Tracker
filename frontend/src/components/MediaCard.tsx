@@ -20,12 +20,7 @@ function MediaCard({ title, cover, url, selected, onSelect }: MediaCardProps) {
                 />
 
                 <div className="media-card__side">
-                    <button
-                        type="button"
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        Add to list
-                    </button>
+                    <button type="button" onClick={(e) => e.stopPropagation()}> Add to list </button>
 
                     {url && (
                         <a
