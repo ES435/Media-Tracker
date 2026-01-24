@@ -5,6 +5,7 @@ import UserPageContent from "../components/UserPageContent.tsx";
 import Footer from "../components/Footer.tsx";
 import type { UserMediaSortOption, UserMediaStatus, UserPageResponse } from "../components/types.ts";
 
+
 export default function UserPage() {
     const { username } = useParams<{ username: string }>();
     const [user, setUser] = useState<UserPageResponse["user"] | null>(null);
@@ -50,7 +51,7 @@ export default function UserPage() {
 
 
     return (
-    <>
+    <div className="UserPage">
         {loading ? (
             <div>Loading...</div>
         ) : user != null ? (
@@ -87,6 +88,6 @@ export default function UserPage() {
         ) : (
             <div>User not found.</div>
         )}
-    </>
+    </div>
     );
 }
