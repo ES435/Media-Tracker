@@ -51,6 +51,7 @@
 .UserPage #content {
     grid-area: content;
     display: grid;
+    min-width: 900px; /* fits three cards exactly */
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 20px;
     padding: 20px;
