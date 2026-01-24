@@ -1,12 +1,16 @@
 import MediaCard from "./MediaCard";
 import type { MediaItem, MediaType } from "./types";
+import {useState} from "react";
 
 export default function Content({items, loading, selectedType, onTypeChange,}: {
     items: MediaItem[];
     loading: boolean;
     selectedType: MediaType;
     onTypeChange: (value: MediaType) => void;
-}) {
+
+})
+{
+    const [selectedId, setSelectedId] = useState<string | null>(null);
     return (
         <main id="content">
             <div className="media-grid">
@@ -34,6 +38,12 @@ export default function Content({items, loading, selectedType, onTypeChange,}: {
                             title={item.title}
                             cover={item.imageUrl}
                             url={item.sourceUrl}
+                            selected={item.id === selectedId}
+                            onSelect={() =>
+                                setSelectedId(
+                                    selectedId === item.id ? null : item.id
+                                )
+                            }
                         />
                     ))
                 )}

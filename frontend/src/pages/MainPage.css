@@ -129,14 +129,26 @@ html, body {
 }
 
 .media-card {
-    display: block;
+    background: #202020;
     border-radius: 13px;
     overflow: hidden;
-    background: #202020;
-    transition: box-shadow 0.3s ease;
-    text-decoration: none;
     color: white;
     box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+    justify-self: start;
+    width: 200px;
+    transition: width 220ms ease, box-shadow 200ms ease;
+}
+
+.media-card__top {
+    display: flex;
+    height: 325px;
+}
+
+.media-card__main {
+    width: 200px;
+    flex: 0 0 200px;
 }
 
 .media-card:hover {
@@ -144,8 +156,8 @@ html, body {
 }
 
 .media-card__img {
-    width: 100%;
-    height: 325px;
+    width: 200px;
+    height: 100%;
     object-fit: cover;
     display: block;
 }
@@ -154,6 +166,36 @@ html, body {
     padding: 10px;
     font-family: Consolas, monospace;
 }
+
+.media-card__side {
+    width: 0;
+    opacity: 0;
+    pointer-events: none;
+    background: #181818;
+    overflow: hidden;
+    transition: width 220ms ease, opacity 150ms ease;
+}
+
+.media-card.selected {
+    z-index: 10;
+    width: 405px;
+    transform: translateX(30px) scale(1.05);
+    box-shadow: 6px 6px 18px rgba(255, 139, 30, 0.9);
+}
+
+.media-card__actions {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 200ms ease;
+}
+
+.media-card.selected .media-card__side {
+    width: 205px;
+    opacity: 1;
+    pointer-events: auto;
+    padding: 12px;
+}
+
 
 /* Searchbar Klassen */
 

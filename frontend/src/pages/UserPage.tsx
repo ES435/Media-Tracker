@@ -13,7 +13,6 @@ export default function UserPage() {
     const [query, setQuery] = useState("");
     const navigate = useNavigate();
 
-    const limit = "";
     
     //fetch UserData from username
     useEffect(() => {

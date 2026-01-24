@@ -11,7 +11,6 @@ export default function MainPage() {
     const [loading, setLoading] = useState(true);
     const [query, setQuery] = useState("");
     const [selectedType, setSelectedType] = useState<MediaType>("anime");
-
     const limit = "";
 
     const navigate = useNavigate();
