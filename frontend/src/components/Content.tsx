@@ -35,15 +35,9 @@ export default function Content({items, loading, selectedType, onTypeChange,}: {
                     items.map((item) => (
                         <MediaCard
                             key={item.id}
-                            title={item.title}
-                            cover={item.imageUrl}
-                            url={item.sourceUrl}
+                            item={item}
                             selected={item.id === selectedId}
-                            onSelect={() =>
-                                setSelectedId(
-                                    selectedId === item.id ? null : item.id
-                                )
-                            }
+                            onSelect={() => setSelectedId(selectedId === item.id ? null : item.id)}
                         />
                     ))
                 )}

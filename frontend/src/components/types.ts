@@ -47,6 +47,7 @@ export type MediaStatus =
     | "IN_PROGRESS"
     | "COMPLETED"
     | "DROPPED";
+
 export type UserMediaStatus =
     | "COMPLETED"
     | "IN_PROGRESS"
