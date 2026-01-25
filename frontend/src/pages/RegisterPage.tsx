@@ -1,5 +1,5 @@
-import {useNavigate} from "react-router-dom";
 import {type FormEvent, useEffect, useState} from "react";
+import {Link, useNavigate} from "react-router-dom";
 
 export default function RegisterPage() {
     const navigate = useNavigate()
@@ -27,6 +27,33 @@ export default function RegisterPage() {
         }
     }
 
+    async function register(username: string, password: string, passwordRep: string) {
+        if(!validatePassword(password, passwordRep)) {
+            throw new Error("Passwords don't match.")
+        }
+
+        const url = "http://localhost:8080/auth/register"
+        const response = await fetch(url, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({username, password, passwordRep})
+        })
+
+        if (!response.ok) {
+            if(response.status === 409) {
+                throw new Error("Username already taken.")
+            }
+            throw new Error("An error occurred. Please try again later.");
+        }
+    }
+
+    function validatePassword(password: string, passwordrep: string) {
+        return password === passwordrep;
+    }
+
     return (
         <div className="wrapper">
             <form onSubmit={handleSubmit}>
@@ -43,36 +70,9 @@ export default function RegisterPage() {
                 {error && <div className="error-message">{error}</div>}
                 <button type="submit" className="btn">Register</button>
                 <div className="register-link">
-                    <p>Have an account already? <a href="/login">Login</a></p>
+                    <p>Have an account already? <Link to="/login">Login</Link></p>
                 </div>
             </form>
         </div>
     )
-}
-
-async function register(username: string, password: string, passwordrep: string) {
-    if(!validatePassword(password, passwordrep)) {
-        throw new Error("Passwords don't match.")
-    }
-
-    const url = "http://localhost:8080/auth/register"
-    const response = await fetch(url, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-            'content-type': 'application/json'
-        },
-        body: JSON.stringify({username, password})
-    })
-
-    if (!response.ok) {
-        if(response.status === 401) {
-            throw new Error("Username already taken.")
-        }
-        throw new Error("HTTP Error " + response.status);
-    }
-}
-
-function validatePassword(password: string, passwordrep: string) {
-    return password === passwordrep;
 }

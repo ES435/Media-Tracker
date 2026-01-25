@@ -1,7 +1,8 @@
 package app.mediatracker.feature.auth.service;
 
 import app.mediatracker.feature.auth.exception.InvalidPasswordException;
-import app.mediatracker.feature.auth.exception.UsernameAlreadyExists;
+import app.mediatracker.feature.auth.exception.PasswordsDontMatchException;
+import app.mediatracker.feature.auth.exception.UsernameAlreadyExistsException;
 import app.mediatracker.feature.user.exception.UserNotFoundException;
 import app.mediatracker.feature.user.model.User;
 import app.mediatracker.feature.user.repo.UserRepository;
@@ -49,11 +50,14 @@ public class AuthService {
      *
      * @param username der Benutzername des neuen Benutzers.
      * @param password das Passwort des neuen Benutzers.
-     * @throws UsernameAlreadyExists wenn der Benutzername bereits existiert.
+     * @throws UsernameAlreadyExistsException wenn der Benutzername bereits existiert.
      */
-    public void register(String username, String password) {
+    public void register(String username, String password, String passworRep) {
         if (userRepository.existsByUsername(username)) {
-            throw new UsernameAlreadyExists("Username " + username + " already exists.");
+            throw new UsernameAlreadyExistsException("Username " + username + " already exists.");
+        }
+        if (!password.equals(passworRep)) {
+            throw new PasswordsDontMatchException("Passwords don't match.");
         }
         String hashedPassword = passwordEncoder.encode(password);
         User user = createNewUser(username, hashedPassword);

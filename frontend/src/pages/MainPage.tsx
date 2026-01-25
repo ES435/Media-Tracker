@@ -3,8 +3,6 @@ import Navbar from "../components/Navbar.tsx";
 import Content from "../components/Content.tsx";
 import Footer from "../components/Footer.tsx";
 import type {MediaItem, MediaType} from "../components/types.ts";
-import {useNavigate} from "react-router-dom";
-
 
 export default function MainPage() {
     const [items, setItems] = useState<MediaItem[]>([]);
@@ -13,7 +11,6 @@ export default function MainPage() {
     const [selectedType, setSelectedType] = useState<MediaType>("anime");
     const limit = "";
 
-    const navigate = useNavigate();
 
     useEffect(() => {
         document.body.classList.add("main-page");
@@ -32,7 +29,7 @@ export default function MainPage() {
             });
             if (!response.ok) {
                 if (response.status === 401 || response.status === 403) {
-                    navigate("/login")
+                    //navigate("/login")
                 }
                 throw new Error(`HTTP ${response.status}`);
             }

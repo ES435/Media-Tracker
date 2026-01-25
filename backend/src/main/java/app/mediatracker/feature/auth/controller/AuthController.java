@@ -1,70 +1,145 @@
 package app.mediatracker.feature.auth.controller;
 
 import app.mediatracker.feature.auth.dto.LoginRequest;
+import app.mediatracker.feature.auth.dto.LoginResponse;
 import app.mediatracker.feature.auth.dto.RegistrationRequest;
-import app.mediatracker.feature.auth.exception.InvalidPasswordException;
+import app.mediatracker.feature.auth.model.RefreshToken;
 import app.mediatracker.feature.auth.service.AuthService;
-import app.mediatracker.feature.auth.service.JwtService;
-import app.mediatracker.feature.user.exception.UserNotFoundException;
+import app.mediatracker.feature.auth.service.RefreshTokenService;
+import app.mediatracker.feature.auth.service.TokenService;
 import app.mediatracker.feature.user.model.User;
-import org.springframework.http.HttpHeaders;
+import app.mediatracker.feature.user.repo.UserRepository;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
-import static org.springframework.http.HttpHeaders.SET_COOKIE;
+import java.util.Optional;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
     private final AuthService authService;
-    private final JwtService jwtService;
+    private final TokenService tokenService;
+    private final RefreshTokenService refreshTokenService;
+    private final UserRepository userRepository;
+    private final int accessExpirationSeconds;
+    private final int refreshExpirationSeconds;
 
-    public AuthController(AuthService authService, JwtService jwtService) {
+    public AuthController(AuthService authService, TokenService tokenService, RefreshTokenService refreshTokenService, UserRepository userRepository, @Value("${app.jwt.access-token-expiration-in-seconds}") int accessExpirationSeconds, @Value("${app.jwt.refresh-token-expiration-in-seconds}") int refreshExpirationSeconds) {
         this.authService = authService;
-        this.jwtService = jwtService;
+        this.tokenService = tokenService;
+        this.refreshTokenService = refreshTokenService;
+        this.userRepository = userRepository;
+        this.accessExpirationSeconds = accessExpirationSeconds;
+        this.refreshExpirationSeconds = refreshExpirationSeconds;
     }
 
     /**
      * Authenticates the user based on the provided login request.
      */
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody LoginRequest loginRequest) {
+    public LoginResponse login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
 
-        try {
             User user = authService.login(loginRequest.getUsername(), loginRequest.getPassword());
 
-            String token = jwtService.generateToken(user.getUsername());
+            String accessToken = tokenService.generateAccessToken(user.getId(), user.getUsername());
+            String refreshToken = refreshTokenService.createAndStore(user.getId());
 
-            ResponseCookie cookie = ResponseCookie.from("jwt", token)
-                    .httpOnly(true)
-                    .secure(false)
-                    .path("/")
-                    .sameSite("Strict")
-                    .maxAge(60 * 60 * 72)
-                    .build();
+            int refreshMaxAge = loginRequest.getRememberMe() ? refreshExpirationSeconds : -1;
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.add(SET_COOKIE, cookie.toString());
+            response.addCookie(createCookie("accessToken", accessToken, accessExpirationSeconds));
+            response.addCookie(createCookie("refreshToken", refreshToken, refreshMaxAge));
 
-            return new ResponseEntity<>(headers, HttpStatus.OK);
-        } catch (InvalidPasswordException | UserNotFoundException exception) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+            response.addCookie(createMetadataCookie(user, loginRequest.getRememberMe()));
+
+            return LoginResponse.builder()
+                .userid(user.getId())
+                .username(user.getUsername())
+                .profilePictureUrl(user.getProfilePictureUrl())
+                .publicList(user.getPublicList())
+                .build();
     }
 
     /**
      * Handles user registration.
      */
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegistrationRequest request) {
+    public String register(@RequestBody RegistrationRequest request) {
 
-        authService.register(request.getUsername(), request.getPassword());
-        return ResponseEntity.ok("User registered");
+        authService.register(request.getUsername(), request.getPassword(), request.getPasswordRep());
+        return "User registered";
     }
+
+    @PostMapping("/refresh")
+    public String refresh(@CookieValue("refreshToken") String refreshTokenCookie, HttpServletResponse response) {
+         Optional<RefreshToken> oldToken = refreshTokenService.findByToken(refreshTokenCookie);
+        if(oldToken.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid refresh token");
+        }
+
+        User user = userRepository.findById(oldToken.get().getUserId()).get();
+
+        String accessToken = tokenService.generateAccessToken(user.getId(), user.getUsername());
+        String refreshToken = refreshTokenService.createAndStore(user.getId());
+
+        response.addCookie(createCookie("accessToken", accessToken, accessExpirationSeconds));
+        response.addCookie(createCookie("refreshToken", refreshToken, refreshExpirationSeconds));
+
+        return "Refresh successful";
+    }
+
+    @PostMapping("/logout")
+    public String logout(@CookieValue("refreshToken") String refreshTokenCookie, HttpServletResponse response) {
+        Optional<RefreshToken> oldToken = refreshTokenService.findByToken(refreshTokenCookie);
+        if(oldToken.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid refresh token");
+        }
+        refreshTokenService.deleteToken(oldToken.get());
+
+        Cookie access = createCookie("accessToken", "", 0);
+        Cookie refresh = createCookie("refreshToken", "", 0);
+
+        response.addCookie(access);
+        response.addCookie(refresh);
+        return "Logout successful";
+    }
+
+    private Cookie createCookie(String name, String value, int maxAge) {
+        Cookie cookie = new Cookie(name, value);
+
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false);
+        cookie.setMaxAge(maxAge);
+        cookie.setPath("/");
+        cookie.setAttribute("SameSite", "Lax");
+        return cookie;
+    }
+
+private Cookie createMetadataCookie(User user, boolean rememberMe) {
+
+    String metadata = String.format("{\"username\":\"%s\",\"profilePictureUrl\":\"%s\",\"userid\":\"%s\"}",
+            user.getUsername(),
+            user.getProfilePictureUrl() != null ? user.getProfilePictureUrl() : "",
+            user.getId().toHexString());
+
+    Cookie cookie = new Cookie("user_metadata", URLEncoder.encode(metadata, StandardCharsets.UTF_8));
+    cookie.setHttpOnly(false);
+    cookie.setSecure(false);
+    cookie.setPath("/");
+    
+    if (rememberMe) {
+        cookie.setMaxAge(refreshExpirationSeconds);
+    } else {
+        cookie.setMaxAge(-1);
+    }
+    
+    return cookie;
+}
 }

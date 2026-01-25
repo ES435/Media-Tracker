@@ -1,5 +1,6 @@
-import { useNavigate } from "react-router-dom";
 import { type FormEvent, useEffect, useState } from "react";
+import {Link, useNavigate} from "react-router-dom";
+import {useAuth} from "../service/AuthContext.tsx";
 
 export default function LoginPage() {
     const navigate = useNavigate();
@@ -9,6 +10,8 @@ export default function LoginPage() {
         document.body.classList.remove("main-page");
         return () => document.body.classList.remove("login-page");
     }, []);
+    const {setUser} = useAuth();
+
     async function handleSubmit(event:FormEvent<HTMLFormElement>) {
         event.preventDefault();
         setError(null)
@@ -16,14 +19,40 @@ export default function LoginPage() {
         const formData = new FormData(event.currentTarget);
         const username = formData.get("username") as string;
         const password = formData.get("password") as string;
+        const isRememberMe = formData.get("remember-me") === "on";
 
         try {
-            await login(username, password)
+            await login(username, password, isRememberMe)
             navigate("/main")
         } catch (err) {
             // @ts-ignore
             setError(err.message)
         }
+    }
+
+    async function login(username: string, password: string, rememberMe: boolean) {
+        const url = "http://localhost:8080/auth/login"
+
+        const response = await fetch(url, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({username, password, rememberMe})
+        });
+
+        if (!response.ok) {
+            if(response.status === 401) {
+                throw new Error("Incorrect username or password")
+            }
+
+            throw new Error("An error occurred. Please try again later.");
+        }
+
+        setUser(await response.json());
+
+        return true;
     }
 
     return (
@@ -37,34 +66,15 @@ export default function LoginPage() {
                     <input name="password" type="password" placeholder="Password" required/>
                 </div>
                 {error && <div className="error-message">{error}</div>}
+                <label>
+                    <input type="checkbox" id="remember-me" name="remember-me" />
+                    Remember Me
+                </label>
                 <button type="submit" className="btn">Login</button>
                 <div className="register-link">
-                    <p>Don't have an account? <a href="/register">Register</a></p>
+                    <p>Don't have an account? <Link to={"/register"}>Register</Link></p>
                 </div>
             </form>
         </div>
     );
-}
-
-async function login(username: string, password: string) {
-    const url = "http://localhost:8080/auth/login"
-
-    const response = await fetch(url, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-            'content-type': 'application/json'
-        },
-        body: JSON.stringify({username, password})
-    });
-
-    if (!response.ok) {
-        if(response.status === 401) {
-            throw new Error("Incorrect username or password")
-        }
-
-        throw new Error("HTTP Error " + response.status);
-    }
-
-    return true;
 }
