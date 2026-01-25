@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {type FormEvent, useState} from "react";
 import {login} from "../service/authService.ts";
 
@@ -41,7 +41,7 @@ export default function LoginPage() {
                 </label>
                 <button type="submit" className="btn">Login</button>
                 <div className="register-link">
-                    <p>Don't have an account? <a href="/register">Register</a></p>
+                    <p>Don't have an account? <Link to={"/register"}>Register</Link></p>
                 </div>
             </form>
         </div>

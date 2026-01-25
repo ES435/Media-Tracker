@@ -3,7 +3,6 @@ import Navbar from "../components/Navbar.tsx";
 import Content from "../components/Content.tsx";
 import Footer from "../components/Footer.tsx";
 import type {MediaItem, MediaType} from "../components/types.ts";
-import {fetchWithAutoRefresh} from "../service/authService.ts";
 // import {useNavigate} from "react-router-dom";
 // import {fetchWithAutoRefresh} from "../service/authService.ts";
 
@@ -23,7 +22,7 @@ export default function MainPage() {
 
             const url = `http://localhost:8080/api/search?q=${encodeURIComponent(q)}&types=${encodeURIComponent(type)}&limit=${encodeURIComponent(limit)}`;
 
-            const res = await fetchWithAutoRefresh(url, {})
+            const res = await fetch(url)
 
             const data: MediaItem[] = await res?.json();
             setItems(data);

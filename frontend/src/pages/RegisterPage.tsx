@@ -1,4 +1,4 @@
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {type FormEvent, useState} from "react";
 import {register} from "../service/authService.ts";
 
@@ -40,7 +40,7 @@ export default function RegisterPage() {
                 {error && <div className="error-message">{error}</div>}
                 <button type="submit" className="btn">Register</button>
                 <div className="register-link">
-                    <p>Have an account already? <a href="/login">Login</a></p>
+                    <p>Have an account already? <Link to="/login">Login</Link></p>
                 </div>
             </form>
         </div>

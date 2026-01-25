@@ -55,7 +55,7 @@ export async function login(username: string, password: string, rememberMe: bool
 
     if (!response.ok) {
         if(response.status === 401) {
-            throw new Error("Incorrect email address or password")
+            throw new Error("Incorrect username or password")
         }
 
         throw new Error("HTTP Error " + response.status);
