@@ -42,7 +42,7 @@ export default function LoginPage() {
                 throw new Error("Incorrect username or password")
             }
 
-            throw new Error("HTTP Error " + response.status);
+            throw new Error("An error occurred. Please try again later.");
         }
 
         setUser(await response.json());

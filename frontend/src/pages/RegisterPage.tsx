@@ -42,7 +42,7 @@ export default function RegisterPage() {
             if(response.status === 409) {
                 throw new Error("Username already taken.")
             }
-            throw new Error("An error occurred. Please try again later. HTTP Error " + response.status + "");
+            throw new Error("An error occurred. Please try again later.");
         }
     }
 
