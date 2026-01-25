@@ -1,296 +1,64 @@
 
-/* universelles "Design"  */
-:root {
-    --background: #565b63;
-    --font-mono: "Consolas", monospace;
-}
-
-/* Responsive Layout Klasse  */
-.UserPage .grid-container {
-    height: 100%;
-    display: grid;
-    background: #1A1A1A;
-    color: white;
-    grid-template-columns: 250px 1fr;
-    grid-template-rows: auto 1fr auto;
-    grid-template-areas:    "title title"
-                            "navbar navbar"
-                            "aside content"
-                            "footer footer";
-}
-
 
 .UserPage #header {
-    grid-area: title;
-    display: flex;
+    grid-area: header;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    margin: auto;
-    padding: 15px;
+    gap: 12px;
+    padding: 15px 15px 0;
+    height: 90px;
+    overflow: visible;
+
 }
+
 
 .UserPage #navbar {
     grid-area: navbar;
-    display: grid;
-    grid-template-columns: auto 175px;
-    padding: 30px;
-    margin: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 30px;
+    margin: 0;
 }
 
-.UserPage #aside {
-    grid-area: aside;
-    display: flex;
-    float: left;
-    flex-direction: column;
-    gap: 12px;
-    padding: 60px;
+.UserPage #navbar .search {
+    width: min(900px, 100%);
+    margin: 0;
+}
+
+.UserPage #navbar .profile-button {
+    margin-left: 18px;
 }
 
 .UserPage #content {
     grid-area: content;
-    display: grid;
-    min-width: 900px; /* fits three cards exactly */
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 20px;
-    padding: 20px;
-    text-align: center;
+    min-width: 0;
+    overflow-x: visible;
+    overflow-y: auto;
+    padding-top: 10px;
 }
 
-.UserPage #footer {
-    grid-area: footer;
-    background: #333;
-}
-
-/* Content Klassen */
-
-
-.UserPage .title {
-    color: white;
-    grid-column: 1 / -1;
-    text-shadow: 0 4px 12px rgba(192,128,64,0.8);
-    font-family: var(--font-mono);
-    text-align: center;
-}
-
-
-.UserPage .own-column{
-    grid-column: 1 / -1;
-    display: flex;
-    padding: 30px;
-}
-
-
-.UserPage .sort-button{
-    color: white;
-    padding: 8px;
-    width: 160px;
-    margin-right: 50px;
-    border-radius: 13px;
-    background: var(--background);
-    outline: none;
-    border: none;
-    font-size: 18px;
-    font-family: var(--font-mono);
-}
-
-
-.UserPage .create-button {
-    color: white;
-    margin-left: auto;
-    width: 240px;
-    border-radius: 13px;
-    gap: 50px;
-    background: var(--background);
-    outline: none;
-    border: none;
-    font-size: 18px;
-    font-family: var(--font-mono);
-}
-
-
-.UserPage .media-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 25px;
-    padding: 10px;
-    margin: 30px;
-}
-
-
-.UserPage .media-card {
-    display: block;
-    border-radius: 13px;
-    overflow: hidden;
-    background: #202020;
-    transition: box-shadow 0.3s ease;
-    text-decoration: none;
-    color: white;
-    box-sizing: border-box;
-}
-
-
-.UserPage .media-card:hover {
-    box-shadow: 4px 4px 12px rgba(255, 139, 30, 0.8);
-}
-
-
-.UserPage .media-card__img {
-    width: 100%;
-    height: 325px;
-    object-fit: cover;
-    display: block;
-}
-
-
-.UserPage .media-card__title {
-    padding: 10px;
-    font-family: Consolas, monospace;
-}
-
-/* Searchbar Klassen */
-
-
-
-.UserPage .search {
-    --padding: 8px;
-    width: 130%;
-    margin: auto 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 20px;
-    padding: var(--padding);
-    border-radius: 13px;
-    background: var(--background);
-    transition: box-shadow 0.25s;
-}
-
-.UserPage .search:focus-within {
-    box-shadow: 0 0 12px rgba(255, 139, 30, 0.8);
-}
-
-.UserPage .search-input {
-    font-size: 18px;
-    font-family: var(--font-mono);
-    color: rgb(244, 147, 102);
-    margin-right: auto;
-    outline: none;
-    border: none;
-    background: transparent;
-    flex: 1;
-    padding: var(--padding);
-}
-
-.UserPage .search-input::placeholder,
-.UserPage .search-icon{
-    margin: 6px;
-    color: rgb(244, 147, 102);
-}
-
-/* NavBar Login */
-
-
-.UserPage .login_button {
-    color: white;
-    border-radius: 13px;
-    background: var(--background);
-    outline: none;
-    border: none;
-    font-size: 18px;
-    text-align: center;
-    font-family: var(--font-mono);
-}
-
-
-
-/* Aside/Friends Klassen */
-
-.UserPage .friend-title{
-    color: white;
-    text-shadow: 0 4px 12px rgba(192,128,64,0.8);
-    grid-column: 1 / -1;
-    display: flex;
-    font-family: var(--font-mono);
-    text-align: left;
-}
-
-
-.UserPage .friend-button{
-    color: white;
-    width: 160px;
-    padding: 8px;
-    margin-right: 20px;
-    border-radius: 13px;
-    background: var(--background);
-    outline: none;
-    border: none;
-    font-size: 18px;
-}
-
-
-.UserPage #profile-pic-wrapper { 
+.UserPage #profile-pic-wrapper {
     width: 150px;
     height: 150px;
-    border-radius: 50%; 
-    overflow: hidden; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-} 
-
-.UserPage #profile-picture { 
-    width: 100%; 
-    height: 100%; 
-    object-fit: cover; 
+    border-radius: 50%;
+    overflow: hidden;
 }
 
-.UserPage #header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+.UserPage #profile-picture {
     width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
-.UserPage .search {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 20px;
-    width: 130%; 
-    display: flex; 
-}
-
-
-
-.UserPage .add-friend-button{
-    color: white;
-    width: 160px;
-    padding: 8px;
-    margin-right: 20px;
-    border-radius: 13px;
-    background: green;
-    outline: none;
-    border: none;
-    font-size: 18px;
-}
-
-
-.UserPage .user-page-navbar{
-    align-items: center; 
-    justify-content: center; 
-}
-
-
-.UserPage .sort-options{
+.sort-options{
     grid-column: 1 / -1;
     display: flex;
     align-items: center;
-    padding-bottom: 30px;
-    padding-right: 0px;
+    gap: 16px;
+    padding: 0 0 20px 0;
 }
 
-
-/* .sort-button already included above */
+.media-grid{
+    justify-items: start;
+    align-content: start;
+}

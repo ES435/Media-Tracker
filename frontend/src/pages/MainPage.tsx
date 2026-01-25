@@ -71,12 +71,18 @@ export default function MainPage() {
             <header id="header">
                 <h1 className="title">Media-Tracker 3</h1>
             </header>
-            <Navbar query={query} onQueryChange={setQuery} onSearch={handleSearch} />
+            <Navbar
+                query={query}
+                onQueryChange={setQuery}
+                onSearch={handleSearch}
+                username="snobbo"
+                profilePictureUrl={null}
+            />
             <aside id="aside">
                 <h2 className="friend-title">Friends</h2>
-                <button className="friend-button">Option 1</button>
-                <button className="friend-button">Option 2</button>
-                <button className="friend-button">Option 3</button>
+                <button className="friend-button">Your imaginary Friend 1</button>
+                <button className="friend-button">Your imaginary Friend 2</button>
+                <button className="friend-button">Larry</button>
             </aside>
             <Content
                 items={items}

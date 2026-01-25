@@ -1,6 +1,7 @@
 export type MediaItem = {
     type: string;
-    id: string;
+    id?: string;
+    externalId?: string;
     title: string;
     imageUrl: string;
     sourceUrl: string;
@@ -64,3 +65,4 @@ export type UserMediaSortOption =
     | "series"
     | "all";
 
+export type UserMediaStatusFilter = UserMediaStatus | "ALL";

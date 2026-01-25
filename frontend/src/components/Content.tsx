@@ -32,14 +32,20 @@ export default function Content({items, loading, selectedType, onTypeChange,}: {
                 {loading ? (
                     <div className="content-loading">Loading...</div>
                 ) : (
-                    items.map((item) => (
-                        <MediaCard
-                            key={item.id}
-                            item={item}
-                            selected={item.id === selectedId}
-                            onSelect={() => setSelectedId(selectedId === item.id ? null : item.id)}
-                        />
-                    ))
+                    items.map((item) => {
+                        const id = item.id ?? "";
+                        if (!id) return null;
+
+                        return (
+                            <MediaCard
+                                key={id}
+                                item={item}
+                                selected={id === selectedId}
+                                onSelect={() => setSelectedId((prev) => (prev === id ? null : id))}
+                            />
+                        );
+                    })
+
                 )}
             </div>
         </main>

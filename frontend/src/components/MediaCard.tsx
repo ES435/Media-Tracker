@@ -8,13 +8,15 @@ type MediaCardProps = {
     onSelect: () => void;
 };
 
-export default function MediaCard({ item, selected, onSelect }: MediaCardProps) {
+export default function MediaCard({ item, selected, onSelect }: MediaCardProps){
+
     const [status, setStatus] = useState<MediaStatus>("PLANNED");
     const [rating, setRating] = useState<number | "">("");
     const [notes, setNotes] = useState("");
     const [saving, setSaving] = useState(false);
     const [added, setAdded] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const coverSrc = item?.imageUrl?.trim() ? item.imageUrl : "/assets/profile-picture.png"; // HIER MUSS ANDERES COVER
 
     async function addToLibrary() {
         const payload: any = {
@@ -46,7 +48,7 @@ export default function MediaCard({ item, selected, onSelect }: MediaCardProps) 
             <div className="media-card__top" onClick={onSelect} style={{ cursor: "pointer" }}>
                 {/* LEFT: Cover */}
                 <div className="media-card__main">
-                    <img src={item.imageUrl} alt={item.title} className="media-card__img" />
+                    <img src={coverSrc} alt={item?.title ?? "Media"} className="media-card__img"/>
 
                     {item.sourceUrl && (
                         <a
