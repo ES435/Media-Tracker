@@ -1,11 +1,13 @@
 package app.mediatracker.security;
 
-import app.mediatracker.feature.auth.service.JwtService;
+import app.mediatracker.feature.auth.service.TokenService;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.bson.types.ObjectId;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -24,10 +26,10 @@ import java.util.Collections;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    private final JwtService jwtService;
+    private final TokenService tokenService;
 
-    public JwtFilter(JwtService jwtService) {
-        this.jwtService = jwtService;
+    public JwtFilter(TokenService tokenService) {
+        this.tokenService = tokenService;
     }
 
     /**
@@ -45,13 +47,17 @@ public class JwtFilter extends OncePerRequestFilter {
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = extractJwtFromCookies(request);
+        String token = extractAccessTokenFromCookies(request);
 
         if (token != null) {
-            String username = jwtService.extractUsername(token);
-            if (username != null && jwtService.verifyToken(token, username)) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+            try {
+                String userId = tokenService.verifyTokenAndGetUserId(token);
+                ObjectId userIdObjectId = new ObjectId(userId);
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userIdObjectId, null, Collections.emptyList());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } catch (JWTVerificationException e) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
             }
         }
 
@@ -70,7 +76,7 @@ public class JwtFilter extends OncePerRequestFilter {
      * @param request Die HTTP-Anfrage
      * @return Das JWT-Token oder null, wenn kein Token gefunden wurde
      */
-    private String extractJwtFromCookies(HttpServletRequest request) {
+    private String extractAccessTokenFromCookies(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
 
         // BUGFIX: Null-Check hinzugefügt.
@@ -79,7 +85,7 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         for (Cookie cookie : cookies) {
-            if ("jwt".equals(cookie.getName())) {
+            if ("accessToken".equals(cookie.getName())) {
                 return cookie.getValue();
             }
         }

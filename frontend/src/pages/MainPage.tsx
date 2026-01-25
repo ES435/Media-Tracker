@@ -3,7 +3,8 @@ import Navbar from "../components/Navbar.tsx";
 import Content from "../components/Content.tsx";
 import Footer from "../components/Footer.tsx";
 import type {MediaItem, MediaType} from "../components/types.ts";
-import {useNavigate} from "react-router-dom";
+// import {useNavigate} from "react-router-dom";
+// import {fetchWithAutoRefresh} from "../service/authService.ts";
 
 
 export default function MainPage() {
@@ -14,7 +15,6 @@ export default function MainPage() {
 
     const limit = "";
 
-    const navigate = useNavigate();
 
     async function search(q: string, type: MediaType) {
         try {
@@ -22,17 +22,9 @@ export default function MainPage() {
 
             const url = `http://localhost:8080/api/search?q=${encodeURIComponent(q)}&types=${encodeURIComponent(type)}&limit=${encodeURIComponent(limit)}`;
 
-            const res = await fetch(url, {
-                credentials:"include"
-            });
-            if (!res.ok) {
-                if (res.status === 401 || res.status === 403) {
-                    navigate("/login")
-                }
-                throw new Error(`HTTP ${res.status}`);
-            }
+            const res = await fetch(url)
 
-            const data: MediaItem[] = await res.json();
+            const data: MediaItem[] = await res?.json();
             setItems(data);
         } catch (err) {
             console.error(err);

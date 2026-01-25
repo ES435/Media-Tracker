@@ -1,5 +1,6 @@
-import { useNavigate } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {type FormEvent, useState} from "react";
+import {login} from "../service/authService.ts";
 
 export default function LoginPage() {
     const navigate = useNavigate();
@@ -12,9 +13,10 @@ export default function LoginPage() {
         const formData = new FormData(event.currentTarget);
         const username = formData.get("username") as string;
         const password = formData.get("password") as string;
+        const isRememberMe = formData.get("remember-me") === "on";
 
         try {
-            await login(username, password)
+            await login(username, password, isRememberMe)
             navigate("/main")
         } catch (err) {
             // @ts-ignore
@@ -33,34 +35,15 @@ export default function LoginPage() {
                     <input name="password" type="password" placeholder="Password" required/>
                 </div>
                 {error && <div className="error-message">{error}</div>}
+                <label>
+                    <input type="checkbox" id="remember-me" name="remember-me" />
+                    Remember Me
+                </label>
                 <button type="submit" className="btn">Login</button>
                 <div className="register-link">
-                    <p>Don't have an account? <a href="/register">Register</a></p>
+                    <p>Don't have an account? <Link to={"/register"}>Register</Link></p>
                 </div>
             </form>
         </div>
     );
-}
-
-async function login(username: string, password: string) {
-    const url = "http://localhost:8080/auth/login"
-
-    const response = await fetch(url, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-            'content-type': 'application/json'
-        },
-        body: JSON.stringify({username, password})
-    });
-
-    if (!response.ok) {
-        if(response.status === 401) {
-            throw new Error("Incorrect email address or password")
-        }
-
-        throw new Error("HTTP Error " + response.status);
-    }
-
-    return true;
 }
