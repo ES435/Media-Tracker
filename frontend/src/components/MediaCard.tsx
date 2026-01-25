@@ -48,7 +48,6 @@ export default function MediaCard({ item, selected, onSelect }: MediaCardProps) 
                 <div className="media-card__main">
                     <img src={item.imageUrl} alt={item.title} className="media-card__img" />
 
-                    {/* optional wie Screenshot: Source Link unter dem Cover */}
                     {item.sourceUrl && (
                         <a
                             className="media-card__source"
@@ -69,7 +68,7 @@ export default function MediaCard({ item, selected, onSelect }: MediaCardProps) 
                         <div className="media-card__divider" />
                     </div>
 
-                    {/* BODY (scrollt, wenn zu viel Inhalt) */}
+                    {/* BODY */}
                     <div className="media-card__panelBody">
                         <div className="media-card__field">
                             <label className="media-card__label">Status</label>
@@ -117,14 +116,14 @@ export default function MediaCard({ item, selected, onSelect }: MediaCardProps) 
                         {error && <div className="media-card__error">{error}</div>}
                     </div>
 
-                    {/* FOOTER (bleibt sichtbar) */}
+                    {/* FOOTER */}
                     <div className="media-card__actions">
                         <button
                             type="button"
                             className="media-card__btn media-card__btn--ghost"
                             onClick={(e) => {
                                 e.stopPropagation();
-                                onSelect(); // klappt Panel zu
+                                onSelect();
                             }}
                             disabled={saving}
                         >
