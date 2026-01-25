@@ -11,6 +11,7 @@ import app.mediatracker.feature.user.model.User;
 import app.mediatracker.feature.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -167,6 +168,6 @@ public class LibraryController {
      * Hilfsmethode zum Laden des aktuellen Users aus dem Security Context.
      */
     private User getCurrentUser(Principal principal) {
-        return userService.getUserByUsername(principal.getName());
+        return userService.getUserById(new ObjectId(principal.getName()));
     }
 }

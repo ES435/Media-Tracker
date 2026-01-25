@@ -5,6 +5,7 @@ import UserPageContent from "../components/UserPageContent.tsx";
 import Footer from "../components/Footer.tsx";
 import type { UserMediaSortOption, UserMediaStatus, UserPageResponse } from "../components/types.ts";
 import defaultAvatar from "../assets/profile-picture.png";
+import {useAuth} from "../service/AuthContext.tsx";
 
 export default function UserPage() {
     const {username} = useParams<{ username: string }>();
@@ -15,13 +16,14 @@ export default function UserPage() {
     const [selectedSortType, setSelectedSortType] = useState<UserMediaSortOption>("all");
     const [selectedMediaStatus, setSelectedMediaStatus] = useState<UserMediaStatus | "ALL">("ALL");
     const profileSrc = user?.profilePictureUrl?.trim() ? user.profilePictureUrl : defaultAvatar;
+    const { user: loggedInUser, fetchWithRefresh } = useAuth();
 
 
     //fetch UserData from username
     useEffect(() => {
         if (!username) return;
         setLoading(true);
-        fetch(`http://localhost:8080/api/user/${encodeURIComponent(username)}`)
+        fetchWithRefresh(`http://localhost:8080/api/user/${encodeURIComponent(username)}`)
             .then(res => res.json())
             .then((data: UserPageResponse) => {
                 //console.log("Fetched data: ", data)
@@ -64,8 +66,8 @@ export default function UserPage() {
                             onQueryChange={setQuery}
                             onSearch={() => {
                             }}
-                            username="snobbo"                   //HIER USER ERGÄNZEN!!!!!!!!!!!!!
-                            profilePictureUrl={null}
+                            username={loggedInUser.username}
+                            profilePictureUrl={loggedInUser?.profilePictureUrl ?? null}
                         />
                     </nav>
 

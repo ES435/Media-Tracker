@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -48,14 +49,20 @@ public class UserService {
     /**
      * Gibt die notwendigen Daten für die User-Page eines Users aus.
      */
-    public UserPageResponse getUserPage(String username) {
+    public UserPageResponse getUserPage(String username, Principal principal) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User " + username + " not found" ));
 
         UserSummary userSummary = toSummary(user);
 
+        boolean isOwner = false;
+        if(principal != null) {
+            User currentLoggedInUser = getUserById(new ObjectId(principal.getName()));
+            isOwner = user.equals(currentLoggedInUser);
+        }
+
         List<LibraryEntryResponse> userMediaList;
-        if(Boolean.TRUE.equals(user.getPublicList())) { // Null-Safe check
+        if(user.getPublicList() || isOwner) {
             System.out.println(user.getId());
             List<UserLibraryEntry> userLibrary = userLibraryEntryRepository.findByUserId(user.getId());
             System.out.println(userLibrary);
@@ -81,6 +88,11 @@ public class UserService {
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
+    }
+
+    public User getUserById(ObjectId userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId.toString()));
     }
 
     // --- Private Helper ---

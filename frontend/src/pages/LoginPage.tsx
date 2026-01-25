@@ -49,9 +49,7 @@ export default function LoginPage() {
 
             throw new Error("An error occurred. Please try again later.");
         }
-
         setUser(await response.json());
-
         return true;
     }
 

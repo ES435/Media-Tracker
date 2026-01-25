@@ -60,7 +60,6 @@ public class AuthController {
             response.addCookie(createMetadataCookie(user, loginRequest.getRememberMe()));
 
             return LoginResponse.builder()
-                .userid(user.getId())
                 .username(user.getUsername())
                 .profilePictureUrl(user.getProfilePictureUrl())
                 .publicList(user.getPublicList())
@@ -81,6 +80,8 @@ public class AuthController {
     public String refresh(@CookieValue("refreshToken") String refreshTokenCookie, HttpServletResponse response) {
          Optional<RefreshToken> oldToken = refreshTokenService.findByToken(refreshTokenCookie);
         if(oldToken.isEmpty()) {
+            response.addCookie(createCookie("accessToken", null, 0));
+            response.addCookie(createCookie("refreshToken", null, 0));
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid refresh token");
         }
 

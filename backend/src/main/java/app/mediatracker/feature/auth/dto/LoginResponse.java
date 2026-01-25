@@ -9,7 +9,6 @@ import org.bson.types.ObjectId;
 @Setter
 @Builder
 public class LoginResponse {
-    private ObjectId userid;
     private String username;
     private String profilePictureUrl;
     private boolean publicList;

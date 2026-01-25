@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar.tsx";
 import Content from "../components/Content.tsx";
 import Footer from "../components/Footer.tsx";
 import type {MediaItem, MediaType} from "../components/types.ts";
+import {useAuth} from "../service/AuthContext.tsx";
 
 export default function MainPage() {
     const [items, setItems] = useState<MediaItem[]>([]);
@@ -10,6 +11,7 @@ export default function MainPage() {
     const [query, setQuery] = useState("");
     const [selectedType, setSelectedType] = useState<MediaType>("anime");
     const limit = "";
+    const {user: loggedInUser} = useAuth();
 
 
     useEffect(() => {
@@ -72,8 +74,8 @@ export default function MainPage() {
                 query={query}
                 onQueryChange={setQuery}
                 onSearch={handleSearch}
-                username="snobbo"
-                profilePictureUrl={null}
+                username={loggedInUser?.username ?? null}
+                profilePictureUrl={loggedInUser?.profilePictureUrl ?? null}
             />
             <aside id="aside">
                 <h2 className="friend-title">Friends</h2>

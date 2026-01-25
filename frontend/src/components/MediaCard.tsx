@@ -1,6 +1,7 @@
 import type { MediaItem } from "./types";
 import { useState } from "react";
 import type {MediaStatus} from "./types";
+import {useAuth} from "../service/AuthContext.tsx";
 
 type MediaCardProps = {
     item: MediaItem;
@@ -17,16 +18,21 @@ export default function MediaCard({ item, selected, onSelect }: MediaCardProps){
     const [added, setAdded] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const coverSrc = item?.imageUrl?.trim() ? item.imageUrl : "/assets/profile-picture.png"; // HIER MUSS ANDERES COVER
+    const { user: loggedInUser, fetchWithRefresh } = useAuth();
 
     async function addToLibrary() {
+        const searchResultPayload = {
+            ...item,
+            id: item.id || (item as any).mediaId || (item as any).externalId
+        };
+
         const payload: any = {
             status,
             notes,
-            searchResult: item,
+            searchResult: searchResultPayload,
         };
-        if (rating !== "") payload.rating = rating;
 
-        const res = await fetch("http://localhost:8080/api/library", {
+        const res = await fetchWithRefresh("http://localhost:8080/api/library", {
             method: "POST",
             credentials: "include",
             headers: { "Content-Type": "application/json" },

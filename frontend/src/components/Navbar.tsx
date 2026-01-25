@@ -46,11 +46,13 @@ export default function Navbar({
             <button
                 type="button"
                 className="profile-button"
-                disabled={!username}
                 onClick={() => {
-                    if (!username) return;
-                    navigate(`/user/${encodeURIComponent(username)}`);
-                }}
+                    if (username === null) {
+                        navigate("/login")
+                    }else {
+                        navigate(`/user/${encodeURIComponent(username)}`);
+                    }
+                    }}
             >
                 <img
                     className="profile-button__avatar"
