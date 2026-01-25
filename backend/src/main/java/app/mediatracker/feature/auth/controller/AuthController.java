@@ -1,6 +1,7 @@
 package app.mediatracker.feature.auth.controller;
 
 import app.mediatracker.feature.auth.dto.LoginRequest;
+import app.mediatracker.feature.auth.dto.LoginResponse;
 import app.mediatracker.feature.auth.dto.RegistrationRequest;
 import app.mediatracker.feature.auth.model.RefreshToken;
 import app.mediatracker.feature.auth.service.AuthService;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 
 @RestController
@@ -26,35 +29,42 @@ public class AuthController {
     private final TokenService tokenService;
     private final RefreshTokenService refreshTokenService;
     private final UserRepository userRepository;
-    private final int accessExpirationMillis;
-    private final int refreshExpirationMillis;
+    private final int accessExpirationSeconds;
+    private final int refreshExpirationSeconds;
 
-    public AuthController(AuthService authService, TokenService tokenService, RefreshTokenService refreshTokenService, UserRepository userRepository, @Value("${app.jwt.access-token-expiration-in-millis}") int accessExpirationMillis, @Value("${app.jwt.refresh-token-expiration-in-millis}") int refreshExpirationMillis) {
+    public AuthController(AuthService authService, TokenService tokenService, RefreshTokenService refreshTokenService, UserRepository userRepository, @Value("${app.jwt.access-token-expiration-in-seconds}") int accessExpirationSeconds, @Value("${app.jwt.refresh-token-expiration-in-seconds}") int refreshExpirationSeconds) {
         this.authService = authService;
         this.tokenService = tokenService;
         this.refreshTokenService = refreshTokenService;
         this.userRepository = userRepository;
-        this.accessExpirationMillis = accessExpirationMillis;
-        this.refreshExpirationMillis = refreshExpirationMillis;
+        this.accessExpirationSeconds = accessExpirationSeconds;
+        this.refreshExpirationSeconds = refreshExpirationSeconds;
     }
 
     /**
      * Authenticates the user based on the provided login request.
      */
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+    public LoginResponse login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
 
             User user = authService.login(loginRequest.getUsername(), loginRequest.getPassword());
 
             String accessToken = tokenService.generateAccessToken(user.getId(), user.getUsername());
             String refreshToken = refreshTokenService.createAndStore(user.getId());
 
-            int refreshMaxAge = loginRequest.getRememberMe() ? refreshExpirationMillis : -1;
+            int refreshMaxAge = loginRequest.getRememberMe() ? refreshExpirationSeconds : -1;
 
-            response.addCookie(createCookie("accessToken", accessToken, accessExpirationMillis));
+            response.addCookie(createCookie("accessToken", accessToken, accessExpirationSeconds));
             response.addCookie(createCookie("refreshToken", refreshToken, refreshMaxAge));
 
-            return "Login successful.";
+            response.addCookie(createMetadataCookie(user, loginRequest.getRememberMe()));
+
+            return LoginResponse.builder()
+                .userid(user.getId())
+                .username(user.getUsername())
+                .profilePictureUrl(user.getProfilePictureUrl())
+                .publicList(user.getPublicList())
+                .build();
     }
 
     /**
@@ -79,8 +89,8 @@ public class AuthController {
         String accessToken = tokenService.generateAccessToken(user.getId(), user.getUsername());
         String refreshToken = refreshTokenService.createAndStore(user.getId());
 
-        response.addCookie(createCookie("accessToken", accessToken, accessExpirationMillis));
-        response.addCookie(createCookie("refreshToken", refreshToken, refreshExpirationMillis));
+        response.addCookie(createCookie("accessToken", accessToken, accessExpirationSeconds));
+        response.addCookie(createCookie("refreshToken", refreshToken, refreshExpirationSeconds));
 
         return "Refresh successful";
     }
@@ -111,4 +121,25 @@ public class AuthController {
         cookie.setAttribute("SameSite", "Lax");
         return cookie;
     }
+
+private Cookie createMetadataCookie(User user, boolean rememberMe) {
+
+    String metadata = String.format("{\"username\":\"%s\",\"profilePictureUrl\":\"%s\",\"userid\":\"%s\"}",
+            user.getUsername(),
+            user.getProfilePictureUrl() != null ? user.getProfilePictureUrl() : "",
+            user.getId().toHexString());
+
+    Cookie cookie = new Cookie("user_metadata", URLEncoder.encode(metadata, StandardCharsets.UTF_8));
+    cookie.setHttpOnly(false);
+    cookie.setSecure(false);
+    cookie.setPath("/");
+    
+    if (rememberMe) {
+        cookie.setMaxAge(refreshExpirationSeconds);
+    } else {
+        cookie.setMaxAge(-1);
+    }
+    
+    return cookie;
+}
 }

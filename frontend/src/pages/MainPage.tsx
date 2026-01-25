@@ -3,9 +3,6 @@ import Navbar from "../components/Navbar.tsx";
 import Content from "../components/Content.tsx";
 import Footer from "../components/Footer.tsx";
 import type {MediaItem, MediaType} from "../components/types.ts";
-// import {useNavigate} from "react-router-dom";
-// import {fetchWithAutoRefresh} from "../service/authService.ts";
-
 
 export default function MainPage() {
     const [items, setItems] = useState<MediaItem[]>([]);
