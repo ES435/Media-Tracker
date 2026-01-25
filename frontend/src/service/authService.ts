@@ -64,8 +64,8 @@ export async function login(username: string, password: string, rememberMe: bool
     return true;
 }
 
-export async function register(username: string, password: string, passwordrep: string) {
-    if(!validatePassword(password, passwordrep)) {
+export async function register(username: string, password: string, passwordRep: string) {
+    if(!validatePassword(password, passwordRep)) {
         throw new Error("Passwords don't match.")
     }
 
@@ -76,7 +76,7 @@ export async function register(username: string, password: string, passwordrep: 
         headers: {
             'content-type': 'application/json'
         },
-        body: JSON.stringify({username, password})
+        body: JSON.stringify({username, password, passwordRep})
     })
 
     if (!response.ok) {
