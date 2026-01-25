@@ -16,6 +16,8 @@ app:
     # Dies ist ein Default-Key für die Entwicklung.
     # In Produktion sollte dieser Wert lang, zufällig und geheim sein!
     secret: "secret_key_fuer_das_development_das_muss_spaeter_geendert_werden_wenn_das_projekt_irgedwann_fertig_ist_zu_irged_einem_sicherer_key_davor_war_das_hier_hardcoded_in_JwtService"
+    access-token-expiration-in-millis: 900000 # 15 Minuten
+    refresh-token-expiration-in-millis: 1209600000 # 14 Tage
 
 # ---- API Feature Toggles ----
 search:

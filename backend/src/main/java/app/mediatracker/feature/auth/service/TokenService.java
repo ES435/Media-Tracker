@@ -17,12 +17,14 @@ public class TokenService {
 
     private final Algorithm algorithm;
     private final JWTVerifier verifier;
-    private final long accessExpiryMs = 1000 * 60 * 15;
-    private final long refreshExpiryMs = 1000 * 60 * 60 * 24 * 14;
+    private final long accessTokenExpirationInMillis;
+    private final long refreshTokenExpirationInMillis;
 
-    public TokenService(@Value("${app.jwt.secret}") String secretKey) {
+    public TokenService(@Value("${app.jwt.secret}") String secretKey, @Value("${app.jwt.access-token-expiration-in-millis}") int accessTokenExpirationInMillis, @Value("${app.jwt.refresh-token-expiration-in-millis}") int refreshTokenExpirationInMillis) {
         this.algorithm = Algorithm.HMAC256(secretKey);
         this.verifier = JWT.require(algorithm).build();
+        this.accessTokenExpirationInMillis = accessTokenExpirationInMillis;
+        this.refreshTokenExpirationInMillis = refreshTokenExpirationInMillis;
     }
 
     /**
@@ -35,7 +37,7 @@ public class TokenService {
         return JWT.create()
                 .withSubject(userId.toString())
                 .withClaim("username", username)
-                .withExpiresAt(new Date(System.currentTimeMillis() + accessExpiryMs))
+                .withExpiresAt(new Date(System.currentTimeMillis() + accessTokenExpirationInMillis))
                 .sign(algorithm);
     }
 
@@ -47,7 +49,7 @@ public class TokenService {
     public String generateRefreshToken(ObjectId userId) {
         return JWT.create()
                 .withSubject(userId.toString())
-                .withExpiresAt(new Date(System.currentTimeMillis() + refreshExpiryMs))
+                .withExpiresAt(new Date(System.currentTimeMillis() + refreshTokenExpirationInMillis))
                 .sign(algorithm);
     }
 
