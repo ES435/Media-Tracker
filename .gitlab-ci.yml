@@ -1,0 +1,3 @@
+build_library:
+  image: mongo:7
+  script:
