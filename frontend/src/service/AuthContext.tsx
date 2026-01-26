@@ -1,103 +1,99 @@
-import { createContext, useContext, useState, useEffect} from "react";
-import type {ReactNode} from "react";
-import type {User} from "../components/types.ts";
-import Cookies from 'js-cookie';
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import type { ReactNode } from "react";
+import type { User } from "../components/types.ts";
 
 interface AuthContextType {
-    user: (User) | null;
+    user: (User & { userid: string }) | null;
     setUser: (user: (User & { userid: string }) | null) => void;
     logout: () => void;
     fetchWithRefresh: (url: string, options?: RequestInit) => Promise<Response>;
     isLoading: boolean;
+    refreshUser: () => Promise<void>; // Neue Funktion zum Aktualisieren
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-const getMetadataFromCookie = () => {
-    const cookieValue = Cookies.get('user_metadata');
-    if (!cookieValue) return null;
-
-    try {
-        return JSON.parse(cookieValue);
-    } catch (exception) {
-        return null;
-    }
-};
 
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<(User & { userid: string }) | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     let refreshPromise: Promise<void> | null = null;
 
-    useEffect(() => {
-        const savedUser = getMetadataFromCookie();
-        if (savedUser) {
-            setUser(savedUser);
+    const fetchWithRefresh = async (url: string, options: RequestInit = {}) => {
+        let response = await fetch(url, {
+            ...options,
+            credentials: "include",
+        });
+
+        if (response.status === 401) {
+            try {
+                await refreshToken();
+                response = await fetch(url, { ...options, credentials: "include" });
+            } catch (exception) {
+                await logout();
+                throw new Error("Session expired");
+            }
         }
-        setIsLoading(false);
+
+        return response;
+    };
+
+    const refreshUser = useCallback(async () => {
+        try {
+            const response = await fetchWithRefresh("http://localhost:8080/auth/me");
+            if (response.ok) {
+                const data = await response.json();
+                setUser(data);
+            } else {
+                setUser(null);
+            }
+        } catch (err) {
+            setUser(null);
+        } finally {
+            setIsLoading(false);
+        }
     }, []);
+
+    useEffect(() => {
+        refreshUser();
+    }, [refreshUser]);
 
     const logout = async () => {
         setUser(null);
-
-        const url = "http://localhost:8080/auth/logout"
-
-        const response = await fetch(url, {
-            method: "POST",
-            credentials: "include"
-        })
-        if (!response.ok) {
-            throw new Error("HTTP Error " + response.status)
+        const url = "http://localhost:8080/auth/logout";
+        try {
+            await fetch(url, {
+                method: "POST",
+                credentials: "include"
+            });
+        } catch (e) {
+            console.error("Logout failed", e);
         }
     };
 
-const fetchWithRefresh = async (url: string, options: RequestInit = {}) => {
-    let response = await fetch(url, {
-        ...options,
-        credentials: "include",
-    });
+    async function refreshToken() {
+        if (refreshPromise) return refreshPromise;
 
-    if (response.status === 401) {
-        try {
-            await refreshToken()
-                .then(async () => response = await fetch(url, options))
-        }catch (exception) {
-            await logout();
-            throw new Error("Session expired");
-        }
-    }
+        refreshPromise = (async () => {
+            const res = await fetch('http://localhost:8080/auth/refresh', {
+                method: 'POST',
+                credentials: 'include'
+            });
 
-    return response;
-}
+            if (!res.ok) {
+                await logout();
+                throw new Error('Refresh failed');
+            }
+            refreshPromise = null;
+        })();
 
-async function refreshToken() {
-    if (refreshPromise) {
         return refreshPromise;
     }
 
-    refreshPromise = (async () => {
-        const res = await fetch('http://localhost:8080/auth/refresh', {
-            method: 'POST',
-            credentials: 'include'
-        });
-
-        if (!res.ok) {
-            await logout();
-            throw new Error('Refresh failed');
-        }
-
-        await Promise.resolve()
-        refreshPromise = null;
-    })()
-
-    return refreshPromise;
-}
-
-return (
-    <AuthContext.Provider value={{ user, setUser, logout, isLoading, fetchWithRefresh }}>
-        {children}
-    </AuthContext.Provider>
-);
+    return (
+        <AuthContext.Provider value={{ user, setUser, logout, isLoading, fetchWithRefresh, refreshUser }}>
+            {children}
+        </AuthContext.Provider>
+    );
 }
 
 export function useAuth() {

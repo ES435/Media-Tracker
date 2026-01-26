@@ -10,7 +10,7 @@ export default function LoginPage() {
         document.body.classList.remove("main-page");
         return () => document.body.classList.remove("login-page");
     }, []);
-    const {setUser} = useAuth();
+    const {refreshUser} = useAuth();
 
     async function handleSubmit(event:FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -49,8 +49,8 @@ export default function LoginPage() {
 
             throw new Error("An error occurred. Please try again later.");
         }
-        setUser(await response.json());
-        return true;
+        await refreshUser()
+        return true
     }
 
     return (
