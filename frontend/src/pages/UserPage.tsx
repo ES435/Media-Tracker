@@ -66,7 +66,7 @@ export default function UserPage() {
                             onQueryChange={setQuery}
                             onSearch={() => {
                             }}
-                            username={loggedInUser.username}
+                            username={loggedInUser?.username}
                             profilePictureUrl={loggedInUser?.profilePictureUrl ?? null}
                         />
                     </nav>

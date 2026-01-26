@@ -12,13 +12,7 @@ type NavbarProps = {
     profilePictureUrl?: string | null;
 };
 
-export default function Navbar({
-                                   query,
-                                   onQueryChange,
-                                   onSearch,
-                                   username,
-                                   profilePictureUrl,
-                               }: NavbarProps) {
+export default function Navbar({query, onQueryChange, onSearch, username, profilePictureUrl, }: NavbarProps) {
     const navigate = useNavigate();
     const DEFAULT_AVATAR = defaultAvatar;
     const avatarSrc =
@@ -30,7 +24,6 @@ export default function Navbar({
         <nav id="navbar">
             <div className="search">
                 <span className="search-icon material-symbols-outlined">search</span>
-
                 <input
                     className="search-input"
                     type="search"
@@ -47,12 +40,9 @@ export default function Navbar({
                 type="button"
                 className="profile-button"
                 onClick={() => {
-                    if (username === null) {
-                        navigate("/login")
-                    }else {
-                        navigate(`/user/${encodeURIComponent(username)}`);
-                    }
-                    }}
+                    if (!username) navigate("/login");
+                    else navigate(`/user/${encodeURIComponent(username)}`);
+                }}
             >
                 <img
                     className="profile-button__avatar"
