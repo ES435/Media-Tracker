@@ -1,6 +1,7 @@
 package app.mediatracker.feature.auth.controller;
 
 import app.mediatracker.feature.auth.dto.LoginRequest;
+import app.mediatracker.feature.auth.dto.LoginResponse;
 import app.mediatracker.feature.auth.dto.RegistrationRequest;
 import app.mediatracker.feature.auth.model.RefreshToken;
 import app.mediatracker.feature.auth.service.AuthService;
@@ -10,12 +11,15 @@ import app.mediatracker.feature.user.model.User;
 import app.mediatracker.feature.user.repo.UserRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 
 @RestController
@@ -26,16 +30,16 @@ public class AuthController {
     private final TokenService tokenService;
     private final RefreshTokenService refreshTokenService;
     private final UserRepository userRepository;
-    private final int accessExpirationMillis;
-    private final int refreshExpirationMillis;
+    private final int accessExpirationSeconds;
+    private final int refreshExpirationSeconds;
 
-    public AuthController(AuthService authService, TokenService tokenService, RefreshTokenService refreshTokenService, UserRepository userRepository, @Value("${app.jwt.access-token-expiration-in-millis}") int accessExpirationMillis, @Value("${app.jwt.refresh-token-expiration-in-millis}") int refreshExpirationMillis) {
+    public AuthController(AuthService authService, TokenService tokenService, RefreshTokenService refreshTokenService, UserRepository userRepository, @Value("${app.jwt.access-token-expiration-in-seconds}") int accessExpirationSeconds, @Value("${app.jwt.refresh-token-expiration-in-seconds}") int refreshExpirationSeconds) {
         this.authService = authService;
         this.tokenService = tokenService;
         this.refreshTokenService = refreshTokenService;
         this.userRepository = userRepository;
-        this.accessExpirationMillis = accessExpirationMillis;
-        this.refreshExpirationMillis = refreshExpirationMillis;
+        this.accessExpirationSeconds = accessExpirationSeconds;
+        this.refreshExpirationSeconds = refreshExpirationSeconds;
     }
 
     /**
@@ -49,12 +53,13 @@ public class AuthController {
             String accessToken = tokenService.generateAccessToken(user.getId(), user.getUsername());
             String refreshToken = refreshTokenService.createAndStore(user.getId());
 
-            int refreshMaxAge = loginRequest.getRememberMe() ? refreshExpirationMillis : -1;
+            int refreshMaxAge = loginRequest.getRememberMe() ? refreshExpirationSeconds : -1;
 
-            response.addCookie(createCookie("accessToken", accessToken, accessExpirationMillis));
+            response.addCookie(createCookie("accessToken", accessToken, accessExpirationSeconds));
             response.addCookie(createCookie("refreshToken", refreshToken, refreshMaxAge));
 
-            return "Login successful.";
+
+            return "Login successful!";
     }
 
     /**
@@ -71,6 +76,8 @@ public class AuthController {
     public String refresh(@CookieValue("refreshToken") String refreshTokenCookie, HttpServletResponse response) {
          Optional<RefreshToken> oldToken = refreshTokenService.findByToken(refreshTokenCookie);
         if(oldToken.isEmpty()) {
+            response.addCookie(createCookie("accessToken", null, 0));
+            response.addCookie(createCookie("refreshToken", null, 0));
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid refresh token");
         }
 
@@ -79,8 +86,8 @@ public class AuthController {
         String accessToken = tokenService.generateAccessToken(user.getId(), user.getUsername());
         String refreshToken = refreshTokenService.createAndStore(user.getId());
 
-        response.addCookie(createCookie("accessToken", accessToken, accessExpirationMillis));
-        response.addCookie(createCookie("refreshToken", refreshToken, refreshExpirationMillis));
+        response.addCookie(createCookie("accessToken", accessToken, accessExpirationSeconds));
+        response.addCookie(createCookie("refreshToken", refreshToken, refreshExpirationSeconds));
 
         return "Refresh successful";
     }
@@ -99,6 +106,25 @@ public class AuthController {
         response.addCookie(access);
         response.addCookie(refresh);
         return "Logout successful";
+    }
+
+    @GetMapping("/me")
+    public LoginResponse me(@CookieValue("accessToken")String accessToken) {
+        if(accessToken == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid access token");
+        }
+        ObjectId userID = new ObjectId(tokenService.verifyTokenAndGetUserId(accessToken));
+        User user = userRepository.findById(userID).isPresent() ? userRepository.findById(userID).get() : null;
+
+        if(user == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid access token");
+        }
+
+        return LoginResponse.builder()
+                .username(user.getUsername())
+                .profilePictureUrl(user.getProfilePictureUrl())
+                .publicList(user.getPublicList())
+                .build();
     }
 
     private Cookie createCookie(String name, String value, int maxAge) {

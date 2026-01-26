@@ -1,10 +1,16 @@
+import { type FormEvent, useEffect, useState } from "react";
 import {Link, useNavigate} from "react-router-dom";
-import {type FormEvent, useState} from "react";
-import {login} from "../service/authService.ts";
+import {useAuth} from "../service/AuthContext.tsx";
 
 export default function LoginPage() {
     const navigate = useNavigate();
     const [error, setError] = useState<string | null>(null);
+    useEffect(() => {
+        document.body.classList.add("login-page");
+        document.body.classList.remove("main-page");
+        return () => document.body.classList.remove("login-page");
+    }, []);
+    const {refreshUser} = useAuth();
 
     async function handleSubmit(event:FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -22,6 +28,29 @@ export default function LoginPage() {
             // @ts-ignore
             setError(err.message)
         }
+    }
+
+    async function login(username: string, password: string, rememberMe: boolean) {
+        const url = "http://localhost:8080/auth/login"
+
+        const response = await fetch(url, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({username, password, rememberMe})
+        });
+
+        if (!response.ok) {
+            if(response.status === 401) {
+                throw new Error("Incorrect username or password")
+            }
+
+            throw new Error("An error occurred. Please try again later.");
+        }
+        await refreshUser()
+        return true
     }
 
     return (

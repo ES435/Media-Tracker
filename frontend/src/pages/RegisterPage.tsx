@@ -1,11 +1,14 @@
+import {type FormEvent, useEffect, useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
-import {type FormEvent, useState} from "react";
-import {register} from "../service/authService.ts";
 
 export default function RegisterPage() {
     const navigate = useNavigate()
     const [error, setError] = useState<string | null>(null);
-
+    useEffect(() => {
+        document.body.classList.add("login-page");
+        return () => {document.body.classList.remove("login-page");
+        };
+    }, []);
     async function handleSubmit(event:FormEvent<HTMLFormElement>) {
         event.preventDefault();
         setError(null)
@@ -22,6 +25,33 @@ export default function RegisterPage() {
             // @ts-ignore
             setError(err.message)
         }
+    }
+
+    async function register(username: string, password: string, passwordRep: string) {
+        if(!validatePassword(password, passwordRep)) {
+            throw new Error("Passwords don't match.")
+        }
+
+        const url = "http://localhost:8080/auth/register"
+        const response = await fetch(url, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({username, password, passwordRep})
+        })
+
+        if (!response.ok) {
+            if(response.status === 409) {
+                throw new Error("Username already taken.")
+            }
+            throw new Error("An error occurred. Please try again later.");
+        }
+    }
+
+    function validatePassword(password: string, passwordrep: string) {
+        return password === passwordrep;
     }
 
     return (

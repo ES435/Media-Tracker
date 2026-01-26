@@ -3,28 +3,40 @@ import Navbar from "../components/Navbar.tsx";
 import Content from "../components/Content.tsx";
 import Footer from "../components/Footer.tsx";
 import type {MediaItem, MediaType} from "../components/types.ts";
-// import {useNavigate} from "react-router-dom";
-// import {fetchWithAutoRefresh} from "../service/authService.ts";
-
+import {useAuth} from "../service/AuthContext.tsx";
 
 export default function MainPage() {
     const [items, setItems] = useState<MediaItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [query, setQuery] = useState("");
     const [selectedType, setSelectedType] = useState<MediaType>("anime");
-
     const limit = "";
+    const {user: loggedInUser} = useAuth();
 
 
-    async function search(q: string, type: MediaType) {
+    useEffect(() => {
+        document.body.classList.add("main-page");
+        document.body.classList.remove("login-page");
+        return () => document.body.classList.remove("main-page");
+    }, []);
+
+    async function search(query: string, type: MediaType) {
         try {
             setLoading(true);
 
-            const url = `http://localhost:8080/api/search?q=${encodeURIComponent(q)}&types=${encodeURIComponent(type)}&limit=${encodeURIComponent(limit)}`;
+            const url = `http://localhost:8080/api/search?q=${encodeURIComponent(query)}&types=${encodeURIComponent(type)}&limit=${encodeURIComponent(limit)}`;
 
-            const res = await fetch(url)
+            const response = await fetch(url, {
+                credentials:"include"
+            });
+            if (!response.ok) {
+                if (response.status === 401 || response.status === 403) {
+                    //navigate("/login")
+                }
+                throw new Error(`HTTP ${response.status}`);
+            }
 
-            const data: MediaItem[] = await res?.json();
+            const data: MediaItem[] = await response.json();
             setItems(data);
         } catch (err) {
             console.error(err);
@@ -58,12 +70,18 @@ export default function MainPage() {
             <header id="header">
                 <h1 className="title">Media-Tracker 3</h1>
             </header>
-            <Navbar query={query} onQueryChange={setQuery} onSearch={handleSearch} />
+            <Navbar
+                query={query}
+                onQueryChange={setQuery}
+                onSearch={handleSearch}
+                username={loggedInUser?.username ?? null}
+                profilePictureUrl={loggedInUser?.profilePictureUrl ?? null}
+            />
             <aside id="aside">
                 <h2 className="friend-title">Friends</h2>
-                <button className="friend-button">Option 1</button>
-                <button className="friend-button">Option 2</button>
-                <button className="friend-button">Option 3</button>
+                <button className="friend-button">Your imaginary Friend 1</button>
+                <button className="friend-button">Your imaginary Friend 2</button>
+                <button className="friend-button">Larry</button>
             </aside>
             <Content
                 items={items}

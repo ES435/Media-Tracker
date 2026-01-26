@@ -1,6 +1,7 @@
 export type MediaItem = {
     type: string;
-    id: string;
+    id?: string;
+    externalId?: string;
     title: string;
     imageUrl: string;
     sourceUrl: string;
@@ -19,8 +20,8 @@ export type User = {
 export type UserMedia = {
     id: string;
     userId: string;
-    status: string;
-    rating: number;
+    status: MediaStatus;
+    rating?: number;
     notes: string;
     createdAt: string;
     updatedAt: string;
@@ -42,6 +43,12 @@ export type MediaType =
     | "series"
     | "";
 
+export type MediaStatus =
+    | "PLANNED"
+    | "IN_PROGRESS"
+    | "COMPLETED"
+    | "DROPPED";
+
 export type UserMediaStatus =
     | "COMPLETED"
     | "IN_PROGRESS"
@@ -58,3 +65,4 @@ export type UserMediaSortOption =
     | "series"
     | "all";
 
+export type UserMediaStatusFilter = UserMediaStatus | "ALL";

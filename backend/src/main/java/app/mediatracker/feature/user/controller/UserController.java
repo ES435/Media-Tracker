@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 
 /**
  * REST-Controller für die Suche von Usern und das Anzeigen derer Account-Pages.
@@ -48,10 +50,10 @@ public class UserController {
      */
     @GetMapping("/{username}")
     public ResponseEntity<UserPageResponse> getUserPage(
-        @PathVariable("username") String username
+        @PathVariable("username") String username, Principal principal
     ) {
 
-        return ResponseEntity.ok(userService.getUserPage(username));
+        return ResponseEntity.ok(userService.getUserPage(username, principal));
     }
     
 }
