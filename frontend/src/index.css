@@ -356,7 +356,7 @@ html, body {
     gap: 10px;
     border: none;
     background: transparent;
-    color: inherit;
+    color: white;
     cursor: pointer;
 }
 
@@ -376,12 +376,6 @@ html, body {
 .profile-button__label {
     white-space: nowrap;
 }
-
-
-
-
-
-
 
 /* Content Klassen */
 

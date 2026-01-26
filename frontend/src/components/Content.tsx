@@ -26,7 +26,7 @@ export default function Content({items, loading, selectedType, onTypeChange,}: {
                         <option value="series">Series</option>
                     </select>
 
-                    <button className="create-button">Manual Entry</button>
+                    <button className="create-button">Under Construction</button>
                 </div>
 
                 {loading ? (
