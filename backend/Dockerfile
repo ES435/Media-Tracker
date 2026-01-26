@@ -9,7 +9,7 @@ RUN mvn clean package -DskipTests -B
 # Stage 2: Runtime
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
-# Sicherheit: App läuft nicht als root
+# Sicherheit: Damit das Image nicht über root arbeitet wird ne gruppe Spring und der user Spring erstellt damit wird das Image dann gestartet
 RUN addgroup -S spring && adduser -S spring -G spring
 USER spring
 COPY --from=build /app/target/*.jar app.jar

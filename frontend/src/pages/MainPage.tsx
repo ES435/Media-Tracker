@@ -74,8 +74,8 @@ export default function MainPage() {
                 query={query}
                 onQueryChange={setQuery}
                 onSearch={handleSearch}
-                username={loggedInUser?.username ?? null}
-                profilePictureUrl={loggedInUser?.profilePictureUrl ?? null}
+                username={loggedInUser?.username ?? undefined}
+                profilePictureUrl={loggedInUser?.profilePictureUrl ?? undefined}
             />
             <aside id="aside">
                 <h2 className="friend-title">Friends</h2>
