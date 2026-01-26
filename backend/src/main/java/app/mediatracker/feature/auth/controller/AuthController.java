@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -46,7 +47,7 @@ public class AuthController {
      * Authenticates the user based on the provided login request.
      */
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
 
             User user = authService.login(loginRequest.getUsername(), loginRequest.getPassword());
 
@@ -59,21 +60,21 @@ public class AuthController {
             response.addCookie(createCookie("refreshToken", refreshToken, refreshMaxAge));
 
 
-            return "Login successful!";
+            return ResponseEntity.ok("Login successful.");
     }
 
     /**
      * Handles user registration.
      */
     @PostMapping("/register")
-    public String register(@RequestBody RegistrationRequest request) {
+    public ResponseEntity<String> register(@RequestBody RegistrationRequest request) {
 
         authService.register(request.getUsername(), request.getPassword(), request.getPasswordRep());
-        return "User registered";
+        return ResponseEntity.ok("Registration successful.");
     }
 
     @PostMapping("/refresh")
-    public String refresh(@CookieValue("refreshToken") String refreshTokenCookie, HttpServletResponse response) {
+    public ResponseEntity<String> refresh(@CookieValue("refreshToken") String refreshTokenCookie, HttpServletResponse response) {
          Optional<RefreshToken> oldToken = refreshTokenService.findByToken(refreshTokenCookie);
         if(oldToken.isEmpty()) {
             response.addCookie(createCookie("accessToken", null, 0));
@@ -89,11 +90,11 @@ public class AuthController {
         response.addCookie(createCookie("accessToken", accessToken, accessExpirationSeconds));
         response.addCookie(createCookie("refreshToken", refreshToken, refreshExpirationSeconds));
 
-        return "Refresh successful";
+        return ResponseEntity.ok("Refresh successful");
     }
 
     @PostMapping("/logout")
-    public String logout(@CookieValue("refreshToken") String refreshTokenCookie, HttpServletResponse response) {
+    public ResponseEntity<String> logout(@CookieValue("refreshToken") String refreshTokenCookie, HttpServletResponse response) {
         Optional<RefreshToken> oldToken = refreshTokenService.findByToken(refreshTokenCookie);
         if(oldToken.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid refresh token");
@@ -105,7 +106,7 @@ public class AuthController {
 
         response.addCookie(access);
         response.addCookie(refresh);
-        return "Logout successful";
+        return ResponseEntity.ok("Logout successful");
     }
 
     @GetMapping("/me")
