@@ -63,9 +63,7 @@ public class UserService {
 
         List<LibraryEntryResponse> userMediaList;
         if(user.getPublicList() || isOwner) {
-            System.out.println(user.getId());
             List<UserLibraryEntry> userLibrary = userLibraryEntryRepository.findByUserId(user.getId());
-            System.out.println(userLibrary);
             userMediaList = userLibrary.stream()
                     .map(this::toLibraryEntryResponse)
                     .toList();

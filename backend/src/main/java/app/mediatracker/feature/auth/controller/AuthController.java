@@ -11,6 +11,7 @@ import app.mediatracker.feature.user.model.User;
 import app.mediatracker.feature.user.repo.UserRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +46,7 @@ public class AuthController {
      * Authenticates the user based on the provided login request.
      */
     @PostMapping("/login")
-    public LoginResponse login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+    public String login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
 
             User user = authService.login(loginRequest.getUsername(), loginRequest.getPassword());
 
@@ -57,13 +58,8 @@ public class AuthController {
             response.addCookie(createCookie("accessToken", accessToken, accessExpirationSeconds));
             response.addCookie(createCookie("refreshToken", refreshToken, refreshMaxAge));
 
-            response.addCookie(createMetadataCookie(user, loginRequest.getRememberMe()));
 
-            return LoginResponse.builder()
-                .username(user.getUsername())
-                .profilePictureUrl(user.getProfilePictureUrl())
-                .publicList(user.getPublicList())
-                .build();
+            return "Login successful!";
     }
 
     /**
@@ -112,6 +108,25 @@ public class AuthController {
         return "Logout successful";
     }
 
+    @GetMapping("/me")
+    public LoginResponse me(@CookieValue("accessToken")String accessToken) {
+        if(accessToken == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid access token");
+        }
+        ObjectId userID = new ObjectId(tokenService.verifyTokenAndGetUserId(accessToken));
+        User user = userRepository.findById(userID).isPresent() ? userRepository.findById(userID).get() : null;
+
+        if(user == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid access token");
+        }
+
+        return LoginResponse.builder()
+                .username(user.getUsername())
+                .profilePictureUrl(user.getProfilePictureUrl())
+                .publicList(user.getPublicList())
+                .build();
+    }
+
     private Cookie createCookie(String name, String value, int maxAge) {
         Cookie cookie = new Cookie(name, value);
 
@@ -122,25 +137,4 @@ public class AuthController {
         cookie.setAttribute("SameSite", "Lax");
         return cookie;
     }
-
-private Cookie createMetadataCookie(User user, boolean rememberMe) {
-
-    String metadata = String.format("{\"username\":\"%s\",\"profilePictureUrl\":\"%s\",\"userid\":\"%s\"}",
-            user.getUsername(),
-            user.getProfilePictureUrl() != null ? user.getProfilePictureUrl() : "",
-            user.getId().toHexString());
-
-    Cookie cookie = new Cookie("user_metadata", URLEncoder.encode(metadata, StandardCharsets.UTF_8));
-    cookie.setHttpOnly(false);
-    cookie.setSecure(false);
-    cookie.setPath("/");
-    
-    if (rememberMe) {
-        cookie.setMaxAge(refreshExpirationSeconds);
-    } else {
-        cookie.setMaxAge(-1);
-    }
-    
-    return cookie;
-}
 }
