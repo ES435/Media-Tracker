@@ -1,4 +1,4 @@
-package app.mediatracker.feature.search.client.anime;
+package app.mediatracker.feature.search.client.book;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.web.reactive.function.client.ClientResponse;
@@ -10,37 +10,32 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-class JikanAnimeClientTest {
+public class OpenLibraryClientTest {
 
     @Test
-    void searchAnime_returnsJsonResponse() {
-        // Arrange
+    void searchBook_returnsJsonResponse() {
         String jsonResponse = """
             {
               "data": [
-                { "title": "Naruto" }
+                { "title": "Hamlet" }
               ]
             }
             """;
 
         ExchangeFunction exchangeFunction = mock(ExchangeFunction.class);
-
         when(exchangeFunction.exchange(any()))
                 .thenReturn(Mono.just(ClientResponse.create(org.springframework.http.HttpStatus.OK)
-                                .header("Content-Type", "application/json")
-                                .body(jsonResponse)
-                                .build()));
+                        .header("Content-Type", "application/json")
+                        .body(jsonResponse)
+                        .build()));
 
         WebClient.Builder builder = WebClient.builder().exchangeFunction(exchangeFunction);
 
-        JikanAnimeClient client = new JikanAnimeClient(builder, "https://api.jikan.moe/v4");
+        OpenLibraryClient client = new OpenLibraryClient(builder, "https://openlibrary.org");
 
-        // Act
-        String result = client.searchAnime("naruto");
+        String result = client.searchBook("hamlet", 1);
 
-        // Assert
         assertEquals(jsonResponse, result);
         verify(exchangeFunction, times(1)).exchange(any());
     }
 }
-
