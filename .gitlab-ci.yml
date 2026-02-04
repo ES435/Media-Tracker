@@ -1,3 +1,41 @@
+
+stages:
+  - build
+
 build_library:
+  stage: build
   image: mongo:7
   script:
+    - echo "Placeholder for Mongo"
+
+build_backend:
+  stage: build
+  image: maven:3.9-eclipse-temurin-21
+  cache:
+    key: backend-m2
+    paths:
+      - .m2/repository/
+  script:
+    - cd backend
+    - mvn -B -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository -DskipTests package
+  artifacts:
+    when: on_success
+    paths:
+      - backend/target/*.jar
+
+build_frontend:
+  stage: build
+  image: node:20
+  cache:
+    key: frontend
+    paths:
+      - frontend/node_modules/
+      - frontend/.npm/
+  script:
+    - cd frontend
+    - npm ci --cache .npm --prefer-offline
+    - npm run build
+  artifacts:
+    when: on_success
+    paths:
+      - frontend/dist/
