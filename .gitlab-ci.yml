@@ -4,7 +4,6 @@ stages:
 
 build_library:
   stage: test
-  when: never #when line entfernen, sobald tests da sind
   image: maven:3.9-eclipse-temurin-21
   services:
     - name: mongo:7
@@ -13,7 +12,9 @@ build_library:
     SPRING_DATA_MONGODB_URI: "mongodb://mongo:27017/mediatracker_test"
   script:
         - echo "Mongo test template (disabled)"
-        
+  rules:
+    - when: never #when line entfernen, sobald tests da sind
+
 build_backend:
   stage: build
   image: maven:3.9-eclipse-temurin-21
