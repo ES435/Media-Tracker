@@ -3,10 +3,14 @@ stages:
   - build
 
 build_library:
-  stage: build
-  image: mongo:7
-  script:
-    - echo "Placeholder for Mongo"
+  stage: test
+  when: never #when line entfernen, sobald tests da sind
+  image: maven:3.9-eclipse-temurin-21
+  services:
+    - name: mongo:7
+      alias: mongo
+  variables:
+    SPRING_DATA_MONGODB_URI: "mongodb://mongo:27017/mediatracker_test"
 
 build_backend:
   stage: build
@@ -25,7 +29,7 @@ build_backend:
 
 build_frontend:
   stage: build
-  image: node:20
+  image: node:22
   cache:
     key: frontend
     paths:
