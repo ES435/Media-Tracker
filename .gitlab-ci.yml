@@ -1,6 +1,7 @@
 
 stages:
   - build
+  - test
 
 build_library:
   stage: test
