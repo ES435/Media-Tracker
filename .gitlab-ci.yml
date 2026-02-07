@@ -11,7 +11,9 @@ build_library:
       alias: mongo
   variables:
     SPRING_DATA_MONGODB_URI: "mongodb://mongo:27017/mediatracker_test"
-
+  script:
+        - echo "Mongo test template (disabled)"
+        
 build_backend:
   stage: build
   image: maven:3.9-eclipse-temurin-21
