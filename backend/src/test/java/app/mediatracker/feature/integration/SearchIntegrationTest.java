@@ -1,4 +1,4 @@
-package app.mediatracker.feature.search;
+package app.mediatracker.feature.integration;
 
 import app.mediatracker.feature.search.client.anime.JikanAnimeClient;
 import org.junit.jupiter.api.Test;
