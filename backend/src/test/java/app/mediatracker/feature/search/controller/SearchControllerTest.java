@@ -1,0 +1,106 @@
+package app.mediatracker.feature.search.controller;
+
+import app.mediatracker.config.TestSecurityConfig;
+import app.mediatracker.feature.search.core.dto.SearchResult;
+import app.mediatracker.feature.search.core.service.SearchService;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.List;
+import java.util.Map;
+
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anySet;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@WebMvcTest(SearchController.class)
+@ContextConfiguration(classes = {SearchController.class, TestSecurityConfig.class})
+class SearchControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private SearchService searchService;
+
+    @Test
+    void testSearchReturnsResults() throws Exception {
+        SearchResult result = new SearchResult();
+        result.setId("1");
+        result.setType("anime");
+        result.setTitle("Naruto");
+        result.setImageUrl("https://api.jikan.moe/v4/anime/1/image.jpg");
+        result.setSourceUrl("https://api.jikan.moe/v4/anime/1");
+        result.setMeta(Map.of("episodes", 220));
+
+        Mockito.when(searchService.search(anyString(), anySet(), anyInt()))
+                .thenReturn(List.of(result));
+
+        mockMvc.perform(get("/api/search")
+                        .param("q", "Naruto")
+                        .param("types", "anime")
+                        .param("limit", "10")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].title").value("Naruto"))
+                .andExpect(jsonPath("$[0].type").value("anime"))
+                .andExpect(jsonPath("$[0].meta.episodes").value(220));
+    }
+
+    @Test
+    void testSearchEmptyResults() throws Exception {
+        Mockito.when(searchService.search(anyString(), anySet(), anyInt()))
+                .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/search")
+                        .param("q", "Unknown")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json("[]"));
+    }
+
+    @Test
+    void testSearchWithNoTypesParameter() throws Exception {
+        SearchResult result = new SearchResult();
+        result.setId("2");
+        result.setType("movie");
+        result.setTitle("Inception");
+
+        Mockito.when(searchService.search(anyString(), anySet(), anyInt()))
+                .thenReturn(List.of(result));
+
+        mockMvc.perform(get("/api/search")
+                        .param("q", "Inception")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].title").value("Inception"))
+                .andExpect(jsonPath("$[0].type").value("movie"));
+    }
+
+    @Test
+    void testSearchWithEmptyTypes() throws Exception {
+        SearchResult result = new SearchResult();
+        result.setId("3");
+        result.setType("anime");
+        result.setTitle("Bleach");
+
+        Mockito.when(searchService.search(anyString(), anySet(), anyInt()))
+                .thenReturn(List.of(result));
+
+        mockMvc.perform(get("/api/search")
+                        .param("q", "Bleach")
+                        .param("types", "")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].title").value("Bleach"))
+                .andExpect(jsonPath("$[0].type").value("anime"));
+    }
+}

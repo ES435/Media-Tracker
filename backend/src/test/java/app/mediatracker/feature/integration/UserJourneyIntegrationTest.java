@@ -36,10 +36,9 @@ class UserJourneyIntegrationTest {
 
     @Test
     void userCanAddMovieToLibrary() {
-        // --- Schritt 1: User "registriert" sich ---
-        // Wir simulieren einfach einen User mit testUserId
+        // Schritt 1: User Registrierung simulieren mit testUserId
 
-        // --- Schritt 2: User speichert einen Film ---
+        // Schritt 2: User speichert einen Film
         ManualEntryCommand command = ManualEntryCommand.builder()
                 .userId(testUserId)
                 .type("movie")
@@ -54,7 +53,7 @@ class UserJourneyIntegrationTest {
 
         libraryService.addManualEntry(command);
 
-        // --- Schritt 3: Prüfen, dass der Film in der DB ist ---
+        // Schritt 3: Prüfen, dass der Film in der DB ist
         List<UserLibraryEntry> entries = repository.findByUserId(testUserId);
         assertEquals(1, entries.size(), "Es sollte genau ein Eintrag existieren");
 
