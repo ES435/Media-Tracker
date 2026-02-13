@@ -18,7 +18,8 @@ export default function MediaCard({ item, selected, onSelect }: MediaCardProps){
     const [added, setAdded] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const coverSrc = item?.imageUrl?.trim() ? item.imageUrl : "/assets/profile-picture.png"; // HIER MUSS ANDERES COVER
-    const { user: loggedInUser, fetchWithRefresh } = useAuth();
+    //const { user: loggedInUser, fetchWithRefresh } = useAuth(); //TODO: user: loggedInUser wr rot und da stnad wird nie benutzt, hab es man auskommentiert faslls es einen sinn hatte warum es dort war, schaut es euch mal an wenn es geht ansonsten löscht die Zeile
+    const { fetchWithRefresh } = useAuth();
 
     async function addToLibrary() {
         const searchResultPayload = {
