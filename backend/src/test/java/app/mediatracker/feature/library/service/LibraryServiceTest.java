@@ -19,7 +19,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 class LibraryServiceTest {
@@ -42,7 +45,8 @@ class LibraryServiceTest {
         return UserLibraryEntry.builder()
                 .id("entry-" + externalId)
                 .userId(userId)
-                .mediaType("BOOK")
+                // WICHTIG: lowercase 'book' passend zu deinen Testdaten
+                .mediaType("book")
                 .externalId(externalId)
                 .title("Old Title")
                 .build();
@@ -50,7 +54,8 @@ class LibraryServiceTest {
 
     private SearchResult sampleSearchResult() {
         return SearchResult.builder()
-                .type("BOOK")
+                // WICHTIG: lowercase 'book'
+                .type("book")
                 .id("123")
                 .title("New Book")
                 .imageUrl("http://image.com/book.jpg")
@@ -71,65 +76,71 @@ class LibraryServiceTest {
         assertThat(responses.get(0).getMediaItem().getExternalId()).isEqualTo(entry.getExternalId());
     }
 
-
     @Test
     void addOrUpdateEntryFromSearchResult_createsNewIfNotExist() {
         SearchResult sr = sampleSearchResult();
-        when(repository.findByUserIdAndMediaTypeAndExternalId(userId, sr.getType(), sr.getId()))
+
+        // Mock: Wenn wir nach 'book' und '123' suchen, finden wir nichts -> neues anlegen
+        when(repository.findByUserIdAndMediaTypeAndExternalId(eq(userId), eq("book"), eq("123")))
                 .thenReturn(Optional.empty());
 
-        // save korrekt mocken
+        // Save Mock: gibt das Objekt zurück, das reingegeben wurde
         when(repository.save(any(UserLibraryEntry.class)))
-                .thenAnswer(invocation -> invocation.getArgument(0));
+                .thenAnswer(invocation -> {
+                    UserLibraryEntry entry = invocation.getArgument(0);
+                    entry.setId("generated-id");
+                    return entry;
+                });
 
         LibraryEntryResponse response = service.addOrUpdateEntryFromSearchResult(
                 userId, sr, LibraryEntryStatus.PLANNED, 5, "note");
 
+        // Verify Capture
         ArgumentCaptor<UserLibraryEntry> captor = ArgumentCaptor.forClass(UserLibraryEntry.class);
         verify(repository).save(captor.capture());
 
-        assertThat(captor.getValue().getExternalId()).isEqualTo("123");
-        assertThat(captor.getValue().getStatus()).isEqualTo(LibraryEntryStatus.PLANNED);
-        assertThat(captor.getValue().getNotes()).isEqualTo("note");
-
+        UserLibraryEntry saved = captor.getValue();
+        assertThat(saved.getExternalId()).isEqualTo("123");
+        assertThat(saved.getMediaType()).isEqualTo("book");
+        assertThat(saved.getStatus()).isEqualTo(LibraryEntryStatus.PLANNED);
+        assertThat(saved.getNotes()).isEqualTo("note");
         assertThat(response.getMediaItem().getTitle()).isEqualTo("New Book");
     }
-
 
     @Test
     void addManualEntry_createsNewManualEntry() {
         ManualEntryCommand cmd = ManualEntryCommand.builder()
                 .userId(userId)
-                .type("MOVIE")
+                .type("movie")
                 .title("Manual Movie")
                 .status(LibraryEntryStatus.COMPLETED)
                 .rating(9)
                 .notes("Manual notes")
                 .build();
 
-        when(repository.findByUserIdAndMediaTypeAndExternalId(any(), any(), any()))
-                .thenReturn(Optional.empty());
-
-        // save korrekt mocken
+        // Save Mock
         when(repository.save(any(UserLibraryEntry.class)))
-                .thenAnswer(invocation -> invocation.getArgument(0));
+                .thenAnswer(invocation -> {
+                    UserLibraryEntry entry = invocation.getArgument(0);
+                    entry.setId("manual-id-db");
+                    return entry;
+                });
 
         LibraryEntryResponse response = service.addManualEntry(cmd);
 
         assertThat(response.getMediaItem().getTitle()).isEqualTo("Manual Movie");
         assertThat(response.getStatus()).isEqualTo(LibraryEntryStatus.COMPLETED);
-        assertThat(response.getMediaItem().getType()).isEqualTo("MOVIE");
+        assertThat(response.getMediaItem().getType()).isEqualTo("movie");
+        // Check if external ID starts with manual-
         assertThat(response.getMediaItem().getExternalId()).startsWith("manual-");
     }
-
 
     @Test
     void updateManualEntry_updatesExistingManualEntry() {
         UserLibraryEntry existing = sampleEntry("manual-456");
         existing.setExternalId("manual-456");
-        when(repository.findById("manual-456")).thenReturn(Optional.of(existing));
 
-        // save korrekt mocken
+        when(repository.findById("manual-456")).thenReturn(Optional.of(existing));
         when(repository.save(any(UserLibraryEntry.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -147,7 +158,7 @@ class LibraryServiceTest {
 
     @Test
     void updateManualEntry_nonManualEntry_throwsForbidden() {
-        UserLibraryEntry existing = sampleEntry("123");
+        UserLibraryEntry existing = sampleEntry("123"); // ID is not starting with manual-
         when(repository.findById("123")).thenReturn(Optional.of(existing));
 
         ManualEntryCommand cmd = ManualEntryCommand.builder()
@@ -163,11 +174,12 @@ class LibraryServiceTest {
     @Test
     void updateManualEntry_wrongUser_throwsForbidden() {
         UserLibraryEntry existing = sampleEntry("manual-789");
-        existing.setUserId(new ObjectId()); // anderer User
+        existing.setUserId(new ObjectId()); // Anderer User
+
         when(repository.findById("manual-789")).thenReturn(Optional.of(existing));
 
         ManualEntryCommand cmd = ManualEntryCommand.builder()
-                .userId(userId)
+                .userId(userId) // Wir versuchen mit unserem User zu updaten
                 .title("Update")
                 .build();
 
@@ -175,7 +187,6 @@ class LibraryServiceTest {
                 .isInstanceOf(ResponseStatusException.class)
                 .hasMessageContaining("Not your entry");
     }
-
 
     @Test
     void removeEntry_deletesOnlyIfUserMatches() {

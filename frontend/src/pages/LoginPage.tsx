@@ -52,8 +52,12 @@ export default function LoginPage() {
             await login(username, password, isRememberMe)
             navigate("/main")
         } catch (err) {
-            // @ts-ignore
-            setError(err.message)
+            // FIX: Proper error checking instead of ts-ignore
+            if (err instanceof Error) {
+                setError(err.message)
+            } else {
+                setError("An unknown error occurred")
+            }
         }
     }
 

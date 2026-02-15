@@ -52,10 +52,11 @@ export default function MediaCard({ item, selected, onSelect }: MediaCardProps){
         // Ensures a consistent ID mapping from various backend formats
         const searchResultPayload = {
             ...item,
-            id: item.id || (item as any).mediaId || (item as any).externalId
+            // Resolved: removed 'as any' casts because types.ts now supports these fields
+            id: item.id || item.mediaId || item.externalId
         };
 
-        const payload: any = {
+        const payload = {
             status,
             notes,
             searchResult: searchResultPayload,
@@ -185,8 +186,12 @@ export default function MediaCard({ item, selected, onSelect }: MediaCardProps){
                                 try {
                                     await addToLibrary();
                                     setAdded(true);
-                                } catch (err: any) {
-                                    setError(err?.message ?? "Failed");
+                                } catch (err: unknown) {
+                                    if (err instanceof Error) {
+                                        setError(err.message);
+                                    } else {
+                                        setError("An unknown error occurred");
+                                    }
                                 } finally {
                                     setSaving(false);
                                 }
