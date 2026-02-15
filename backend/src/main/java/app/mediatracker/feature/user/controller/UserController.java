@@ -11,10 +11,9 @@ import java.security.Principal;
 
 
 /**
- * REST-Controller für die Suche von Usern und das Anzeigen derer Account-Pages.
+ * REST controller for searching users and displaying their account pages.
  * <p>
- * Stellt Endpunkte zum Suchen und Anzeigen von existierenden Usern bereit.
- * Das Frontend greift über diese Endpunkte zu.
+ * Exposes endpoints to search for existing users and to fetch data for a user's public profile page.
  * </p>
  */
 @RestController

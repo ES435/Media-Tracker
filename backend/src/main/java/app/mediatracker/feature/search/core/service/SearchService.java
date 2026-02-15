@@ -6,18 +6,18 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Zentrale Service-Schnittstelle für die Suche über mehrere Medientypen.
- * Zweck: Kapselt die Logik, alle passenden Provider abzufragen und die Ergebnisse
- * in eine gemeinsame Liste zu kombinieren.
+ * Central service interface for searching across multiple media types.
+ * Purpose: Encapsulates the logic to query all matching providers and
+ * combine their results into a single list.
  */
 public interface SearchService {
     /**
-     * Sucht Inhalte über alle passenden Provider.
+     * Searches content across all matching providers.
      *
-     * @param searchQuery            Suchbegriff
-     * @param types        erlaubte Typen (z. B. "anime"); null/leer = alle Typen
-     * @param limitPerType maximale Trefferzahl pro Typ/Provider
-     * @return kombinierte, nach Einfüge-Reihenfolge sortierte Trefferliste (duplikatbereinigt)
+     * @param searchQuery search term
+     * @param types allowed media types (e.g., "anime"); null/empty = all types
+     * @param limitPerType maximum number of results per type/provider
+     * @return combined list of results in insertion order (duplicates removed)
      */
     List<SearchResult> search(String searchQuery, Set<String> types, int limitPerType);
 }

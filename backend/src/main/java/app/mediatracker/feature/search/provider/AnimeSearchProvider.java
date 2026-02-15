@@ -15,10 +15,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Such-Provider für Anime-Inhalte (Jikan API für MyAnimeList).
- * Zweck: Ruft die Jikan-API auf und übersetzt die Ergebnisse in das interne
- * {@link SearchResult}-Format, damit das Frontend sie einheitlich darstellen kann.
- * Aktivierung: Wird nur geladen, wenn "search.anime.enabled=true" gesetzt ist.
+ * Search provider for anime content (Jikan API for MyAnimeList).
+ * Purpose: Calls the Jikan API and maps the results into the internal
+ * {@link SearchResult} format so the frontend can render them uniformly.
+ * Activation: Loaded only when the property "search.anime.enabled=true" is set.
  */
 @Slf4j
 @Component
@@ -29,10 +29,10 @@ public class AnimeSearchProvider implements SearchProvider {
     private final ObjectMapper mapper; // von Spring Boot bereitgestellt
 
     /**
-     * Konstruktor mit Abhängigkeiten.
+     * Constructor with dependencies.
      *
-     * @param jikan  HTTP-Client für die Jikan-API
-     * @param mapper Jackson-Mapper zum Parsen der JSON-Antworten
+     * @param jikan  HTTP client for the Jikan API
+     * @param mapper Jackson mapper to parse JSON responses
      */
     public AnimeSearchProvider(JikanAnimeClient jikan, ObjectMapper mapper) {
         this.jikan = jikan;
@@ -40,20 +40,20 @@ public class AnimeSearchProvider implements SearchProvider {
     }
 
     /**
-     * Liefert den Typnamen dieses Providers.
+     * Returns this provider's media type name.
      *
      * @return "anime"
      */
     @Override public String getType() { return "anime"; }
 
     /**
-     * Sucht Anime über die Jikan-API.
-     * Verhalten: Parst die Antwort, extrahiert relevante Felder und liefert
-     * eine normalisierte Liste. Fehler werden geloggt und führen zu einer leeren Liste.
+     * Searches anime via the Jikan API.
+     * Behavior: Parses the response, extracts relevant fields, and returns
+     * a normalized list. Errors are logged and result in an empty list.
      *
-     * @param searchQuery     Suchbegriff
-     * @param limit maximale Anzahl der Treffer
-     * @return Liste von {@link SearchResult}
+     * @param searchQuery search term
+     * @param limit maximum number of results
+     * @return list of {@link SearchResult}
      */
     @Override
     public List<SearchResult> search(String searchQuery, int limit) {

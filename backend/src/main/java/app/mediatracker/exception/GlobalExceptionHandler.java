@@ -13,6 +13,12 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Global exception handler for REST endpoints.
+ *
+ * Maps common domain and validation exceptions to meaningful HTTP responses
+ * with a consistent JSON error body.
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 

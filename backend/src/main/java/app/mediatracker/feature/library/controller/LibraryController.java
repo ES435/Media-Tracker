@@ -23,9 +23,9 @@ import java.security.Principal;
 import java.util.List;
 
 /**
- * REST-Controller für die persönliche Medienbibliothek.
+ * REST controller for the personal media library.
  * <p>
- * Stellt Endpunkte zum Lesen, Anlegen/Aktualisieren und Löschen von Bibliothekseinträgen bereit.
+ * Exposes endpoints to read, create/update, and delete library entries.
  * </p>
  */
 @RestController
@@ -37,9 +37,9 @@ public class LibraryController {
     private final LibraryService libraryService;
 
     /**
-     * Liefert die komplette Bibliothek des aktuell eingeloggten Users.
+     * Returns the complete library of the currently authenticated user.
      *
-     * @return 200 OK mit allen Einträgen des Users in Anzeigeform
+     * @return 200 OK with all entries of the user in display format
      */
     @GetMapping
     public ResponseEntity<List<LibraryEntryResponse>> getLibrary(Principal principal) {
@@ -49,7 +49,7 @@ public class LibraryController {
     }
 
     /**
-     * Paginierte Ansicht der Bibliothek, standardmäßig nach updatedAt DESC sortiert.
+     * Paginated view of the library, sorted by updatedAt DESC by default.
      */
     @GetMapping("/page")
     public ResponseEntity<Page<LibraryEntryResponse>> getLibraryPage(
@@ -63,10 +63,10 @@ public class LibraryController {
     }
 
     /**
-     * Legt einen neuen Bibliothekseintrag an oder aktualisiert einen bestehenden (basierend auf SearchResult).
+     * Creates a new library entry or updates an existing one (based on a SearchResult).
      *
-     * @param request Payload mit Status/Rating/Notizen sowie dem ausgewählten SearchResult
-     * @return 200 OK mit dem gespeicherten/aktualisierten Eintrag
+     * @param request payload with status/rating/notes and the selected SearchResult
+     * @return 200 OK with the saved/updated entry
      */
     @PostMapping()
     public ResponseEntity<LibraryEntryResponse> addOrUpdateEntry(@Valid @RequestBody AddLibraryEntryRequest request, Principal principal) {
@@ -86,11 +86,11 @@ public class LibraryController {
     }
 
     /**
-     * Legt basierend auf Manual Entry Daten einen neuen Bibliothekseintrag an.
-     * Nutzt das Clean Code Command Pattern.
+     * Creates a new library entry based on manual input data.
+     * Uses the Clean Code Command Pattern.
      *
-     * @param request Payload mit den manuellen Daten
-     * @return 200 OK mit dem gespeicherten Eintrag
+     * @param request payload with the manual data
+     * @return 200 OK with the saved entry
      */
     @PostMapping("/manualEntry")
     public ResponseEntity<LibraryEntryResponse> addManualEntry(

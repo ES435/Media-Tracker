@@ -16,6 +16,12 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
+/**
+ * Seeds demo users and library entries into MongoDB on application startup.
+ *
+ * Behavior: Runs only when the users collection is empty. For each generated demo user,
+ * a set of demo media library entries is created and associated with the user's ID.
+ */
 @Configuration
 public class DataSeeder {
     @Bean

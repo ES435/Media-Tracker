@@ -21,8 +21,8 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Optional;
 
 /**
- * REST-Controller für Authentifizierungs-Endpunkte.
- * Bietet Funktionalitäten für Login, Registrierung, Logout sowie die Verwaltung von Access- und Refresh-Tokens.
+ * REST controller for authentication endpoints.
+ * Provides login, registration, logout, and access/refresh token management.
  */
 @RestController
 @RequestMapping("/auth")
@@ -36,14 +36,14 @@ public class AuthController {
     private final int refreshExpirationSeconds;
 
     /**
-     * Konstruktor für den AuthController.
+     * Constructor for AuthController.
      *
-     * @param authService Service für die Authentifizierungslogik
-     * @param tokenService Service zur Generierung von JWTs
-     * @param refreshTokenService Service zur Verwaltung von Refresh-Tokens in der Datenbank
-     * @param userRepository Repository für den Zugriff auf Benutzerdaten
-     * @param accessExpirationSeconds Ablaufzeit für Access-Tokens in Sekunden
-     * @param refreshExpirationSeconds Ablaufzeit für Refresh-Tokens in Sekunden
+     * @param authService service for authentication logic
+     * @param tokenService service for generating JWTs
+     * @param refreshTokenService service for managing refresh tokens in the database
+     * @param userRepository repository for accessing user data
+     * @param accessExpirationSeconds expiration time for access tokens in seconds
+     * @param refreshExpirationSeconds expiration time for refresh tokens in seconds
      */
     public AuthController(AuthService authService, TokenService tokenService, RefreshTokenService refreshTokenService, UserRepository userRepository, @Value("${app.jwt.access-token-expiration-in-seconds}") int accessExpirationSeconds, @Value("${app.jwt.refresh-token-expiration-in-seconds}") int refreshExpirationSeconds) {
         this.authService = authService;
@@ -55,12 +55,12 @@ public class AuthController {
     }
 
     /**
-     * Verarbeitet den Login-Prozess eines Benutzers. Authentifiziert den Benutzer anhand der Anmeldedaten,
-     * generiert Access- und Refresh-Tokens und fügt diese als Cookies der Antwort hinzu.
+     * Handles user login: authenticates the user, generates access and refresh tokens,
+     * and attaches them as cookies to the HTTP response.
      *
-     * @param loginRequest die Login-Anfrage mit Benutzernamen, Passwort und optionalem "Remember Me"-Flag
-     * @param response die HTTP-Antwort, der die Cookies hinzugefügt werden
-     * @return ein ResponseEntity-Objekt mit einer Erfolgsmeldung bei erfolgreichem Login
+     * @param loginRequest the login payload containing username, password and optional remember-me flag
+     * @param response the HTTP response to which cookies will be added
+     * @return a ResponseEntity with a success message upon successful login
      */
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
@@ -76,14 +76,14 @@ public class AuthController {
             response.addCookie(createCookie("refreshToken", refreshToken, refreshMaxAge));
 
 
-            return ResponseEntity.ok("Login erfolgreich.");
+            return ResponseEntity.ok("Login successful.");
     }
 
     /**
-     * Verarbeitet Registrierungsanfragen für neue Benutzer.
+     * Processes registration requests for new users.
      *
-     * @param request die Registrierungsanfrage mit Benutzername, Passwort und Passwortwiederholung
-     * @return ein {@code ResponseEntity} mit einer Erfolgsmeldung, wenn die Registrierung erfolgreich war
+     * @param request the registration payload with username, password, and password confirmation
+     * @return a ResponseEntity with a success message if registration was successful
      */
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegistrationRequest request) {
@@ -93,15 +93,14 @@ public class AuthController {
     }
 
     /**
-     * Erneuert den Access- und Refresh-Token für einen Benutzer.
-     * Die Methode prüft die Gültigkeit des übergebenen Refresh-Token-Cookies, generiert bei Gültigkeit
-     * neue Tokens und aktualisiert die Cookies in der Antwort. Falls der Token ungültig ist,
-     * werden bestehende Cookies gelöscht.
+     * Refreshes the access and refresh tokens for a user.
+     * Validates the provided refresh token from the cookie; if valid, issues new tokens and
+     * updates the cookies on the response. If invalid, existing cookies are cleared.
      *
-     * @param refreshTokenCookie der aus dem "refreshToken"-Cookie extrahierte Token
-     * @param response das HttpServletResponse-Objekt zum Aktualisieren der Cookies
-     * @return ein ResponseEntity mit einer Erfolgsmeldung bei erfolgreicher Erneuerung
-     * @throws ResponseStatusException wenn der Refresh-Token ungültig ist oder nicht gefunden wurde
+     * @param refreshTokenCookie the token extracted from the "refreshToken" cookie
+     * @param response the HttpServletResponse used to update the cookies
+     * @return a ResponseEntity with a success message upon successful refresh
+     * @throws ResponseStatusException if the refresh token is invalid or not found
      */
     @PostMapping("/refresh")
     public ResponseEntity<String> refresh(@CookieValue("refreshToken") String refreshTokenCookie, HttpServletResponse response) {
@@ -124,13 +123,13 @@ public class AuthController {
     }
 
     /**
-     * Meldet den Benutzer ab. Löscht den Refresh-Token aus der Datenbank und entwertet die
-     * entsprechenden Cookies im Client (Browser).
+     * Logs the user out. Deletes the refresh token from the database and invalidates the
+     * corresponding cookies on the client (browser).
      *
-     * @param refreshTokenCookie der aktuelle Refresh-Token aus dem Cookie
-     * @param response das HttpServletResponse-Objekt zum Löschen der Cookies
-     * @return eine ResponseEntity mit einer Erfolgsmeldung
-     * @throws ResponseStatusException wenn der Refresh-Token ungültig ist
+     * @param refreshTokenCookie the current refresh token from the cookie
+     * @param response the HttpServletResponse used to clear the cookies
+     * @return a ResponseEntity with a success message
+     * @throws ResponseStatusException if the refresh token is invalid
      */
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@CookieValue("refreshToken") String refreshTokenCookie, HttpServletResponse response) {
@@ -149,11 +148,11 @@ public class AuthController {
     }
 
     /**
-     * Verarbeitet den /me Endpunkt, um Benutzerinformationen basierend auf dem Access-Token abzurufen.
+     * Handles the /me endpoint to retrieve user information based on the access token.
      *
-     * @param accessToken der aus dem "accessToken"-Cookie extrahierte Token.
-     * @return ein {@link LoginResponse} Objekt mit Benutzername, Profilbild-URL und Status der öffentlichen Liste.
-     * @throws ResponseStatusException wenn der Token ungültig ist oder der Benutzer nicht gefunden wurde.
+     * @param accessToken the token extracted from the "accessToken" cookie
+     * @return a {@link LoginResponse} with username, profile image URL, and public-list flag
+     * @throws ResponseStatusException if the token is invalid or the user cannot be found
      */
     @GetMapping("/me")
     public LoginResponse me(@CookieValue("accessToken")String accessToken) {
@@ -175,15 +174,13 @@ public class AuthController {
     }
 
     /**
-     * Erstellt ein neues HTTP-Cookie mit spezifischen Attributen.
-     * Das Cookie wird als HttpOnly markiert, verwendet die SameSite-Policy "Lax",
-     * setzt den Pfad auf "/" und setzt das Secure-Flag auf false.
+     * Creates a new HTTP cookie with specific attributes.
+     * The cookie is marked HttpOnly, uses SameSite=Lax, path "/", and Secure=false.
      *
-     * @param name der Name des Cookies
-     * @param value der Wert des Cookies
-     * @param maxAge die maximale Lebensdauer des Cookies in Sekunden; ein Wert kleiner als Null
-     *               bedeutet, dass das Cookie nicht dauerhaft gespeichert wird (Session-Cookie).
-     * @return die neu erstellte {@code Cookie} Instanz
+     * @param name the cookie name
+     * @param value the cookie value
+     * @param maxAge max age in seconds; values < 0 create a session cookie (not persisted)
+     * @return the newly created {@code Cookie}
      */
     private Cookie createCookie(String name, String value, int maxAge) {
         Cookie cookie = new Cookie(name, value);

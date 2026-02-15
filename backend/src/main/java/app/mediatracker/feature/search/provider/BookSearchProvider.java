@@ -15,10 +15,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Such-Provider für Buch-Inhalte (OpenLibrary API).
- * Zweck: Ruft die OpenLibrary API) auf und übersetzt die Ergebnisse in das interne
- * {@link SearchResult}-Format, damit das Frontend sie einheitlich darstellen kann.
- * Aktivierung: Wird nur geladen, wenn "search.book.enabled=true" gesetzt ist.
+ * Search provider for book content (OpenLibrary API).
+ * Purpose: Calls OpenLibrary and maps results into the internal {@link SearchResult}
+ * format so the frontend can render them uniformly.
+ * Activation: Loaded only when the property "search.book.enabled=true" is set.
  */
 @Slf4j
 @Component
@@ -34,7 +34,7 @@ public class BookSearchProvider implements SearchProvider {
     }
 
     /**
-     * Liefert den Typnamen dieses Providers.
+     * Returns this provider's media type name.
      *
      * @return "book"
      */
@@ -44,13 +44,13 @@ public class BookSearchProvider implements SearchProvider {
     }
 
     /**
-     * Sucht Bücher über die OpenLibrary API.
-     * Verhalten: Parst die Antwort, extrahiert relevante Felder und liefert
-     * eine normalisierte Liste. Fehler werden geloggt und führen zu einer leeren Liste.
+     * Searches books via the OpenLibrary API.
+     * Behavior: Parses the response, extracts relevant fields, and returns
+     * a normalized list. Errors are logged and result in an empty list.
      *
-     * @param searchQuery     Suchbegriff
-     * @param limit maximale Anzahl der Treffer
-     * @return Liste von {@link SearchResult}
+     * @param searchQuery search term
+     * @param limit maximum number of results
+     * @return list of {@link SearchResult}
      */
     @Override
     public List<SearchResult> search(String searchQuery, int limit) {

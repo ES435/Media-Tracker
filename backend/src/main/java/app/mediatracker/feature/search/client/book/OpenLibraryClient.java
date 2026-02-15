@@ -6,12 +6,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 /**
- * HTTP-Client für die OpenLibrary API.
+ * HTTP client for the OpenLibrary API.
  *
- * Zweck: Kapselt die HTTP-Kommunikation und bietet eine einfache Methode,
- * um Bücher-Suche als JSON-String abzurufen.
+ * Purpose: Encapsulates HTTP communication and provides a simple method
+ * to retrieve book search results as a JSON string.
  *
- * Konfiguration: Basis-URL kann über "openlibrary.base-url" überschrieben werden.
+ * Configuration: Base URL can be overridden via "openlibrary.base-url".
  */
 @Component
 public class OpenLibraryClient {

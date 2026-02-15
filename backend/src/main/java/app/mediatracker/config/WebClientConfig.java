@@ -6,18 +6,18 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 
 /**
- * Konfiguration für HTTP-Clients.
+ * Configuration for HTTP clients.
  *
- * Zweck: Stellt einen vorkonfigurierten {@link WebClient.Builder} bereit,
- * damit Clients (z. B. API-Clients) einheitliche Defaults verwenden können.
+ * Purpose: Exposes a preconfigured {@link WebClient.Builder} so HTTP clients (e.g., API clients)
+ * can share consistent defaults.
  */
 @Configuration
 public class WebClientConfig {
     /**
-     * Gemeinsamer WebClient-Builder.
+     * Shared WebClient builder.
      *
-     * Hinweis: Setzt einen sprechenden User-Agent für externe APIs.
-     * Weitere Defaults (Timeouts, Logging, Proxy) können hier zentral ergänzt werden.
+     * Note: Sets a descriptive User-Agent for external APIs.
+     * Additional defaults (timeouts, logging, proxy) can be configured here centrally.
      */
     @Bean
     public WebClient.Builder webClientBuilder() {

@@ -2,21 +2,37 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] Finished version
+## [1.0.0] - 2026-02-15
 
-### Added
+###  Added
+- **CI/CD Pipeline:** Implemented a robust GitLab CI/CD pipeline (`.gitlab-ci.yml`) featuring:
+    - **Linting:** Static code analysis for Frontend (ESLint) and Backend (Maven Validate).
+    - **Testing:** Automated Unit and Integration tests with JUnit reporting.
+    - **Packaging:** Docker image creation using a specialized Docker-in-Docker (dind) configuration.
+- **Frontend Architecture:**
+    - Introduced **React Router** (`react-router-dom`) for proper client-side routing.
+    - Implemented **AuthContext** (`AuthContext.tsx`) to manage global user state and session persistence.
+- **User Features:**
+    - **User Profile Page:** New dynamic page (`/user/:username`) displaying a user's avatar and their public media library.
+    - **Library Management:** Added ability to save items to the library directly from search results via a new slide-out panel in `MediaCard`.
+- **Backend Security:** Implemented **Refresh Token Rotation** logic (`RefreshTokenService`) to securely handle long-lived sessions.
+- **Test Infrastructure:** Added `de.flapdoodle.embed.mongo` to allow integration tests to run in isolation without requiring an external database container.
 
-- 
+###  Changed
+- **Backend Architecture:** Refactored project structure to follow a **"Package-by-Feature"** layout (e.g., `feature.auth`, `feature.library`, `feature.search`) for better modularity.
+- **Authentication Flow:** Switched from simple JWT returning to **HttpOnly Cookies** (`accessToken`, `refreshToken`) to enhance security and prevent XSS attacks.
+- **Docker Configuration:**
+    - Optimized `Dockerfile`s using multi-stage builds (reducing image size).
+    - Updated `docker-compose.yml` to include **Healthchecks** ensuring the Database is ready before the Backend starts.
+    - Adjusted CI/CD Docker jobs to use `tcp://localhost:2375` to fix connection issues on Kubernetes runners.
+    - Made Docker build stages non-blocking (`allow_failure: true`) to ensure pipeline stability despite infrastructure fluctuations.
+- **Frontend Types:** Enhanced TypeScript definitions in `types.ts` to include `externalId`, `mediaId`, and stricter `User` types.
 
-
-### Changed
-
-- 
-
-
-### Removed
-
-- 
+###  Fixed
+- **Pipeline Workflow:** Resolved issues where Merge Request pipelines were blocked or duplicated.
+- **Integration Tests:** Fixed failing tests in `LibraryControllerTest` and `SearchIntegrationTest` by correcting Mockito matchers and case-sensitivity issues.
+- **Frontend Linting:** Resolved various ESLint warnings and removed unsafe `any` casts in `MediaCard.tsx`.
+- **Database Consistency:** Fixed `ObjectId` mapping issues between the User entity and the authentication token generation.
 
 
 ## [0.1.1] - 2026-01-18
