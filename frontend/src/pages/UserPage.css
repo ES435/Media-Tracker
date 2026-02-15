@@ -1,4 +1,16 @@
-
+/**
+ * Styling für das UserPage-Layout.
+ *
+ * Definiert seiten-spezifische Layout-Anpassungen für die Nutzerprofil-Ansicht.
+ * Styles werden über die `.UserPage`-Klasse begrenzt, um globale Layout-Definitionen
+ * nicht zu beeinflussen.
+ *
+ * Fokus:
+ * - Grid-Area-Positionierung (header, navbar, content)
+ * - Darstellung des Profilbilds
+ * - Layout der Filter-Steuerung
+ * - Ausrichtung des Media-Grids
+ */
 
 .UserPage #header {
     grid-area: header;

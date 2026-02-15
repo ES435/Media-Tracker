@@ -2,6 +2,20 @@ import { useMemo, useState } from "react";
 import MediaCard from "./MediaCard";
 import type { UserMedia, UserMediaSortOption, UserMediaStatus } from "./types";
 
+/**
+ * UserPageContent-Komponente.
+ *
+ * Verantwortlichkeit:
+ * - Rendert die Medienbibliothek des Nutzers als Grid aus MediaCards.
+ * - Bietet client-seitige Filterung nach Medientyp, Status und Titelsuche.
+ * - Verwaltet lokalen UI-Auswahlzustand für aufgeklappte Karten.
+ *
+ * Architektonische Rolle:
+ * - Komponente der Präsentationsschicht.
+ * - Erhält Daten und Filter-State über Props.
+ * - Führt In-Memory-Filterung aus (keine Backend-Kommunikation).
+ */
+
 type Props = {
     items: UserMedia[];
     searchQuery: string;
@@ -19,8 +33,20 @@ export default function UserPageContent({
                                             onSortTypeChange,
                                             onMediaStatusChange,
                                         }: Props) {
+
+    // Verfolgt, welcher Bibliotheks-Eintrag aktuell ausgewählt/aufgeklappt ist
     const [selectedId, setSelectedId] = useState<string | null>(null);
 
+
+    /**
+     * Berechnet die gefilterte Liste der Nutzer-Medieneinträge basierend auf:
+     * - ausgewähltem Medientyp (Sort-/Typ-Filter)
+     * - ausgewähltem Status-Filter
+     * - Suchanfrage (Abgleich mit dem Medientitel)
+     *
+     * Memoisiert, um die Filter nicht bei jedem Re-Render neu zu berechnen,
+     * wenn sich die Abhängigkeiten nicht verändert haben.
+     */
     const filtered = useMemo(() => {
         const q = searchQuery.trim().toLowerCase();
 
@@ -42,6 +68,7 @@ export default function UserPageContent({
     return (
         <>
             <div className="sort-options">
+                {/* Medientyp-Filter */}
                 <select
                     className="sort-button"
                     value={selectedSortType}
@@ -57,6 +84,7 @@ export default function UserPageContent({
                     <option value="series">Series</option>
                 </select>
 
+                {/* Status filter */}
                 <select
                     className="sort-button"
                     value={selectedMediaStatus}
@@ -70,6 +98,7 @@ export default function UserPageContent({
                 </select>
             </div>
 
+            // Empty-State-Feedback, wenn keine Einträge zu den aktuellen Filtern passen
             {filtered.length === 0 ? (
                 <div className="content-loading">
                     No entries match your filters.

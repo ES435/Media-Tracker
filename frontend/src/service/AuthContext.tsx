@@ -2,6 +2,18 @@ import { createContext, useContext, useState, useEffect, useCallback } from "rea
 import type { ReactNode } from "react";
 import type { User } from "../components/types.ts";
 
+/**
+ * AuthContext / AuthProvider.
+ *
+ * Stellt globalen Authentifizierungs-State und Hilfsfunktionen für das Frontend bereit.
+ * Zentralisiert das Session-Handling (aktueller Nutzer, Logout) und bietet einen Fetch-Wrapper,
+ * der Requests nach einem Refresh einer abgelaufenen Session erneut versucht.
+ *
+ * Architektonische Rolle:
+ * - Geteilter Anwendungs-Service, der aus jeder Komponente über `useAuth()` erreichbar ist.
+ * - Verhindert duplizierte Auth-/Session-Logik über Seiten und UI-Komponenten hinweg.
+ */
+
 interface AuthContextType {
     user: (User & { userid: string }) | null;
     setUser: (user: (User & { userid: string }) | null) => void;
@@ -14,9 +26,24 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+    // Hält authentifizierte Nutzerdaten (null, wenn nicht eingeloggt)
     const [user, setUser] = useState<(User & { userid: string }) | null>(null);
+
+    // Gibt an, ob der initiale Auth-Check noch läuft
     const [isLoading, setIsLoading] = useState(true);
+
+    // Geteiltes Promise, um mehrere Refresh-Requests parallel zu vermeiden
     let refreshPromise: Promise<void> | null = null;
+
+    /**
+     * Wrappt `fetch`, sodass Requests Cookies enthalten und bei HTTP 401 automatisch
+     * einmal nach einem Session-Refresh erneut versucht werden.
+     *
+     * @param url - Ziel-URL (Backend-Endpunkt)
+     * @param options - Standard-Fetch-Optionen (method, headers, body, ...)
+     * @returns Die finale Fetch-Response (entweder initial oder erneut versucht)
+     * @throws Error wenn der Refresh fehlschlägt und die Session als abgelaufen gilt
+     */
 
     const fetchWithRefresh = async (url: string, options: RequestInit = {}) => {
         let response = await fetch(url, {
@@ -38,6 +65,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return response;
     };
 
+    /**
+     * Lädt den aktuell authentifizierten Nutzer aus dem Backend (`/auth/me`).
+     * Setzt `user` entsprechend und beendet die initiale Ladephase.
+     */
+
     const refreshUser = useCallback(async () => {
         try {
             const response = await fetchWithRefresh("http://localhost:8080/auth/me");
@@ -55,9 +87,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     }, []);
 
+    /**
+     * Führt den initialen Auth-Check einmal beim Mounten des Providers aus.
+     */
+
     useEffect(() => {
         refreshUser();
     }, [refreshUser]);
+
+    /**
+     * Loggt den Nutzer lokal aus und informiert das Backend, die Session zu invalidieren.
+     * Nach dem Logout ist `user` immer auf null gesetzt.
+     */
 
     const logout = async () => {
         setUser(null);
@@ -71,6 +112,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             console.error("Logout failed", e);
         }
     };
+
+    /**
+     * Fordert eine aktualisierte Session / ein aktualisiertes Token beim Backend an (`/auth/refresh`).
+     * Verwendet ein geteiltes Promise, um parallele Refresh-Aufrufe zu verhindern.
+     *
+     * @returns Ein Promise, das auflöst, wenn der Refresh erfolgreich war
+     * @throws Error wenn der Refresh fehlschlägt
+     */
 
     async function refreshToken() {
         if (refreshPromise) return refreshPromise;
@@ -97,6 +146,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         </AuthContext.Provider>
     );
 }
+
+/**
+ * React-Hook, um Authentifizierungs-State und Helper zu nutzen.
+ *
+ * @throws Error falls außerhalb eines AuthProviders verwendet
+ */
 
 export function useAuth() {
     const context = useContext(AuthContext);

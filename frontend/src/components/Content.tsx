@@ -2,6 +2,20 @@ import MediaCard from "./MediaCard";
 import type { MediaItem, MediaType } from "./types";
 import {useState} from "react";
 
+/**
+ * Content-Komponente.
+ *
+ * Verantwortlichkeit:
+ * - Rendert den Hauptinhalt der Seite.
+ * - Zeigt Suchergebnisse als Grid aus MediaCard-Komponenten an.
+ * - Verwaltet lokalen UI-Auswahlzustand für aufgeklappte Karten.
+ *
+ * Architektonische Rolle:
+ * - Reine Präsentationskomponente.
+ * - Erhält Daten und Callbacks über Props.
+ * - Führt selbst keine Backend-Kommunikation aus.
+ */
+
 export default function Content({items, loading, selectedType, onTypeChange,}: {
     items: MediaItem[];
     loading: boolean;
@@ -10,6 +24,7 @@ export default function Content({items, loading, selectedType, onTypeChange,}: {
 
 })
 {
+    // Verfolgt, welches Medien-Item aktuell ausgewählt/aufgeklappt ist
     const [selectedId, setSelectedId] = useState<string | null>(null);
     return (
         <main id="content">
@@ -26,10 +41,12 @@ export default function Content({items, loading, selectedType, onTypeChange,}: {
                         <option value="series">Series</option>
                     </select>
 
+                    {/* Platzhalter-Button für zukünftige Feature-Erweiterung */}
                     <button className="create-button">Under Construction</button>
                 </div>
 
                 {loading ? (
+                    // Zeigt den Ladezustand während der asynchronen Suche an
                     <div className="content-loading">Loading...</div>
                 ) : (
                     items.map((item) => {

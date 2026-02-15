@@ -1,4 +1,20 @@
-/* universelles "Design"  */
+/**
+ * Globales Styling der Anwendung (Layout + geteilte UI-Komponenten).
+ *
+ * Zweck:
+ * - Definiert globale Design-Tokens (CSS-Variablen) und das Basis-Layout-Grid.
+ * - Stellt geteilte Komponenten-Styles bereit (Navbar, Search, MediaCard, Content).
+ *
+ * Organisation:
+ * - :root Variablen für Theme und Sizing
+ * - Seitenlayout über .grid-container und grid-areas
+ * - Wiederverwendbare Komponenten-Klassen (media-card, search, buttons, etc.)
+ *
+ * Hinweis:
+ * - Seiten-spezifische Overrides sollten in dedizierten Page-CSS-Dateien liegen
+ *   (z.B. gescoped mit .UserPage), um unbeabsichtigte Seiteneffekte zu vermeiden.
+ */
+
 :root {
     --background: #565b63;
     --font-mono: "Consolas", monospace;
@@ -307,12 +323,6 @@ html, body {
     display: none;
 }
 
-.media-card__textarea{
-    min-height: 70px;
-    max-height: 110px;
-    resize: vertical;
-}
-
 /* Searchbar Klassen */
 
 .search {
@@ -466,4 +476,3 @@ html, body {
     border: none;
     font-size: 18px;
 }
-
