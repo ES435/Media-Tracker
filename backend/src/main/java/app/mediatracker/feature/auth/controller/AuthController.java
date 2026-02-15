@@ -89,7 +89,7 @@ public class AuthController {
     public ResponseEntity<String> register(@RequestBody RegistrationRequest request) {
 
         authService.register(request.getUsername(), request.getPassword(), request.getPasswordRep());
-        return ResponseEntity.ok("Registrierung erfolgreich.");
+        return ResponseEntity.ok("Registration successful.");
     }
 
     /**
