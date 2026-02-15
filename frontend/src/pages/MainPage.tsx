@@ -60,9 +60,9 @@ export default function MainPage() {
             });
             if (!response.ok) {
                 if (response.status === 401 || response.status === 403) {
-                }
+
                 throw new Error(`HTTP ${response.status}`);
-            }
+            }}
 
             const data: MediaItem[] = await response.json();
             setItems(data);
