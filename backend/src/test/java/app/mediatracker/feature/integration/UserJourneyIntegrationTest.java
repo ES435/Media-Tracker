@@ -5,6 +5,7 @@ import app.mediatracker.feature.library.model.UserLibraryEntry;
 import app.mediatracker.feature.library.repo.UserLibraryEntryRepository;
 import app.mediatracker.feature.library.service.LibraryService;
 import app.mediatracker.feature.library.service.command.ManualEntryCommand;
+import app.mediatracker.feature.user.repo.UserRepository;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 class UserJourneyIntegrationTest {
@@ -23,22 +24,25 @@ class UserJourneyIntegrationTest {
     private LibraryService libraryService;
 
     @Autowired
-    private UserLibraryEntryRepository repository;
+    private UserLibraryEntryRepository libraryRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     private ObjectId testUserId;
 
     @BeforeEach
     void setUp() {
-        // Leere In-Memory DB vor jedem Test
-        repository.deleteAll();
-        testUserId = new ObjectId(); // Dummy User
+        // DB aufräumen
+        libraryRepository.deleteAll();
+        userRepository.deleteAll();
+
+        testUserId = new ObjectId();
     }
 
     @Test
     void userCanAddMovieToLibrary() {
-        // Schritt 1: User Registrierung simulieren mit testUserId
-
-        // Schritt 2: User speichert einen Film
+        // Schritt 1: Manual Entry anlegen
         ManualEntryCommand command = ManualEntryCommand.builder()
                 .userId(testUserId)
                 .type("movie")
@@ -53,8 +57,8 @@ class UserJourneyIntegrationTest {
 
         libraryService.addManualEntry(command);
 
-        // Schritt 3: Prüfen, dass der Film in der DB ist
-        List<UserLibraryEntry> entries = repository.findByUserId(testUserId);
+        // Schritt 2: Prüfen, dass der Film in der embedded DB ist
+        List<UserLibraryEntry> entries = libraryRepository.findByUserId(testUserId);
         assertEquals(1, entries.size(), "Es sollte genau ein Eintrag existieren");
 
         UserLibraryEntry entry = entries.get(0);

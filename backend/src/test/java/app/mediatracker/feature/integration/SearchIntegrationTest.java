@@ -10,9 +10,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+// Nutzt application.yml aus src/test/resources (Embedded Mongo + search.anime.enabled=true)
 @SpringBootTest
 @AutoConfigureMockMvc
 class SearchIntegrationTest {
@@ -20,6 +21,7 @@ class SearchIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
+    // Wir mocken den externen Client, damit wir nicht wirklich Jikan anfragen
     @MockBean
     private JikanAnimeClient jikanAnimeClient;
 
@@ -39,8 +41,8 @@ class SearchIntegrationTest {
         mockMvc.perform(get("/api/search")
                         .param("q", "naruto"))
                 .andExpect(status().isOk())
+                // Provider-Logik: mapped mal_id -> id
                 .andExpect(jsonPath("$[0].title").value("Naruto"))
                 .andExpect(jsonPath("$[0].type").value("anime"));
     }
 }
-

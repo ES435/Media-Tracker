@@ -22,8 +22,12 @@ export default function RegisterPage() {
             await register(username, password, passwordrep)
             navigate("/login")
         } catch (err) {
-            // @ts-ignore
-            setError(err.message)
+            // FIX: Proper error checking instead of ts-ignore
+            if (err instanceof Error) {
+                setError(err.message)
+            } else {
+                setError("An unknown error occurred")
+            }
         }
     }
 
