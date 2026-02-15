@@ -7,19 +7,45 @@ import type { UserMediaSortOption, UserMediaStatus, UserPageResponse } from "../
 import defaultAvatar from "../assets/profile-picture.png";
 import {useAuth} from "../service/AuthContext.tsx";
 
+/**
+ * UserPage component.
+ *
+ * Responsibility:
+ * - Loads and displays a public user profile and their media library.
+ * - Manages page-level state for loading, filters, and search query.
+ * - Coordinates child components (Navbar, UserPageContent, Footer).
+ *
+ * Architectural Role:
+ * - Page/orchestration layer.
+ * - Uses AuthContext abstraction (`fetchWithRefresh`) for authenticated requests.
+ * - Delegates rendering and client-side filtering to child components.
+ */
+
 export default function UserPage() {
+    // Reads the target username from the route (e.g. /user/:username)
     const {username} = useParams<{ username: string }>();
+    // Profile data of the visited user
     const [user, setUser] = useState<UserPageResponse["user"] | null>(null);
+    // Library entries belonging to the visited user
     const [mediaList, setMediaList] = useState<UserPageResponse["userMediaList"]>([]);
+    // Controls page loading state while fetching profile data
     const [loading, setLoading] = useState(true);
+    // Search query for client-side filtering in UserPageContent
     const [query, setQuery] = useState("");
+    // Selected media type filter (client-side)
     const [selectedSortType, setSelectedSortType] = useState<UserMediaSortOption>("all");
+    // Selected status filter (client-side)
     const [selectedMediaStatus, setSelectedMediaStatus] = useState<UserMediaStatus | "ALL">("ALL");
+    // Fallback avatar image if profilePictureUrl is missing or invalid
     const profileSrc = user?.profilePictureUrl?.trim() ? user.profilePictureUrl : defaultAvatar;
+    // Logged-in user is used for Navbar display (profile button)
     const { user: loggedInUser, fetchWithRefresh } = useAuth();
 
 
-    //fetch UserData from username
+    /**
+     * Fetches user profile data (user + media list) based on route parameter.
+     * Uses AuthContext's fetch wrapper to ensure consistent session handling.
+     */
     useEffect(() => {
         if (!username) return;
         setLoading(true);
@@ -38,10 +64,16 @@ export default function UserPage() {
             .finally(() => setLoading(false));
     }, [username]);
 
+    /**
+     * Updates media type filter selection for client-side filtering.
+     */
     function handleSortTypeChange(newOption: UserMediaSortOption): void {
         setSelectedSortType(newOption);
     }
 
+    /**
+     * Updates status filter selection for client-side filtering.
+     */
     function handleMediaStatusChange(newStatus: UserMediaStatus | "ALL"): void {
         setSelectedMediaStatus(newStatus);
     }
@@ -50,6 +82,7 @@ export default function UserPage() {
     return (
         <div className="UserPage">
             {loading ? (
+                // Loading state while profile data is being fetched
                 <div>Loading...</div>
             ) : user ? (
                 <div className="grid-container">
@@ -64,6 +97,7 @@ export default function UserPage() {
                         <Navbar
                             query={query}
                             onQueryChange={setQuery}
+                            // Search is applied client-side in UserPageContent
                             onSearch={() => {
                             }}
                             username={loggedInUser?.username}
@@ -72,7 +106,7 @@ export default function UserPage() {
                     </nav>
 
                     <aside id="aside">
-                        {/* friends */}
+                        {/* friends (placeholder)*/}
                     </aside>
 
                     <main id="content">
@@ -91,6 +125,7 @@ export default function UserPage() {
                     </footer>
                 </div>
             ) : (
+                // Fallback view when requested user profile does not exist
                 <div>User not found.</div>
             )}
         </div>

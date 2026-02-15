@@ -1,4 +1,17 @@
 
+/**
+ * Login page styling.
+ *
+ * Defines layout and visual appearance for the login view.
+ * Uses page-specific body class (.login-page) to isolate styles
+ * from other application layouts.
+ *
+ * Focus:
+ * - Centered authentication layout
+ * - Dark theme styling
+ * - Form input and button design
+ */
+
 * {
     margin: 0;
     padding: 0;

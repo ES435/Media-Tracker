@@ -2,6 +2,20 @@ import MediaCard from "./MediaCard";
 import type { MediaItem, MediaType } from "./types";
 import {useState} from "react";
 
+/**
+ * Content component.
+ *
+ * Responsibility:
+ * - Renders the main content area of the page.
+ * - Displays search results as a grid of MediaCard components.
+ * - Manages local UI selection state for expanded cards.
+ *
+ * Architectural Role:
+ * - Pure presentation component.
+ * - Receives data and callbacks via props.
+ * - Does not perform backend communication itself.
+ */
+
 export default function Content({items, loading, selectedType, onTypeChange,}: {
     items: MediaItem[];
     loading: boolean;
@@ -10,6 +24,7 @@ export default function Content({items, loading, selectedType, onTypeChange,}: {
 
 })
 {
+    // Tracks which media item is currently selected/expanded
     const [selectedId, setSelectedId] = useState<string | null>(null);
     return (
         <main id="content">
@@ -26,10 +41,12 @@ export default function Content({items, loading, selectedType, onTypeChange,}: {
                         <option value="series">Series</option>
                     </select>
 
+                    {/* Placeholder button for future feature extension */}
                     <button className="create-button">Under Construction</button>
                 </div>
 
                 {loading ? (
+                    // Displays loading state during async search execution
                     <div className="content-loading">Loading...</div>
                 ) : (
                     items.map((item) => {

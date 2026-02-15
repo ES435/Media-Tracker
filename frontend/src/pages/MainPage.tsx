@@ -5,25 +5,54 @@ import Footer from "../components/Footer.tsx";
 import type {MediaItem, MediaType} from "../components/types.ts";
 import {useAuth} from "../service/AuthContext.tsx";
 
+/**
+ * MainPage handles page-level state and coordinates search functionality.
+ * It connects UI components with backend communication.
+ */
+
 export default function MainPage() {
+    // Stores search results returned from backend
     const [items, setItems] = useState<MediaItem[]>([]);
+
+    // Controls loading indicator during async operations
     const [loading, setLoading] = useState(true);
+
+    // Current search input value
     const [query, setQuery] = useState("");
+
+    // Selected media filter type
     const [selectedType, setSelectedType] = useState<MediaType>("anime");
+
+    // Optional backend limit parameter
     const limit = "";
+
+    // Retrieves authenticated user for Navbar display
     const {user: loggedInUser} = useAuth();
 
-
+    /**
+     * Applies page-specific styling by modifying body classes.
+     * Ensures proper layout separation between login and main view.
+     */
     useEffect(() => {
         document.body.classList.add("main-page");
         document.body.classList.remove("login-page");
         return () => document.body.classList.remove("main-page");
     }, []);
 
+    /**
+     * Executes a search request to the backend API.
+     *
+     * @param query - User input search string.
+     * @param type - Selected media type filter.
+     *
+     * Handles loading state and error fallback.
+     */
+
     async function search(query: string, type: MediaType) {
         try {
             setLoading(true);
 
+            // Encode parameters to avoid malformed URLs
             const url = `http://localhost:8080/api/search?q=${encodeURIComponent(query)}&types=${encodeURIComponent(type)}&limit=${encodeURIComponent(limit)}`;
 
             const response = await fetch(url, {
@@ -31,7 +60,6 @@ export default function MainPage() {
             });
             if (!response.ok) {
                 if (response.status === 401 || response.status === 403) {
-                    //navigate("/login")
                 }
                 throw new Error(`HTTP ${response.status}`);
             }
@@ -45,10 +73,18 @@ export default function MainPage() {
             setLoading(false);
         }
     }
-
+    /**
+     * Triggers an initial search on component mount.
+     * Designed to load default results.
+     */
     useEffect(() => {
         search(query, selectedType);
     }, []);
+
+    /**
+     * Triggers a new search after validating user input.
+     * Prevents empty or whitespace-only queries.
+     */
 
     function handleSearch() {
         const trimmed = query.trim();
@@ -57,6 +93,11 @@ export default function MainPage() {
         search(trimmed, selectedType);
     }
 
+    /**
+     * Updates the selected media type and
+     * optionally triggers a new search if a query exists.
+     */
+
     function handleTypeChange(newType: MediaType) {
         setSelectedType(newType);
         const trimmed = query.trim();
@@ -64,7 +105,6 @@ export default function MainPage() {
         search(trimmed, newType);
     }
 
-    //Aside wird eventuell wieder ein Component, je nach Umfang
     return (
         <div className="grid-container">
             <header id="header">

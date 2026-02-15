@@ -1,14 +1,40 @@
 import {type FormEvent, useEffect, useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 
+/**
+ * RegisterPage component.
+ *
+ * Responsibility:
+ * - Provides user registration form.
+ * - Performs basic client-side validation.
+ * - Sends registration request to backend.
+ * - Redirects to login page upon successful registration.
+ *
+ * Architectural Role:
+ * - Presentation + authentication interaction layer.
+ * - Delegates persistence and user creation to backend.
+ */
+
 export default function RegisterPage() {
+    // Router navigation hook
     const navigate = useNavigate()
+
+    // Stores error messages returned from validation or backend
     const [error, setError] = useState<string | null>(null);
+
+    /**
+     * Applies login-style layout to registration page
+     * to ensure consistent authentication UI styling.
+     */
     useEffect(() => {
         document.body.classList.add("login-page");
         return () => {document.body.classList.remove("login-page");
         };
     }, []);
+
+    /**
+     * Handles form submission and triggers registration process.
+     */
     async function handleSubmit(event:FormEvent<HTMLFormElement>) {
         event.preventDefault();
         setError(null)
@@ -27,6 +53,16 @@ export default function RegisterPage() {
         }
     }
 
+    /**
+     * Sends registration request to backend authentication endpoint.
+     *
+     * Performs client-side password validation before sending request.
+     *
+     * @throws Error when:
+     * - Passwords do not match
+     * - Username is already taken (409)
+     * - Server returns generic failure
+     */
     async function register(username: string, password: string, passwordRep: string) {
         if(!validatePassword(password, passwordRep)) {
             throw new Error("Passwords don't match.")
@@ -50,6 +86,10 @@ export default function RegisterPage() {
         }
     }
 
+    /**
+     * Simple client-side validation to ensure
+     * password confirmation matches.
+     */
     function validatePassword(password: string, passwordrep: string) {
         return password === passwordrep;
     }
@@ -67,6 +107,7 @@ export default function RegisterPage() {
                 <div className="input-box">
                     <input name="passwordrep" type="password" placeholder="Repeat Password" required/>
                 </div>
+                {/* Displays validation or backend error messages */}
                 {error && <div className="error-message">{error}</div>}
                 <button type="submit" className="btn">Register</button>
                 <div className="register-link">

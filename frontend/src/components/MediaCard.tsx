@@ -3,6 +3,20 @@ import { useState } from "react";
 import type {MediaStatus} from "./types";
 import {useAuth} from "../service/AuthContext.tsx";
 
+/**
+ * MediaCard component.
+ *
+ * Responsibility:
+ * - Displays a single media item.
+ * - Allows users to add the item to their personal library.
+ * - Manages local UI state (status, rating, notes, saving state).
+ *
+ * Architectural Role:
+ * - Presentation component with localized business interaction.
+ * - Uses AuthContext abstraction for authenticated backend requests.
+ * - Does not manage global state.
+ */
+
 type MediaCardProps = {
     item: MediaItem;
     selected: boolean;
@@ -11,17 +25,31 @@ type MediaCardProps = {
 
 export default function MediaCard({ item, selected, onSelect }: MediaCardProps){
 
+    // Local UI state for form input and interaction feedback
     const [status, setStatus] = useState<MediaStatus>("PLANNED");
     const [rating, setRating] = useState<number | "">("");
     const [notes, setNotes] = useState("");
     const [saving, setSaving] = useState(false);
     const [added, setAdded] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const coverSrc = item?.imageUrl?.trim() ? item.imageUrl : "/assets/profile-picture.png"; // HIER MUSS ANDERES COVER
-    //const { user: loggedInUser, fetchWithRefresh } = useAuth(); //TODO: user: loggedInUser wr rot und da stnad wird nie benutzt, hab es man auskommentiert faslls es einen sinn hatte warum es dort war, schaut es euch mal an wenn es geht ansonsten löscht die Zeile
+
+    // Fallback to default image if no valid imageUrl is provided
+    const coverSrc = item?.imageUrl?.trim() ? item.imageUrl : "/assets/profile-picture.png"; // anderes
+
+    // Access authenticated request wrapper from AuthContext
     const { fetchWithRefresh } = useAuth();
 
+    /**
+     * Sends the current media item to the backend library endpoint.
+     *
+     * Handles:
+     * - Authenticated request via fetchWithRefresh
+     * - HTTP status interpretation (401, 403, 409)
+     * - Error propagation to UI
+     */
+
     async function addToLibrary() {
+        // Ensures a consistent ID mapping from various backend formats
         const searchResultPayload = {
             ...item,
             id: item.id || (item as any).mediaId || (item as any).externalId
@@ -53,7 +81,7 @@ export default function MediaCard({ item, selected, onSelect }: MediaCardProps){
     return (
         <div className={`media-card ${selected ? "selected" : ""}`}>
             <div className="media-card__top" onClick={onSelect} style={{ cursor: "pointer" }}>
-                {/* LEFT: Cover */}
+                {/* Media cover and optional source link */}
                 <div className="media-card__main">
                     <img src={coverSrc} alt={item?.title ?? "Media"} className="media-card__img"/>
 
@@ -70,6 +98,7 @@ export default function MediaCard({ item, selected, onSelect }: MediaCardProps){
                     )}
                 </div>
 
+                {/* Interaction panel for adding to personal library */}
                 <div className="media-card__side" onClick={(e) => e.stopPropagation()}>
                     {/* HEADER */}
                     <div className="media-card__panelHeader">
@@ -79,6 +108,8 @@ export default function MediaCard({ item, selected, onSelect }: MediaCardProps){
 
                     {/* BODY */}
                     <div className="media-card__panelBody">
+
+                        {/* Media status selection */}
                         <div className="media-card__field">
                             <label className="media-card__label">Status</label>
                             <select
@@ -94,6 +125,7 @@ export default function MediaCard({ item, selected, onSelect }: MediaCardProps){
                             </select>
                         </div>
 
+                        {/* Optional rating input */}
                         <div className="media-card__field">
                             <label className="media-card__label">Rating (1-10)</label>
                             <select
@@ -111,6 +143,7 @@ export default function MediaCard({ item, selected, onSelect }: MediaCardProps){
                             </select>
                         </div>
 
+                        {/* Optional notes field */}
                         <div className="media-card__field">
                             <label className="media-card__label">Notes</label>
                             <textarea
@@ -122,10 +155,11 @@ export default function MediaCard({ item, selected, onSelect }: MediaCardProps){
                             />
                         </div>
 
+                        {/* Displays backend-related errors */}
                         {error && <div className="media-card__error">{error}</div>}
                     </div>
 
-                    {/* FOOTER */}
+                    {/* Cancels selection without triggering parent click */}
                     <div className="media-card__actions">
                         <button
                             type="button"
@@ -139,6 +173,7 @@ export default function MediaCard({ item, selected, onSelect }: MediaCardProps){
                             Cancel
                         </button>
 
+                        {/* Executes async save operation with feedback state */}
                         <button
                             type="button"
                             className="media-card__btn media-card__btn--primary"
@@ -163,7 +198,7 @@ export default function MediaCard({ item, selected, onSelect }: MediaCardProps){
                 </div>
             </div>
 
-            {/* bottom title */}
+            {/* Bottom title area */}
             <div className="media-card__title" title={item.title}>
                 {item.title}
             </div>

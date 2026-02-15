@@ -2,6 +2,20 @@ import { useMemo, useState } from "react";
 import MediaCard from "./MediaCard";
 import type { UserMedia, UserMediaSortOption, UserMediaStatus } from "./types";
 
+/**
+ * UserPageContent component.
+ *
+ * Responsibility:
+ * - Renders the user's media library as a grid of MediaCards.
+ * - Provides client-side filtering by media type, status, and title search.
+ * - Manages local UI selection state for expanded cards.
+ *
+ * Architectural Role:
+ * - Presentation layer component.
+ * - Receives data and filter state via props.
+ * - Performs in-memory filtering (no backend communication).
+ */
+
 type Props = {
     items: UserMedia[];
     searchQuery: string;
@@ -19,8 +33,20 @@ export default function UserPageContent({
                                             onSortTypeChange,
                                             onMediaStatusChange,
                                         }: Props) {
+
+    // Tracks which library entry is currently selected/expanded
     const [selectedId, setSelectedId] = useState<string | null>(null);
 
+
+    /**
+     * Computes the filtered list of user media entries based on:
+     * - selected media type (sort filter)
+     * - selected status filter
+     * - search query matching against media title
+     *
+     * Memoized to avoid recalculating filters on every re-render
+     * when dependencies have not changed.
+     */
     const filtered = useMemo(() => {
         const q = searchQuery.trim().toLowerCase();
 
@@ -42,6 +68,7 @@ export default function UserPageContent({
     return (
         <>
             <div className="sort-options">
+                {/* Media type filter */}
                 <select
                     className="sort-button"
                     value={selectedSortType}
@@ -57,6 +84,7 @@ export default function UserPageContent({
                     <option value="series">Series</option>
                 </select>
 
+                {/* Status filter */}
                 <select
                     className="sort-button"
                     value={selectedMediaStatus}
@@ -70,6 +98,7 @@ export default function UserPageContent({
                 </select>
             </div>
 
+            // Empty-state feedback when no entries match the current filters
             {filtered.length === 0 ? (
                 <div className="content-loading">
                     No entries match your filters.

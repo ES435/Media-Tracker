@@ -1,4 +1,20 @@
-/* universelles "Design"  */
+/**
+ * Global application styling (layout + shared UI components).
+ *
+ * Purpose:
+ * - Defines global design tokens (CSS variables) and base layout grid.
+ * - Provides shared component styles (Navbar, Search, MediaCard, Content).
+ *
+ * Organization:
+ * - :root variables for theme and sizing
+ * - Page layout via .grid-container and grid-areas
+ * - Reusable component classes (media-card, search, buttons, etc.)
+ *
+ * Note:
+ * - Page-specific overrides should live in dedicated page CSS
+ *   (e.g. scoped with .UserPage) to avoid unintended side effects.
+ */
+
 :root {
     --background: #565b63;
     --font-mono: "Consolas", monospace;
@@ -305,12 +321,6 @@ html, body {
 
 .media-card__source {
     display: none;
-}
-
-.media-card__textarea{
-    min-height: 70px;
-    max-height: 110px;
-    resize: vertical;
 }
 
 /* Searchbar Klassen */
