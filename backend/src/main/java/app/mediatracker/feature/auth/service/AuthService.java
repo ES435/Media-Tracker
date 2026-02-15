@@ -1,7 +1,8 @@
 package app.mediatracker.feature.auth.service;
 
 import app.mediatracker.feature.auth.exception.InvalidPasswordException;
-import app.mediatracker.feature.auth.exception.UsernameAlreadyExists;
+import app.mediatracker.feature.auth.exception.PasswordsDontMatchException;
+import app.mediatracker.feature.auth.exception.UsernameAlreadyExistsException;
 import app.mediatracker.feature.user.exception.UserNotFoundException;
 import app.mediatracker.feature.user.model.User;
 import app.mediatracker.feature.user.repo.UserRepository;
@@ -10,9 +11,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
- * Anwendungslogik für die Authentifizierung (Login, Registrierung).
+ * Application logic for authentication (login, registration).
  * <p>
- * Dieser Service kümmert sich ausschließlich um das Erstellen und Verifizieren von Benutzern.
+ * This service is exclusively responsible for creating and verifying users.
  * </p>
  */
 @Service
@@ -23,14 +24,14 @@ public class AuthService {
     private final BCryptPasswordEncoder passwordEncoder;
 
     /**
-     * Prüft die Login-Daten eines Benutzers und gibt das entsprechende User-Objekt zurück,
-     * wenn die Authentifizierung erfolgreich war.
+     * Verifies a user's login credentials and returns the corresponding User object
+     * upon successful authentication.
      *
-     * @param username der eingegebene Username
-     * @param password das eingegebene Passwort
-     * @return das User Objekt
-     * @throws UserNotFoundException    falls kein User mit entsprechendem Username existiert
-     * @throws InvalidPasswordException falls das Passwort nicht übereinstimmt
+     * @param username the provided username
+     * @param password the provided password
+     * @return the User object
+     * @throws UserNotFoundException    if no user with the corresponding username exists
+     * @throws InvalidPasswordException if the password does not match
      */
     public User login(String username, String password) {
         User user = userRepository.findByUsername(username)
@@ -44,16 +45,21 @@ public class AuthService {
     }
 
     /**
-     * Registriert einen neuen Benutzer in der Datenbank. Der Benutzername muss eindeutig sein.
-     * Das Passwort wird vor der Speicherung gehasht.
+     * Registers a new user in the database. The username must be unique.
+     * The password is hashed before storage.
      *
-     * @param username der Benutzername des neuen Benutzers.
-     * @param password das Passwort des neuen Benutzers.
-     * @throws UsernameAlreadyExists wenn der Benutzername bereits existiert.
+     * @param username    the username of the new user
+     * @param password    the password of the new user
+     * @param passwordRep the repeated password for confirmation
+     * @throws UsernameAlreadyExistsException if the username already exists
+     * @throws PasswordsDontMatchException    if the password and confirmation do not match
      */
-    public void register(String username, String password) {
+    public void register(String username, String password, String passwordRep) {
         if (userRepository.existsByUsername(username)) {
-            throw new UsernameAlreadyExists("Username " + username + " already exists.");
+            throw new UsernameAlreadyExistsException("Username " + username + " already exists.");
+        }
+        if (!password.equals(passwordRep)) {
+            throw new PasswordsDontMatchException("Passwords don't match.");
         }
         String hashedPassword = passwordEncoder.encode(password);
         User user = createNewUser(username, hashedPassword);
@@ -62,14 +68,14 @@ public class AuthService {
     }
 
     /**
-     * Hilfsmethode zum Erstellen einer neuen User-Instanz.
-     * Setzt Standardwerte (z.B. publicList = false).
+     * Helper method for creating a new User instance.
+     * Sets default values (e.g., publicList = true).
      */
     private User createNewUser(String username, String passwordHash) {
         return User.builder()
                 .username(username)
                 .passwordHash(passwordHash)
-                .publicList(false)
+                .publicList(true)
                 .build();
     }
 }

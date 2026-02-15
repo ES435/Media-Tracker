@@ -1,12 +1,12 @@
 package app.mediatracker.feature.library.model;
 
 /**
- * Status eines Bibliothekseintrags aus Sicht des Users.
+ * Status of a library entry from the user's perspective.
  * <ul>
- *   <li>PLANNED – geplant, zu konsumieren/lesen/spielen.</li>
- *   <li>IN_PROGRESS – aktuell in Bearbeitung.</li>
- *   <li>COMPLETED – abgeschlossen.</li>
- *   <li>DROPPED – abgebrochen, soll nicht weitergeführt werden.</li>
+ * <li>PLANNED – planned to be consumed (read, watched, played).</li>
+ * <li>IN_PROGRESS – currently in progress.</li>
+ * <li>COMPLETED – completed / finished.</li>
+ * <li>DROPPED – dropped / abandoned; will not be continued.</li>
  * </ul>
  */
 public enum LibraryEntryStatus {

@@ -5,12 +5,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 /**
- * Minimaler HTTP-Client für die iTunes Search API.
+ * Minimal HTTP client for the iTunes Search API.
  *
- * Zweck: Stellt eine Methode bereit, um Musiktitel anhand eines Suchbegriffs
- * als rohe JSON-Antwort abzurufen.
+ * Purpose: Provides a method to retrieve music tracks based on a search term
+ * as a raw JSON response.
  *
- * Konfiguration: Basis-URL kann über "itunes.base-url" überschrieben werden.
+ * Configuration: Base URL can be overridden via "itunes.base-url".
  */
 @Component
 public class ItunesClient {
@@ -18,10 +18,10 @@ public class ItunesClient {
     private final WebClient web;
 
     /**
-     * Erstellt den Client mit vordefinierter Basis-URL.
+     * Creates the client with a predefined base URL.
      *
-     * @param builder von Spring bereitgestellter {@link WebClient.Builder}
-     * @param baseUrl Basis-URL der iTunes-API (Default: https://itunes.apple.com)
+     * @param builder Spring-provided {@link WebClient.Builder}
+     * @param baseUrl Base URL of the iTunes API (default: https://itunes.apple.com)
      */
     public ItunesClient(WebClient.Builder builder,
                         @Value("${itunes.base-url:https://itunes.apple.com}") String baseUrl) {
@@ -29,11 +29,11 @@ public class ItunesClient {
     }
 
     /**
-     * Sucht Musiktitel über die iTunes Search API und liefert die rohe JSON-Antwort.
+     * Searches for music tracks via the iTunes Search API and returns the raw JSON response.
      *
-     * @param term  Suchbegriff
-     * @param limit maximale Anzahl der Ergebnisse
-     * @return JSON-Antwort als String
+     * @param term  the search term
+     * @param limit maximum number of results
+     * @return JSON response as a String
      */
     public String searchTracks(String term, int limit) {
         return web.get()

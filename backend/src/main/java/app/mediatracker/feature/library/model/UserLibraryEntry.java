@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -12,15 +14,18 @@ import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 import java.time.Instant;
 import java.util.Map;
 
 /**
- * Persistierter Eintrag in der Benutzerbibliothek.
+ * Persisted entry in the user library.
  * <p>
- * Verknüpft einen User ({@code userId}) mit einem gespeicherten Medium und
- * hält individuelle Informationen wie Status, optionale Bewertung und Notizen fest. Zusätzlich werden
- * Erstell- und Änderungszeitpunkt gespeichert.
+ * Associates a user ({@code userId}) with a stored media item and captures
+ * individual information such as status, optional rating, and notes.
+ * Additionally, creation and modification timestamps are stored.
  * </p>
  */
 @Data
@@ -28,7 +33,7 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @CompoundIndexes({
-        // Pro Nutzer und Medium (definiert über Typ + externe ID) genau ein Eintrag
+        // Exactly one entry per user and media item (defined by type + external ID)
         @CompoundIndex(name = "uniq_user_item", def = "{userId: 1, mediaType: 1, externalId: 1}", unique = true),
         @CompoundIndex(name = "idx_user_updatedAt", def = "{userId: 1, updatedAt: -1}")
 })
@@ -39,14 +44,15 @@ public class UserLibraryEntry {
     private String id;
 
     /**
-     * Technischer Benutzer-Identifikator (z. B. Subject aus einem JWT).
+     * Technical user identifier (e.g., Subject from a JWT).
      */
     @Indexed(name = "idx_userId")
-    private String userId;
+    @JsonSerialize(using = ToStringSerializer.class)
+    private ObjectId userId;
 
-    // Medien-Snapshot Felder (kein separates MediaItem mehr nötig)
-    private String mediaType;   // z. B. "anime", "movie", "book", "music"
-    private String externalId;  // externe ID aus der Quelle
+    // Media snapshot fields (no separate MediaItem required anymore)
+    private String mediaType;   // e.g., "anime", "movie", "book", "music"
+    private String externalId;  // External ID from the source
     private String title;
     private String imageUrl;
     private String sourceUrl;
@@ -57,12 +63,12 @@ public class UserLibraryEntry {
     private Map<String, Object> meta;
 
     /**
-     * Optionale Bewertung, z. B. auf einer Skala von 1 bis 10. Darf null sein.
+     * Optional rating, e.g., on a scale from 1 to 10. May be null.
      */
     private Integer rating;
 
     /**
-     * Optionale Freitextnotizen pro Benutzer und Medium.
+     * Optional free-text notes per user and media item.
      */
     private String notes;
 

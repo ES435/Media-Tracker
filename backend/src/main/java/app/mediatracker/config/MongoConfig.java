@@ -4,13 +4,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 
 /**
- * MongoDB Konfiguration.
+ * MongoDB configuration.
  * <p>
- * Aktiviert Mongo Auditing über {@link EnableMongoAuditing}, sodass Felder mit
- * {@link org.springframework.data.annotation.CreatedDate} und
+ * Enables Mongo auditing via {@link EnableMongoAuditing} so fields annotated with
+ * {@link org.springframework.data.annotation.CreatedDate} and
  * {@link org.springframework.data.annotation.LastModifiedDate}
- * automatisch von Spring Data gesetzt bzw. aktualisiert werden.
- * Dies betrifft z. B. {@code User.createdAt/updatedAt} und
+ * are automatically populated and updated by Spring Data.
+ * This applies to e.g. {@code User.createdAt/updatedAt} and
  * {@code UserLibraryEntry.createdAt/updatedAt}.
  * </p>
  */

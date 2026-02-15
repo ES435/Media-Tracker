@@ -14,11 +14,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Such-Provider für Musik-Inhalte (iTunes Search API).
- * Zweck: Fragt die iTunes-Schnittstelle ab und übersetzt die Ergebnisse in das
- * interne, einheitliche {@link SearchResult}-Format.
- * Aktivierung: Dieser Provider wird nur aktiviert, wenn in der Konfiguration
- * die Eigenschaft "search.music.enabled=true" gesetzt ist (siehe {@link ConditionalOnProperty}).
+ * Search provider for music content (iTunes Search API).
+ *
+ * Purpose: Queries the iTunes interface and translates the results into the
+ * internal, unified {@link SearchResult} format.
+ *
+ * Activation: This provider is only activated if the property
+ * "search.music.enabled=true" is set in the configuration (see {@link ConditionalOnProperty}).
  */
 @Component
 @ConditionalOnProperty(prefix = "search.music", name = "enabled", havingValue = "true")
@@ -28,10 +30,10 @@ public class MusicSearchProvider implements SearchProvider {
     private final ObjectMapper mapper;
 
     /**
-     * Erstellt den Provider.
+     * Creates the provider.
      *
-     * @param itunes  HTTP-Client für iTunes
-     * @param mapper  Jackson-Mapper zum Parsen der JSON-Antworten
+     * @param itunes  HTTP client for iTunes
+     * @param mapper  Jackson Mapper for parsing JSON responses
      */
     public MusicSearchProvider(ItunesClient itunes, ObjectMapper mapper) {
         this.itunes = itunes;
@@ -39,20 +41,21 @@ public class MusicSearchProvider implements SearchProvider {
     }
 
     /**
-     * Liefert den Typnamen dieses Providers.
+     * Returns the type name of this provider.
      *
      * @return "music"
      */
     @Override public String getType() { return "music"; }
 
     /**
-     * Sucht Musiktitel über die iTunes Search API.
-     * Verhalten: Parst die Antwort und bildet eine Liste normalisierter Treffer.
-     * Fehler werden abgefangen; in diesem Fall wird eine leere Liste zurückgegeben.
+     * Searches for music tracks via the iTunes Search API.
      *
-     * @param searchQuery     Suchbegriff (z. B. Künstlerin, Songtitel)
-     * @param limit maximale Anzahl von Treffern
-     * @return Liste von {@link SearchResult}
+     * Behavior: Parses the response and forms a list of normalized hits.
+     * Errors are caught; in this case, an empty list is returned.
+     *
+     * @param searchQuery     search term (e.g. artist, song title)
+     * @param limit           maximum number of hits
+     * @return List of {@link SearchResult}
      */
     @Override
     public List<SearchResult> search(String searchQuery, int limit) {

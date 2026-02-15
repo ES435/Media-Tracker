@@ -1,11 +1,13 @@
 package app.mediatracker.security;
 
-import app.mediatracker.feature.auth.service.JwtService;
+import app.mediatracker.feature.auth.service.TokenService;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.bson.types.ObjectId;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -15,49 +17,61 @@ import java.io.IOException;
 import java.util.Collections;
 
 /**
- * Filter für die JWT-basierte Authentifizierung.
+ * Filter for JWT-based authentication.
  * <p>
- * Dieser Filter prüft eingehende Requests auf gültige JWT-Tokens in den Cookies
- * und setzt bei erfolgreicher Validierung den Security-Context.
+ * This filter checks incoming requests for valid JWT tokens within cookies
+ * and sets the Security Context upon successful validation.
  * </p>
  */
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    private final JwtService jwtService;
+    private final TokenService tokenService;
 
-    public JwtFilter(JwtService jwtService) {
-        this.jwtService = jwtService;
+    public JwtFilter(TokenService tokenService) {
+        this.tokenService = tokenService;
     }
 
     /**
-     * Verarbeitet die eingehende HTTP-Anfrage.
+     * Processes the incoming HTTP request.
      * <p>
-     * Extrahiert das JWT-Token aus den Cookies, validiert es und setzt bei
-     * erfolgreicher Validierung den Security-Context mit den Benutzerinformationen.
+     * Extracts the JWT token from cookies, validates it, and sets the
+     * Security Context with user information upon successful validation.
      * </p>
      *
-     * @param request     Die HTTP-Anfrage
-     * @param response    Die HTTP-Antwort
-     * @param filterChain Die Filter-Kette zur Weiterverarbeitung
-     * @throws ServletException Bei Fehlern in der Servlet-Verarbeitung
-     * @throws IOException      Bei Ein-/Ausgabefehlern
+     * @param request     The HTTP request
+     * @param response    The HTTP response
+     * @param filterChain The filter chain for further processing
+     * @throws ServletException In case of errors during servlet processing
+     * @throws IOException      In case of I/O errors
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = extractJwtFromCookies(request);
+        String token = extractAccessTokenFromCookies(request);
 
         if (token != null) {
-            String username = jwtService.extractUsername(token);
-            if (username != null && jwtService.verifyToken(token, username)) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+            try {
+                String userId = tokenService.verifyTokenAndGetUserId(token);
+                ObjectId userIdObjectId = new ObjectId(userId);
+
+                // Set the authentication object in the security context
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userIdObjectId, null, Collections.emptyList());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } catch (JWTVerificationException e) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
             }
         }
 
         filterChain.doFilter(request, response);
     }
 
+    /**
+     * Defines which paths should skip this filter.
+     *
+     * @param request The HTTP request
+     * @return true if the path starts with /auth/, false otherwise
+     */
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getServletPath();
@@ -65,21 +79,21 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     /**
-     * Extrahiert das JWT-Token aus den Cookies der Anfrage.
+     * Extracts the JWT token from the request cookies.
      *
-     * @param request Die HTTP-Anfrage
-     * @return Das JWT-Token oder null, wenn kein Token gefunden wurde
+     * @param request The HTTP request
+     * @return The JWT token string or null if no token was found
      */
-    private String extractJwtFromCookies(HttpServletRequest request) {
+    private String extractAccessTokenFromCookies(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
 
-        // BUGFIX: Null-Check hinzugefügt.
+        // BUGFIX: Added null check for cookies array.
         if (cookies == null) {
             return null;
         }
 
         for (Cookie cookie : cookies) {
-            if ("jwt".equals(cookie.getName())) {
+            if ("accessToken".equals(cookie.getName())) {
                 return cookie.getValue();
             }
         }

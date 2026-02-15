@@ -7,12 +7,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 
 /**
- * REST-Controller für die Suche von Usern und das Anzeigen derer Account-Pages.
+ * REST controller for searching users and displaying their account pages.
  * <p>
- * Stellt Endpunkte zum Suchen und Anzeigen von existierenden Usern bereit.
- * Das Frontend greift über diese Endpunkte zu.
+ * Exposes endpoints to search for existing users and to fetch data for a user's public profile page.
  * </p>
  */
 @RestController
@@ -22,13 +23,12 @@ public class UserController {
     private final UserService userService;
 
     /**
-     * Führt eine User-Suche anhand von einem Teilstring aus.
+     * Performs a user search by partial name.
      *
-     * Beispiel: /api/user/search?partName=userName
-     * @param partName     Suchbegriff (z. B. "user_")
-     * @param limit Maximale Treffer pro Typ. Standard ist 10.
-     * @return 
-     * @return Liste kombinierter Suchergebnisse als JSON.
+     * Example: /api/user/search?partName=userName
+     * @param partName the search term (e.g., "user_")
+     * @param limit maximum number of results; default is 10
+     * @return combined search results as JSON
      */
     @GetMapping("/search")
     public ResponseEntity<UserSearchResponse> searchUser(
@@ -40,18 +40,18 @@ public class UserController {
 
 
     /**
-     * Gibt auf Anfrage die notwendigen Daten für die User-Page eines Users aus.
-     * 
-     * Diese bestehen aus User-Namen, Profilbild und falls diese öffentlich gesetzt ist, der Medienliste des Users.
-     * @param username oeffentlicher Name des Users.
-     * @return 200 OK mit allen Einträgen des Users in Anzeigeform
+     * Returns the necessary data for a user's public profile page on request.
+     *
+     * Includes the username, profile picture, and the user's media list if it is set to public.
+     * @param username the user's public username
+     * @return 200 OK with the user's entries in display format
      */
     @GetMapping("/{username}")
     public ResponseEntity<UserPageResponse> getUserPage(
-        @PathVariable("username") String username
+        @PathVariable("username") String username, Principal principal
     ) {
 
-        return ResponseEntity.ok(userService.getUserPage(username));
+        return ResponseEntity.ok(userService.getUserPage(username, principal));
     }
     
 }

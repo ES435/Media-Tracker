@@ -10,29 +10,29 @@ import lombok.NoArgsConstructor;
 import java.util.Map;
 
 /**
- * Einfaches Ergebnisobjekt für die Suche.
- * Zweck: Einheitliches, leichtgewichtiges Format für Treffer verschiedener Medientypen
- * (z. B. "anime", "movie", "book"). Das Frontend kann damit eine Liste anzeigen,
- * ohne die Quell-API kennen zu müssen.
- * Hinweise:
- * - {@code type} kennzeichnet den Medientyp (muss zum Provider passen).
- * - {@code meta} bietet Platz für optionale, API-spezifische Zusatzdaten
- *   (z. B. {"year": 2002, "score": 8.1}).
+ * Simple search result DTO.
+ * Purpose: Provides a unified, lightweight format for results across media types
+ * (e.g., "anime", "movie", "book"). The frontend can render a list without
+ * needing to know the source API.
+ * Notes:
+ * - {@code type} identifies the media type (must match the provider).
+ * - {@code meta} carries optional, API-specific extras
+ *   (e.g., {"year": 2002, "score": 8.1}).
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@JsonInclude(JsonInclude.Include.NON_NULL) // null-Felder nicht serialisieren
+@JsonInclude(JsonInclude.Include.NON_NULL) // do not serialize null fields
 public class SearchResult {
     @NotBlank
-    private String type;       // z. B. "anime", "movie", "book", "music"
+    private String type;       // e.g., "anime", "movie", "book", "music"
     @NotBlank
-    private String id;         // externe ID/Schlüssel der Quelle
-    private String title;      // Titel/Name des Treffers
-    private String imageUrl;   // Vorschaubild (optional)
-    private String sourceUrl;  // Link zur Detailseite bei der Quelle (optional)
+    private String id;         // external ID/key from the source
+    private String title;      // title/name of the result
+    private String imageUrl;   // preview image (optional)
+    private String sourceUrl;  // link to the source's detail page (optional)
 
-    // API-/Typ-spezifische Extras (optional), frei erweiterbar
+    // API/type-specific extras (optional), extensible
     private Map<String, Object> meta;
 }

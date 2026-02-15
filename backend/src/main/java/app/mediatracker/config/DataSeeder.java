@@ -4,31 +4,43 @@ import app.mediatracker.feature.library.model.UserLibraryEntry;
 import app.mediatracker.feature.library.repo.UserLibraryEntryRepository;
 import app.mediatracker.feature.user.model.User;
 import app.mediatracker.feature.user.repo.UserRepository;
-import com.fasterxml.jackson.core.type.TypeReference;
+import app.mediatracker.seed.demo_media_data;
+import app.mediatracker.seed.demo_user_data;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.bson.types.ObjectId;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
 
-import java.io.InputStream;
 import java.util.List;
 
+/**
+ * Seeds demo users and library entries into MongoDB on application startup.
+ *
+ * Behavior: Runs only when the users collection is empty. For each generated demo user,
+ * a set of demo media library entries is created and associated with the user's ID.
+ */
 @Configuration
 public class DataSeeder {
     @Bean
-    CommandLineRunner seedDatabase(UserRepository userRepository, UserLibraryEntryRepository userLibraryEntryRepository, ObjectMapper objectMapper) {
+    CommandLineRunner seedDatabase(UserRepository userRepository, UserLibraryEntryRepository userLibraryEntryRepository, ObjectMapper objectMapper, demo_user_data userTestDataLoader, demo_media_data mediaTestDataLoader) {
         return args -> {
+            //only if User Database is empty!
             if (userRepository.count() == 0) {
-                InputStream inputStream = new ClassPathResource("testdata/demo-user-data.json").getInputStream();
-                List<User> users = objectMapper.readValue(inputStream, new TypeReference<List<User>>() {});
-                userRepository.saveAll(users);
-            }
 
-            if (userLibraryEntryRepository.count() == 0) {
-                InputStream inputStream = new ClassPathResource("testdata/demo-media-data.json").getInputStream();
-                List<UserLibraryEntry> entries = objectMapper.readValue(inputStream, new TypeReference<List<UserLibraryEntry>>() {});
-                userLibraryEntryRepository.saveAll(entries); 
+                List<User> userTestData = userTestDataLoader.createDemoUsers();
+                
+                for(User user : userTestData) {
+                    userRepository.save(user); //save users
+                    ObjectId userId = user.getId();
+                    List<UserLibraryEntry> mediaTestData = mediaTestDataLoader.createDemoMediaData();
+                    for(UserLibraryEntry mediaEntry : mediaTestData) {
+                        mediaEntry.setUserId(userId);
+                        userLibraryEntryRepository.save(mediaEntry);
+                    }
+                }
             }
         };
     }

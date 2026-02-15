@@ -6,12 +6,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 /**
- * Leichter HTTP-Client für die IMDb-API.
+ * Lightweight HTTP client for the IMDb API.
  *
- * Zweck: Kapselt die HTTP-Kommunikation und bietet eine einfache Methode,
- * um Film-Suche als JSON-String abzurufen.
+ * Purpose: Encapsulates HTTP communication and provides a simple method
+ * to retrieve movie search results as a JSON string.
  *
- * Konfiguration: Basis-URL kann über "imdb.base-url" überschrieben werden.
+ * Configuration: Base URL can be overridden via "imdb.base-url".
  */
 @Component
 public class IMDbClient {
@@ -19,10 +19,10 @@ public class IMDbClient {
     private final WebClient web;
 
     /**
-     * Erstellt einen Client mit vordefinierter Basis-URL.
+     * Creates a client with a predefined base URL.
      *
-     * @param builder von Spring bereitgestellter {@link WebClient.Builder}
-     * @param baseUrl Basis-URL der IMDb-API (Default: https://api.imdbapi.dev)
+     * @param builder Spring-provided {@link WebClient.Builder}
+     * @param baseUrl Base URL of the IMDb API (Default: https://api.imdbapi.dev)
      */
     public IMDbClient(WebClient.Builder builder,
                       @Value("${imdb.base-url:https://api.imdbapi.dev}") String baseUrl) {
@@ -30,19 +30,19 @@ public class IMDbClient {
     }
 
     /**
-     * Sucht Filme und Serien bei IMDb und liefert die rohe JSON-Antwort.
+     * Searches for movies and series on IMDb and returns the raw JSON response.
      *
-     * Hinweis: Blockiert den aufrufenden Thread bis zur Antwort (vereinfachte Nutzung).
+     * Note: Blocks the calling thread until the response is received (simplified usage).
      *
-     * @param query Suchbegriff
-     * @return JSON als String
+     * @param query the search term
+     * @return JSON response as a String
      */
     @Cacheable("IMDbSearch")
     public String searchMovieAndSeries(String query) {
         return web.get()
                 .uri(u -> u.path("/search/titles")
-                    .queryParam("query", query)
-                    .build())
+                        .queryParam("query", query)
+                        .build())
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();

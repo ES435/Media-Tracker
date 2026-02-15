@@ -6,11 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Schlanke Darstellung der Medien-Basisinformationen für API-Responses.
+ * Compact representation of basic media information for API responses.
  * <p>
- * Dieses DTO spiegelt die Felder wider, die als Snapshot in {@code UserLibraryEntry}
- * gespeichert werden (kein separates, persistiertes MediaItem). Es enthält nur die für die
- * UI relevanten Basisinformationen.
+ * This DTO mirrors the fields stored as a snapshot in {@code UserLibraryEntry}
+ * (no separate, persisted MediaItem). It contains only the UI-relevant basics.
  * </p>
  */
 @Data

@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -13,11 +15,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.Instant;
 
 /**
- * Benutzer-Dokument.
+ * User document.
  * <p>
- * Enthält minimale Stammdaten: Anzeigename und gehashtes Passwort.
- * Eine eindeutige ID (MongoDB) identifiziert jeden Benutzer. Optional können später
- * weitere Felder wie E-Mail ergänzt werden.
+ * Contains minimal master data: display name and hashed password.
+ * A unique ID (MongoDB) identifies each user. Optionally, more fields like email
+ * can be added later.
  * </p>
  */
 @Data
@@ -28,21 +30,19 @@ import java.time.Instant;
 public class User {
 
     @Id
-    private String id;
+    private ObjectId id;
 
     /**
-     * Anzeigename des Benutzers.
+     * Public display name of the user.
      * <p>
-     * Dieser Name muss eindeutig sein. Die Eindeutigkeit wird durch einen Datenbankindex erzwungen
-     * (siehe {@code @Indexed(unique = true)}). Verwende diesen Wert später für Login/Registrierung.
+     * This value must be unique. Uniqueness is enforced by a database index
+     * (see {@code @Indexed(unique = true)}). Use this value for login/registration.
      * </p>
      */
     @Indexed(unique = true)
     private String username;
 
-    /**
-     * Gehashter Passwort-String
-     */
+
     private String passwordHash;
 
     @CreatedDate
@@ -51,9 +51,12 @@ public class User {
     @LastModifiedDate
     private Instant updatedAt;
 
+    /**
+     * Flag indicating whether the user's library is publicly visible.
+     */
     private Boolean publicList;
 
-    /** Optional: Profilbild */
+
     private String profilePictureUrl;
 
 }

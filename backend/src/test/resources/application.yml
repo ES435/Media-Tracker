@@ -1,0 +1,36 @@
+spring:
+  data:
+    mongodb:
+      database: mediatracker_test
+      host: localhost
+      port: 0 # 0 = Random port for the Embedded DB to avoid conflicts
+
+# FIX: We must specify the MongoDB version explicitly for Flapdoodle
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 7.0.0
+
+app:
+  jwt:
+    secret: "test_secret_key_must_be_long_enough_for_hmac256_algorithm_12345"
+    access-token-expiration-in-seconds: 600
+    refresh-token-expiration-in-seconds: 3600
+
+# Enable all Feature Flags for testing purposes
+search:
+  anime:
+    enabled: true
+  music:
+    enabled: true
+  game:
+    enabled: true
+  book:
+    enabled: true
+  manga:
+    enabled: true
+  movie:
+    enabled: true
+  series:
+    enabled: true

@@ -6,10 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Darstellung der User-Basisinformationen für API-Responses der User-Search.
+ * Representation of basic user information for user search API responses.
  * <p>
- * Dieses DTO spiegelt die Felder wider, die als Snapshot in {@code User}
- * gespeichert werden.
+ * This DTO reflects the fields stored as a snapshot in the {@code User} entity.
  * </p>
  */
 @Data

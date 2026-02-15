@@ -14,12 +14,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * REST-Controller für die Suche.
+ * REST controller for search endpoints.
  *
- * Zweck: Nimmt HTTP-Anfragen vom Frontend entgegen, bereitet Parameter auf
- * und ruft den Such-Service auf.
+ * Purpose: Accepts HTTP requests from the frontend, prepares parameters,
+ * and delegates to the search service.
  *
- * Pfad: GET /api/search
+ * Path: GET /api/search
  */
 @RestController
 @RequestMapping("/api/search")
@@ -32,15 +32,14 @@ public class SearchController {
     }
 
     /**
-     * Führt eine Suche aus.
+     * Executes a search.
      *
-     * Beispiel: /api/search?q=naruto&types=anime,movie&limit=24
+     * Example: /api/search?q=naruto&types=anime,movie&limit=24
      *
-     * @param searchQuery Suchbegriff (z. B. "Naruto")
-     * @param types Komma‑getrennte Liste von Typen (z. B. "anime").
-     *              Leer oder nicht gesetzt = alle Provider.
-     * @param limit Maximale Treffer pro Typ. Standard ist 24.
-     * @return Liste kombinierter Suchergebnisse als JSON.
+     * @param searchQuery search term (e.g., "Naruto")
+     * @param types comma-separated list of types (e.g., "anime"); empty or missing = all providers
+     * @param limit maximum results per type; default is 24
+     * @return combined search results as JSON
      */
     @GetMapping
     public ResponseEntity<List<SearchResult>> search(

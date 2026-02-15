@@ -22,10 +22,10 @@ public class SeriesSearchProvider implements SearchProvider {
     private final ObjectMapper mapper;
 
     /**
-     * Konstruktor mit Abhängigkeiten.
+     * Constructor with dependencies.
      *
-     * @param imdb  HTTP-Client für die IMDbAPI
-     * @param mapper Jackson-Mapper zum Parsen der JSON-Antworten
+     * @param imdb   HTTP client for the IMDb API
+     * @param mapper Jackson Mapper for parsing JSON responses
      */
     public SeriesSearchProvider(IMDbClient imdb, ObjectMapper mapper) {
         this.imdb = imdb;
@@ -33,9 +33,9 @@ public class SeriesSearchProvider implements SearchProvider {
     }
 
     /**
-     * Liefert den Typnamen dieses Providers.
+     * Returns the type name of this provider.
      *
-     * @return "movie"
+     * @return "series"
      */
     @Override
     public String getType() {
@@ -43,13 +43,14 @@ public class SeriesSearchProvider implements SearchProvider {
     }
 
     /**
-     * Sucht Serien über die IMDbAPI.
-     * Verhalten: Parst die Antwort, extrahiert relevante Felder und liefert
-     * eine normalisierte Liste. Fehler werden geloggt und führen zu einer leeren Liste.
+     * Searches for series via the IMDb API.
      *
-     * @param searchQuery     Suchbegriff
-     * @param limit maximale Anzahl der Treffer
-     * @return Liste von {@link SearchResult}
+     * Behavior: Parses the response, extracts relevant fields, and returns
+     * a normalized list. Errors are logged and result in an empty list.
+     *
+     * @param searchQuery the search term
+     * @param limit       maximum number of results
+     * @return List of {@link SearchResult}
      */
     @Override
     public List<SearchResult> search(String searchQuery, int limit) {
@@ -65,7 +66,7 @@ public class SeriesSearchProvider implements SearchProvider {
                     String img   = seriesNode.path("primaryImage").path("url").asText("");
                     String url   = "https://www.imdb.com/title/" + id;
 
-                    // optionale Extras in meta
+                    // optional extras in meta
                     Map<String,Object> meta = new HashMap<>();
                     if (seriesNode.hasNonNull("startYear")) meta.put("year", seriesNode.get("startYear").asInt());
 

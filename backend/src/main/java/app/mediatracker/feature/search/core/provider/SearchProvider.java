@@ -5,26 +5,26 @@ import app.mediatracker.feature.search.core.dto.SearchResult;
 import java.util.List;
 
 /**
- * Basis-Schnittstelle für Such-Provider eines Medientyps.
- * Zweck: Jeder Provider kümmert sich um genau einen Typ (z. B. "anime")
- * und weiß, wie man eine externe Quelle abfragt und die Ergebnisse
- * in unser internes Format {@link SearchResult} übersetzt.
- * Erweiterbarkeit: Um einen neuen Medientyp zu unterstützen, einfach eine neue
- * Implementierung dieser Schnittstelle erstellen, als Spring-Bean annotieren
- * (z. B. mit {@code @Component}) und in {@link #getType()} den Typnamen zurückgeben.
+ * Base interface for search providers of a specific media type.
+ * Purpose: Each provider is responsible for exactly one type (e.g., "anime")
+ * and knows how to query an external source and translate results
+ * into our internal {@link SearchResult} format.
+ * Extensibility: To support a new media type, create a new implementation of this
+ * interface, annotate it as a Spring bean (e.g., with {@code @Component}),
+ * and return the type name from {@link #getType()}.
  */
 public interface SearchProvider {
     /**
-     * Eindeutiger Typname, den dieser Provider liefert (z. B. "anime", "movie").
+     * Unique media type this provider serves (e.g., "anime", "movie").
      */
     String getType();
 
     /**
-     * Führt die Suche beim jeweiligen externen Dienst aus und liefert normalisierte Ergebnisse.
+     * Executes the search against the respective external service and returns normalized results.
      *
-     * @param searchQuery     Suchbegriff
-     * @param limit maximale Anzahl der Treffer
-     * @return Liste von Suchergebnissen
+     * @param searchQuery search term
+     * @param limit maximum number of results
+     * @return list of search results
      */
     List<SearchResult> search(String searchQuery, int limit);
 }

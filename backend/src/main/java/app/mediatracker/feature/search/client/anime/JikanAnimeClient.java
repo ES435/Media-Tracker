@@ -5,12 +5,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 /**
- * Leichter HTTP-Client für die Jikan API (MyAnimeList-Proxy).
+ * Lightweight HTTP client for the Jikan API (MyAnimeList proxy).
  *
- * Zweck: Kapselt die HTTP-Kommunikation und bietet eine einfache Methode,
- * um Anime-Suche als JSON-String abzurufen.
+ * Purpose: Encapsulates HTTP communication and provides a simple method
+ * to retrieve anime search results as a JSON string.
  *
- * Konfiguration: Basis-URL kann über "jikan.base-url" überschrieben werden.
+ * Configuration: Base URL can be overridden via the property "jikan.base-url".
  */
 @Component
 public class JikanAnimeClient {
@@ -18,10 +18,10 @@ public class JikanAnimeClient {
     private final WebClient web;
 
     /**
-     * Erstellt einen Client mit vordefinierter Basis-URL.
+     * Creates a client with a predefined base URL.
      *
-     * @param builder von Spring bereitgestellter {@link WebClient.Builder}
-     * @param baseUrl Basis-URL der Jikan-API (Default: https://api.jikan.moe/v4)
+     * @param builder Spring-provided {@link WebClient.Builder}
+     * @param baseUrl base URL of the Jikan API (default: https://api.jikan.moe/v4)
      */
     public JikanAnimeClient(WebClient.Builder builder,
                             @Value("${jikan.base-url:https://api.jikan.moe/v4}") String baseUrl) {
@@ -29,18 +29,18 @@ public class JikanAnimeClient {
     }
 
     /**
-     * Sucht Anime bei Jikan und liefert die rohe JSON-Antwort.
+     * Searches for anime on Jikan and returns the raw JSON response.
      *
-     * Hinweis: Blockiert den aufrufenden Thread bis zur Antwort (vereinfachte Nutzung).
+     * Note: Blocks the calling thread until the response is received (simplified usage).
      *
-     * @param query Suchbegriff
-     * @return JSON als String
+     * @param query the search term
+     * @return JSON response as a String
      */
     public String searchAnime(String query) {
         return web.get()
                 .uri(u -> u.path("/anime").queryParam("q", query).build())
                 .retrieve()
                 .bodyToMono(String.class)
-                .block(); // simpel halten
+                .block(); // keep it simple
     }
 }

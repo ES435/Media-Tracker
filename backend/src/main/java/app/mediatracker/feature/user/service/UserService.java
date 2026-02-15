@@ -11,16 +11,19 @@ import app.mediatracker.feature.user.exception.UserNotFoundException;
 import app.mediatracker.feature.user.model.User;
 import app.mediatracker.feature.user.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
+
+import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.security.Principal;
 import java.util.List;
 
 /**
- * Anwendungslogik für User-Profile und Suche.
+ * Application logic for user profiles and search.
  * <p>
- * Authentication-Logik wurde in den AuthService ausgelagert (Separation of Concerns).
+ * Authentication logic has been moved to the AuthService (Separation of Concerns).
  * </p>
  */
 @Service
@@ -29,10 +32,14 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserLibraryEntryRepository userLibraryEntryRepository;
-    // BCryptPasswordEncoder entfernt -> gehört hier nicht hin!
+    // BCryptPasswordEncoder removed -> does not belong here!
 
     /**
-     * Führt eine User-Suche anhand von einem Teilstring aus.
+     * Performs a user search based on a partial string.
+     *
+     * @param partName the string fragment to search for
+     * @param limit    maximum number of results
+     * @return UserSearchResponse containing the results
      */
     public UserSearchResponse searchUser(String partName, int limit) {
         List<User> searchResults = userRepository.findByUsernameContainingIgnoreCase(partName);
@@ -44,16 +51,27 @@ public class UserService {
     }
 
     /**
-     * Gibt die notwendigen Daten für die User-Page eines Users aus.
+     * Retrieves the necessary data for a user's profile page.
+     *
+     * @param username  the username of the profile to retrieve
+     * @param principal the currently authenticated user (optional)
+     * @return UserPageResponse containing profile info and library entries (if visible)
      */
-    public UserPageResponse getUserPage(String username) {
+    public UserPageResponse getUserPage(String username, Principal principal) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User " + username + " not found" ));
 
         UserSummary userSummary = toSummary(user);
 
+        boolean isOwner = false;
+        if(principal != null) {
+            User currentLoggedInUser = getUserById(new ObjectId(principal.getName()));
+            isOwner = user.equals(currentLoggedInUser);
+        }
+
         List<LibraryEntryResponse> userMediaList;
-        if(Boolean.TRUE.equals(user.getPublicList())) { // Null-Safe check
+        // Access logic: Show library if it is public or if the requester is the owner
+        if(user.getPublicList() || isOwner) {
             List<UserLibraryEntry> userLibrary = userLibraryEntryRepository.findByUserId(user.getId());
             userMediaList = userLibrary.stream()
                     .map(this::toLibraryEntryResponse)
@@ -69,17 +87,28 @@ public class UserService {
     }
 
     /**
-     * Interne Methode zum Laden des vollen User-Objekts (z.B. für LibraryController).
-     * @param username der eindeutige Username
-     * @return das User Objekt
-     * @throws UserNotFoundException wenn User nicht existiert
+     * Internal method to load the full user object (e.g., for LibraryController).
+     * * @param username the unique username
+     * @return the User object
+     * @throws UserNotFoundException if user does not exist
      */
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
     }
 
-    // --- Private Helper ---
+    /**
+     * Retrieves a user by their technical ID.
+     * * @param userId the MongoDB ObjectId
+     * @return the User object
+     * @throws UserNotFoundException if user does not exist
+     */
+    public User getUserById(ObjectId userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId.toString()));
+    }
+
+    // --- Private Helpers ---
 
     private UserSummary toSummary(User user) {
         return UserSummary.builder()
@@ -110,5 +139,5 @@ public class UserService {
                 .build();
     }
 
-    // HIER WURDEN login(), register() und createNewUser() ENTFERNT.
+    // NOTE: login(), register(), and createNewUser() were REMOVED from this service.
 }

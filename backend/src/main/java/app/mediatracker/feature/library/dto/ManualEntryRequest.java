@@ -7,27 +7,29 @@ import lombok.Data;
 import java.util.Map;
 
 /**
- * Request-Payload zum Anlegen oder Aktualisieren eines Bibliothekseintrags auf Basis eines Manual Entries.
+ * Request payload to create or update a library entry based on a manual entry.
  * <p>
- * Das Frontend sendet diesen Typ an den POST-Endpunkt der Bibliothek. Enthält den gewünschten Status,
- * eine optionale Bewertung sowie freie Notizen und die vom User ausgefüllten Informationen zum Medien Objekt.
+ * Sent by the frontend to the library POST endpoint. Includes the desired status,
+ * an optional rating, free-form notes, and user-provided information about the media item.
  * </p>
  */
 @Data
 public class ManualEntryRequest {
 
     /**
-     * Technischer Benutzer-Identifikator. Kann später durch Informationen
-     * aus dem authentifizierten Principal ersetzt werden.
+     * Technical user identifier.
+     * <p>
+     * This field is handled via the authenticated Principal (Security Context)
+     * and does not need to be provided in the request body.
+     * </p>
      */
-    //private String userId;  für später wenn mehrere User
 
     private LibraryEntryStatus status;
 
     private Integer rating;
 
     private String notes;
-    
+
     @NotBlank
     private String title;
 
@@ -38,7 +40,7 @@ public class ManualEntryRequest {
 
     //private String genre;
 
-    private String imageUrl;   // Vorschaubild (optional)
+    private String imageUrl;   // Preview image (optional)
 
     private Map<String, Object> meta;
 }

@@ -1,14 +1,16 @@
 package app.mediatracker.feature.user.dto;
+
 import lombok.Data;
+
 /**
- * Request-Payload zum Suchen nach existierenden Usern, auf Basis eines Namens oder Teils davon (namePart).
+ * Request payload for searching for existing users based on a name or a part thereof (namePart).
  * <p>
- * Das Frontend sendet diesen Typ an den POST-Endpunkt der Bibliothek. Enthält den partiellen UserName der gesucht werden soll.
+ * The frontend sends this type to the endpoint. Contains the partial username to search for.
  * </p>
  */
 @Data
 public class UserSearchRequest {
 
     private String namePart;
-    
+
 }
