@@ -8,20 +8,20 @@ import "./pages/UserPage.css";
 import App from "./App.tsx";
 
 /**
- * Application entry point.
+ * Einstiegspunkt der Anwendung.
  *
- * Responsibility:
- * - Bootstraps the React application.
- * - Injects global styles.
- * - Mounts the root App component into the DOM.
+ * Verantwortlichkeit:
+ * - Bootstrapped die React-Anwendung.
+ * - Bindet globale Styles ein.
+ * - Mountet die Root-App-Komponente in das DOM.
  *
- * Architectural Role:
- * - Defines the rendering root.
- * - Applies global CSS (Bootstrap + custom styles).
- * - Wraps application in React StrictMode for development checks.
+ * Architektonische Rolle:
+ * - Definiert die Rendering-Root.
+ * - Wendet globales CSS an (Bootstrap + eigene Styles).
+ * - Umhüllt die Anwendung mit React StrictMode für Entwicklungsprüfungen.
  *
- * Initializes React rendering process
- * and attaches App component to #root element.
+ * Initialisiert den React-Rendering-Prozess
+ * und hängt die App-Komponente an das #root-Element an.
  */
 
 createRoot(document.getElementById("root")!).render(

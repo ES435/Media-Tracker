@@ -3,17 +3,17 @@ import type { MediaItem, MediaType } from "./types";
 import {useState} from "react";
 
 /**
- * Content component.
+ * Content-Komponente.
  *
- * Responsibility:
- * - Renders the main content area of the page.
- * - Displays search results as a grid of MediaCard components.
- * - Manages local UI selection state for expanded cards.
+ * Verantwortlichkeit:
+ * - Rendert den Hauptinhalt der Seite.
+ * - Zeigt Suchergebnisse als Grid aus MediaCard-Komponenten an.
+ * - Verwaltet lokalen UI-Auswahlzustand für aufgeklappte Karten.
  *
- * Architectural Role:
- * - Pure presentation component.
- * - Receives data and callbacks via props.
- * - Does not perform backend communication itself.
+ * Architektonische Rolle:
+ * - Reine Präsentationskomponente.
+ * - Erhält Daten und Callbacks über Props.
+ * - Führt selbst keine Backend-Kommunikation aus.
  */
 
 export default function Content({items, loading, selectedType, onTypeChange,}: {
@@ -24,7 +24,7 @@ export default function Content({items, loading, selectedType, onTypeChange,}: {
 
 })
 {
-    // Tracks which media item is currently selected/expanded
+    // Verfolgt, welches Medien-Item aktuell ausgewählt/aufgeklappt ist
     const [selectedId, setSelectedId] = useState<string | null>(null);
     return (
         <main id="content">
@@ -41,12 +41,12 @@ export default function Content({items, loading, selectedType, onTypeChange,}: {
                         <option value="series">Series</option>
                     </select>
 
-                    {/* Placeholder button for future feature extension */}
+                    {/* Platzhalter-Button für zukünftige Feature-Erweiterung */}
                     <button className="create-button">Under Construction</button>
                 </div>
 
                 {loading ? (
-                    // Displays loading state during async search execution
+                    // Zeigt den Ladezustand während der asynchronen Suche an
                     <div className="content-loading">Loading...</div>
                 ) : (
                     items.map((item) => {

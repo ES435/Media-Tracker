@@ -2,17 +2,17 @@ import { useNavigate } from "react-router-dom";
 import defaultAvatar from "../assets/profile-picture.png";
 
 /**
- * Navbar component.
+ * Navbar-Komponente.
  *
- * Responsibility:
- * - Provides search input functionality.
- * - Displays current user information.
- * - Handles navigation to login or user profile page.
+ * Verantwortlichkeit:
+ * - Stellt die Suchfeld-Funktionalität bereit.
+ * - Zeigt Informationen zum aktuellen Nutzer an.
+ * - Behandelt die Navigation zum Login oder zur Nutzerprofil-Seite.
  *
- * Architectural Role:
- * - Presentation layer component.
- * - Receives state and callbacks via props.
- * - Does not manage authentication state directly.
+ * Architektonische Rolle:
+ * - Komponente der Präsentationsschicht.
+ * - Erhält State und Callbacks über Props.
+ * - Verwaltet den Authentifizierungsstatus nicht direkt.
  */
 
 type NavbarProps = {
@@ -20,17 +20,17 @@ type NavbarProps = {
     onQueryChange: (value: string) => void;
     onSearch: () => void;
 
-    // Optional user data for profile display
+    // Optionale Nutzerdaten für die Profilanzeige
     username?: string;
     profilePictureUrl?: string | null;
 };
 
 export default function Navbar({query, onQueryChange, onSearch, username, profilePictureUrl, }: NavbarProps) {
 
-    // React Router navigation hook
+    // React-Router-Navigations-Hook
     const navigate = useNavigate();
 
-    // Fallback avatar image for missing or invalid profile pictures
+    // Fallback-Avatarbild für fehlende oder ungültige Profilbilder
     const DEFAULT_AVATAR = defaultAvatar;
     const avatarSrc =
         profilePictureUrl && profilePictureUrl.trim().length > 0
@@ -39,7 +39,7 @@ export default function Navbar({query, onQueryChange, onSearch, username, profil
 
     return (
         <nav id="navbar">
-            {/* Search input section */}
+            {/* Navbar-Bereich */}
             <div className="search">
                 <span className="search-icon material-symbols-outlined">search</span>
                 <input
@@ -49,7 +49,7 @@ export default function Navbar({query, onQueryChange, onSearch, username, profil
                     value={query}
                     onChange={(e) => onQueryChange(e.target.value)}
                     onKeyDown={(e) => {
-                        // Allows search execution via Enter key
+                        // Ermöglicht das Ausführen der Suche per Enter-Taste
                         if (e.key === "Enter") onSearch();
                     }}
                 />
@@ -59,8 +59,8 @@ export default function Navbar({query, onQueryChange, onSearch, username, profil
             <button
                 type="button"
                 className="profile-button"
-                // Redirects unauthenticated users to login
-                // Authenticated users to their profile page
+                // Leitet nicht eingeloggte Nutzer zum Login weiter
+                // Eingeloggte Nutzer zu ihrer Profilseite
                 onClick={() => {
                     if (!username) navigate("/login");
                     else navigate(`/user/${encodeURIComponent(username)}`);
@@ -70,7 +70,7 @@ export default function Navbar({query, onQueryChange, onSearch, username, profil
                     className="profile-button__avatar"
                     src={avatarSrc}
                     alt=""
-                    // Ensures fallback avatar if image loading fails
+                    // Stellt den Fallback-Avatar sicher, falls das Laden des Bildes fehlschlägt
                     onError={(e) => {
                         (e.currentTarget as HTMLImageElement).src = DEFAULT_AVATAR;
                     }}

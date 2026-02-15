@@ -1,18 +1,18 @@
 /**
- * Global application styling (layout + shared UI components).
+ * Globales Styling der Anwendung (Layout + geteilte UI-Komponenten).
  *
- * Purpose:
- * - Defines global design tokens (CSS variables) and base layout grid.
- * - Provides shared component styles (Navbar, Search, MediaCard, Content).
+ * Zweck:
+ * - Definiert globale Design-Tokens (CSS-Variablen) und das Basis-Layout-Grid.
+ * - Stellt geteilte Komponenten-Styles bereit (Navbar, Search, MediaCard, Content).
  *
- * Organization:
- * - :root variables for theme and sizing
- * - Page layout via .grid-container and grid-areas
- * - Reusable component classes (media-card, search, buttons, etc.)
+ * Organisation:
+ * - :root Variablen für Theme und Sizing
+ * - Seitenlayout über .grid-container und grid-areas
+ * - Wiederverwendbare Komponenten-Klassen (media-card, search, buttons, etc.)
  *
- * Note:
- * - Page-specific overrides should live in dedicated page CSS
- *   (e.g. scoped with .UserPage) to avoid unintended side effects.
+ * Hinweis:
+ * - Seiten-spezifische Overrides sollten in dedizierten Page-CSS-Dateien liegen
+ *   (z.B. gescoped mit .UserPage), um unbeabsichtigte Seiteneffekte zu vermeiden.
  */
 
 :root {
@@ -476,4 +476,3 @@ html, body {
     border: none;
     font-size: 18px;
 }
-

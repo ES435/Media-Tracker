@@ -1,16 +1,15 @@
-
 /**
- * UserPage layout styling.
+ * Styling für das UserPage-Layout.
  *
- * Defines page-specific layout adjustments for the user profile view.
- * Styles are scoped using the `.UserPage` class to avoid interfering
- * with global layout definitions.
+ * Definiert seiten-spezifische Layout-Anpassungen für die Nutzerprofil-Ansicht.
+ * Styles werden über die `.UserPage`-Klasse begrenzt, um globale Layout-Definitionen
+ * nicht zu beeinflussen.
  *
- * Focus:
- * - Grid-area positioning (header, navbar, content)
- * - Profile picture presentation
- * - Filter controls layout
- * - Media grid alignment
+ * Fokus:
+ * - Grid-Area-Positionierung (header, navbar, content)
+ * - Darstellung des Profilbilds
+ * - Layout der Filter-Steuerung
+ * - Ausrichtung des Media-Grids
  */
 
 .UserPage #header {

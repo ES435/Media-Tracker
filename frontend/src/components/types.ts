@@ -8,9 +8,9 @@ export type MediaItem = {
     sourceUrl: string;
 
     /**
-     * Optional metadata depending on media type.
-     * Properties are optional to avoid runtime failures
-     * when backend does not provide specific fields.
+     * Optionale Metadaten abhängig vom Medientyp.
+     * Eigenschaften sind optional, um Laufzeitfehler zu vermeiden,
+     * falls das Backend bestimmte Felder nicht bereitstellt.
      */
 
     meta?: {
@@ -20,7 +20,7 @@ export type MediaItem = {
 };
 
 /**
- * Represents a public user profile.
+ * Repräsentiert ein öffentliches Benutzerprofil.
  */
 export type User = {
     username: string;
@@ -29,7 +29,8 @@ export type User = {
 };
 
 /**
- * Represents a media entry stored in a user's personal library.
+ * Repräsentiert einen Medieneintrag,
+ * der in der persönlichen Bibliothek eines Nutzers gespeichert ist.
  */
 export type UserMedia = {
     id: string;
@@ -43,7 +44,7 @@ export type UserMedia = {
 };
 
 /**
- * Response structure for the user profile page endpoint.
+ * Antwortstruktur für den Endpunkt der Benutzerprofil-Seite.
  */
 export type UserPageResponse = {
     user: User;
@@ -51,8 +52,8 @@ export type UserPageResponse = {
 };
 
 /**
- * Supported media categories for search and filtering.
- * Defined as union type to restrict invalid values.
+ * Unterstützte Medienkategorien für Suche und Filterung.
+ * Als Union-Typ definiert, um ungültige Werte zu verhindern.
  */
 export type MediaType =
     | "anime"
@@ -65,7 +66,8 @@ export type MediaType =
     | "";
 
 /**
- * Possible status values for media items in a user's library.
+ * Mögliche Statuswerte für Medieneinträge
+ * in der Bibliothek eines Nutzers.
  */
 export type MediaStatus =
     | "PLANNED"
@@ -74,7 +76,7 @@ export type MediaStatus =
     | "DROPPED";
 
 /**
- * Status filter options used in user media views.
+ * Status-Filteroptionen für Benutzer-Medienansichten.
  */
 export type UserMediaStatus =
     | "COMPLETED"
@@ -83,7 +85,7 @@ export type UserMediaStatus =
     | "DROPPED";
 
 /**
- * Sorting/filtering options for user media lists.
+ * Sortier- und Filteroptionen für Medienlisten eines Nutzers.
  */
 export type UserMediaSortOption =
     | "anime"

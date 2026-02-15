@@ -2,29 +2,29 @@ import {type FormEvent, useEffect, useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 
 /**
- * RegisterPage component.
+ * RegisterPage-Komponente.
  *
- * Responsibility:
- * - Provides user registration form.
- * - Performs basic client-side validation.
- * - Sends registration request to backend.
- * - Redirects to login page upon successful registration.
+ * Verantwortlichkeit:
+ * - Stellt das Registrierungsformular für Nutzer bereit.
+ * - Führt einfache client-seitige Validierung durch.
+ * - Sendet die Registrierungsanfrage an das Backend.
+ * - Leitet nach erfolgreicher Registrierung zur Login-Seite weiter.
  *
- * Architectural Role:
- * - Presentation + authentication interaction layer.
- * - Delegates persistence and user creation to backend.
+ * Architektonische Rolle:
+ * - Präsentations- + Authentifizierungs-Interaktionsschicht.
+ * - Delegiert Persistenz und Nutzererstellung an das Backend.
  */
 
 export default function RegisterPage() {
-    // Router navigation hook
+    // Router-Navigations-Hook
     const navigate = useNavigate()
 
-    // Stores error messages returned from validation or backend
+    // Speichert Fehlermeldungen aus Validierung oder Backend
     const [error, setError] = useState<string | null>(null);
 
     /**
-     * Applies login-style layout to registration page
-     * to ensure consistent authentication UI styling.
+     * Wendet das Login-Layout auch auf die Registrierungsseite an,
+     * um ein konsistentes Authentifizierungs-UI sicherzustellen.
      */
     useEffect(() => {
         document.body.classList.add("login-page");
@@ -33,7 +33,8 @@ export default function RegisterPage() {
     }, []);
 
     /**
-     * Handles form submission and triggers registration process.
+     * Behandelt das Submit-Event des Formulars
+     * und startet den Registrierungsprozess.
      */
     async function handleSubmit(event:FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -48,7 +49,7 @@ export default function RegisterPage() {
             await register(username, password, passwordrep)
             navigate("/login")
         } catch (err) {
-            // FIX: Proper error checking instead of ts-ignore
+            // FIX: Korrekte Fehlerprüfung statt ts-ignore
             if (err instanceof Error) {
                 setError(err.message)
             } else {
@@ -58,14 +59,14 @@ export default function RegisterPage() {
     }
 
     /**
-     * Sends registration request to backend authentication endpoint.
+     * Sendet die Registrierungsanfrage an den Authentifizierungs-Endpunkt im Backend.
      *
-     * Performs client-side password validation before sending request.
+     * Führt vor dem Senden eine client-seitige Passwortvalidierung durch.
      *
-     * @throws Error when:
-     * - Passwords do not match
-     * - Username is already taken (409)
-     * - Server returns generic failure
+     * @throws Error wenn:
+     * - Passwörter nicht übereinstimmen
+     * - Benutzername bereits vergeben ist (409)
+     * - Server einen generischen Fehler zurückgibt
      */
     async function register(username: string, password: string, passwordRep: string) {
         if(!validatePassword(password, passwordRep)) {
@@ -91,8 +92,8 @@ export default function RegisterPage() {
     }
 
     /**
-     * Simple client-side validation to ensure
-     * password confirmation matches.
+     * Einfache client-seitige Validierung, um sicherzustellen,
+     * dass die Passwort-Bestätigung übereinstimmt.
      */
     function validatePassword(password: string, passwordrep: string) {
         return password === passwordrep;
@@ -111,7 +112,7 @@ export default function RegisterPage() {
                 <div className="input-box">
                     <input name="passwordrep" type="password" placeholder="Repeat Password" required/>
                 </div>
-                {/* Displays validation or backend error messages */}
+                {/* Zeigt Validierungs- oder Backend-Fehlermeldungen an */}
                 {error && <div className="error-message">{error}</div>}
                 <button type="submit" className="btn">Register</button>
                 <div className="register-link">

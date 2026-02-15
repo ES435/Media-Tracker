@@ -8,43 +8,43 @@ import defaultAvatar from "../assets/profile-picture.png";
 import {useAuth} from "../service/AuthContext.tsx";
 
 /**
- * UserPage component.
+ * UserPage-Komponente.
  *
- * Responsibility:
- * - Loads and displays a public user profile and their media library.
- * - Manages page-level state for loading, filters, and search query.
- * - Coordinates child components (Navbar, UserPageContent, Footer).
+ * Verantwortlichkeit:
+ * - Lädt und zeigt ein öffentliches Nutzerprofil sowie dessen Medienbibliothek an.
+ * - Verwaltet seitenweiten State für Laden, Filter und Suchanfrage.
+ * - Koordiniert Kind-Komponenten (Navbar, UserPageContent, Footer).
  *
- * Architectural Role:
- * - Page/orchestration layer.
- * - Uses AuthContext abstraction (`fetchWithRefresh`) for authenticated requests.
- * - Delegates rendering and client-side filtering to child components.
+ * Architektonische Rolle:
+ * - Seiten-/Orchestrierungs-Schicht.
+ * - Nutzt die AuthContext-Abstraktion (`fetchWithRefresh`) für authentifizierte Requests.
+ * - Delegiert Rendering und client-seitige Filterung an Kind-Komponenten.
  */
 
 export default function UserPage() {
-    // Reads the target username from the route (e.g. /user/:username)
+    // Liest den Ziel-Benutzernamen aus der Route (z.B. /user/:username)
     const {username} = useParams<{ username: string }>();
-    // Profile data of the visited user
+    // Profildaten des besuchten Nutzers
     const [user, setUser] = useState<UserPageResponse["user"] | null>(null);
-    // Library entries belonging to the visited user
+    // Bibliotheks-Einträge des besuchten Nutzers
     const [mediaList, setMediaList] = useState<UserPageResponse["userMediaList"]>([]);
-    // Controls page loading state while fetching profile data
+    // Steuert den Seiten-Ladezustand während Profildaten geladen werden
     const [loading, setLoading] = useState(true);
-    // Search query for client-side filtering in UserPageContent
+    // Suchanfrage für client-seitige Filterung in UserPageContent
     const [query, setQuery] = useState("");
-    // Selected media type filter (client-side)
+    // Ausgewählter Medientyp-Filter (client-seitig)
     const [selectedSortType, setSelectedSortType] = useState<UserMediaSortOption>("all");
-    // Selected status filter (client-side)
+    // Ausgewählter Status-Filter (client-seitig)
     const [selectedMediaStatus, setSelectedMediaStatus] = useState<UserMediaStatus | "ALL">("ALL");
-    // Fallback avatar image if profilePictureUrl is missing or invalid
+    // Fallback-Avatarbild, falls profilePictureUrl fehlt oder ungültig ist
     const profileSrc = user?.profilePictureUrl?.trim() ? user.profilePictureUrl : defaultAvatar;
-    // Logged-in user is used for Navbar display (profile button)
+    // Eingeloggter Nutzer wird für die Anzeige in der Navbar verwendet (Profil-Button)
     const { user: loggedInUser, fetchWithRefresh } = useAuth();
 
 
     /**
-     * Fetches user profile data (user + media list) based on route parameter.
-     * Uses AuthContext's fetch wrapper to ensure consistent session handling.
+     * Lädt Nutzerprofil-Daten (user + media list) basierend auf dem Routenparameter.
+     * Nutzt den fetch-Wrapper aus dem AuthContext, um konsistentes Session-Handling sicherzustellen.
      */
     useEffect(() => {
         if (!username) return;
@@ -65,14 +65,14 @@ export default function UserPage() {
     }, [username]);
 
     /**
-     * Updates media type filter selection for client-side filtering.
+     * Aktualisiert die Medientyp-Filterauswahl für die client-seitige Filterung.
      */
     function handleSortTypeChange(newOption: UserMediaSortOption): void {
         setSelectedSortType(newOption);
     }
 
     /**
-     * Updates status filter selection for client-side filtering.
+     * Aktualisiert die Status-Filterauswahl für die client-seitige Filterung.
      */
     function handleMediaStatusChange(newStatus: UserMediaStatus | "ALL"): void {
         setSelectedMediaStatus(newStatus);
@@ -82,7 +82,7 @@ export default function UserPage() {
     return (
         <div className="UserPage">
             {loading ? (
-                // Loading state while profile data is being fetched
+                // Ladezustand, während Profildaten geladen werden
                 <div>Loading...</div>
             ) : user ? (
                 <div className="grid-container">
@@ -97,7 +97,7 @@ export default function UserPage() {
                         <Navbar
                             query={query}
                             onQueryChange={setQuery}
-                            // Search is applied client-side in UserPageContent
+                            // Suche wird client-seitig in UserPageContent angewendet
                             onSearch={() => {
                             }}
                             username={loggedInUser?.username}
@@ -125,7 +125,7 @@ export default function UserPage() {
                     </footer>
                 </div>
             ) : (
-                // Fallback view when requested user profile does not exist
+                // Fallback-Ansicht, wenn das angefragte Nutzerprofil nicht existiert
                 <div>User not found.</div>
             )}
         </div>

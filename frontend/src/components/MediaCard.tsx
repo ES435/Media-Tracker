@@ -4,17 +4,17 @@ import type {MediaStatus} from "./types";
 import {useAuth} from "../service/AuthContext.tsx";
 
 /**
- * MediaCard component.
+ * MediaCard-Komponente.
  *
- * Responsibility:
- * - Displays a single media item.
- * - Allows users to add the item to their personal library.
- * - Manages local UI state (status, rating, notes, saving state).
+ * Verantwortlichkeit:
+ * - Zeigt ein einzelnes Medien-Item an.
+ * - Ermöglicht es Nutzern, das Item zur persönlichen Bibliothek hinzuzufügen.
+ * - Verwaltet lokalen UI-State (Status, Bewertung, Notizen, Speichern-Status).
  *
- * Architectural Role:
- * - Presentation component with localized business interaction.
- * - Uses AuthContext abstraction for authenticated backend requests.
- * - Does not manage global state.
+ * Architektonische Rolle:
+ * - Präsentationskomponente mit lokalisierter Business-Interaktion.
+ * - Nutzt die AuthContext-Abstraktion für authentifizierte Backend-Requests.
+ * - Verwaltet keinen globalen State.
  */
 
 type MediaCardProps = {
@@ -25,7 +25,7 @@ type MediaCardProps = {
 
 export default function MediaCard({ item, selected, onSelect }: MediaCardProps){
 
-    // Local UI state for form input and interaction feedback
+    // Lokaler UI-State für Form-Eingaben und Interaktions-Feedback
     const [status, setStatus] = useState<MediaStatus>("PLANNED");
     const [rating, setRating] = useState<number | "">("");
     const [notes, setNotes] = useState("");
@@ -33,26 +33,26 @@ export default function MediaCard({ item, selected, onSelect }: MediaCardProps){
     const [added, setAdded] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // Fallback to default image if no valid imageUrl is provided
+    // Fallback auf Standardbild, falls keine gültige imageUrl vorhanden ist
     const coverSrc = item?.imageUrl?.trim() ? item.imageUrl : "/assets/profile-picture.png"; // anderes
 
-    // Access authenticated request wrapper from AuthContext
+    // Zugriff auf den authentifizierten Request-Wrapper aus dem AuthContext
     const { fetchWithRefresh } = useAuth();
 
     /**
-     * Sends the current media item to the backend library endpoint.
+     * Sendet das aktuelle Medien-Item an den Library-Endpunkt im Backend.
      *
-     * Handles:
-     * - Authenticated request via fetchWithRefresh
-     * - HTTP status interpretation (401, 403, 409)
-     * - Error propagation to UI
+     * Behandelt:
+     * - Authentifizierten Request via fetchWithRefresh
+     * - Interpretation von HTTP-Statuscodes (401, 403, 409)
+     * - Weitergabe von Fehlern an die UI
      */
 
     async function addToLibrary() {
-        // Ensures a consistent ID mapping from various backend formats
+        // Stellt ein konsistentes ID-Mapping aus verschiedenen Backend-Formaten sicher
         const searchResultPayload = {
             ...item,
-            // Resolved: removed 'as any' casts because types.ts now supports these fields
+            // Gelöst: 'as any'-Casts entfernt, da types.ts diese Felder jetzt unterstützt
             id: item.id || item.mediaId || item.externalId
         };
 
@@ -82,7 +82,7 @@ export default function MediaCard({ item, selected, onSelect }: MediaCardProps){
     return (
         <div className={`media-card ${selected ? "selected" : ""}`}>
             <div className="media-card__top" onClick={onSelect} style={{ cursor: "pointer" }}>
-                {/* Media cover and optional source link */}
+                {/* Medien-Cover und optionaler Source-Link */}
                 <div className="media-card__main">
                     <img src={coverSrc} alt={item?.title ?? "Media"} className="media-card__img"/>
 
@@ -99,7 +99,7 @@ export default function MediaCard({ item, selected, onSelect }: MediaCardProps){
                     )}
                 </div>
 
-                {/* Interaction panel for adding to personal library */}
+                {/* Interaktions-Panel zum Hinzufügen zur persönlichen Bibliothek */}
                 <div className="media-card__side" onClick={(e) => e.stopPropagation()}>
                     {/* HEADER */}
                     <div className="media-card__panelHeader">
@@ -110,7 +110,7 @@ export default function MediaCard({ item, selected, onSelect }: MediaCardProps){
                     {/* BODY */}
                     <div className="media-card__panelBody">
 
-                        {/* Media status selection */}
+                        {/* Auswahl des Medien-Status */}
                         <div className="media-card__field">
                             <label className="media-card__label">Status</label>
                             <select
@@ -126,7 +126,7 @@ export default function MediaCard({ item, selected, onSelect }: MediaCardProps){
                             </select>
                         </div>
 
-                        {/* Optional rating input */}
+                        {/* Optionale Bewertungs-Eingabe */}
                         <div className="media-card__field">
                             <label className="media-card__label">Rating (1-10)</label>
                             <select
@@ -144,7 +144,7 @@ export default function MediaCard({ item, selected, onSelect }: MediaCardProps){
                             </select>
                         </div>
 
-                        {/* Optional notes field */}
+                        {/* Optionales Notizen-Feld */}
                         <div className="media-card__field">
                             <label className="media-card__label">Notes</label>
                             <textarea
@@ -156,11 +156,11 @@ export default function MediaCard({ item, selected, onSelect }: MediaCardProps){
                             />
                         </div>
 
-                        {/* Displays backend-related errors */}
+                        {/* Zeigt backendbezogene Fehler an */}
                         {error && <div className="media-card__error">{error}</div>}
                     </div>
 
-                    {/* Cancels selection without triggering parent click */}
+                    {/* Bricht die Auswahl ab, ohne den Parent-Click auszulösen */}
                     <div className="media-card__actions">
                         <button
                             type="button"
@@ -174,7 +174,7 @@ export default function MediaCard({ item, selected, onSelect }: MediaCardProps){
                             Cancel
                         </button>
 
-                        {/* Executes async save operation with feedback state */}
+                        {/* Führt den asynchronen Speichervorgang mit Feedback-State aus */}
                         <button
                             type="button"
                             className="media-card__btn media-card__btn--primary"
@@ -203,7 +203,7 @@ export default function MediaCard({ item, selected, onSelect }: MediaCardProps){
                 </div>
             </div>
 
-            {/* Bottom title area */}
+            {/* Unterer Titelbereich */}
             <div className="media-card__title" title={item.title}>
                 {item.title}
             </div>

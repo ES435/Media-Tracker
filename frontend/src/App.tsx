@@ -6,17 +6,17 @@ import UserPage from "./pages/UserPage.tsx"
 import {AuthProvider} from "./service/AuthContext.tsx";
 
 /**
- * Root application component.
+ * Root-Anwendungskomponente.
  *
- * Responsibility:
- * - Defines global routing configuration.
- * - Wraps the application with AuthProvider to provide authentication context.
- * - Establishes navigation structure for all pages.
+ * Verantwortlichkeit:
+ * - Definiert die globale Routing-Konfiguration.
+ * - Umhüllt die Anwendung mit dem AuthProvider, um den Authentifizierungs-Context bereitzustellen.
+ * - Legt die Navigationsstruktur für alle Seiten fest.
  *
- * Architectural Role:
- * - Composition root of the frontend application.
- * - Centralizes route definitions.
- * - Injects global services (AuthContext).
+ * Architektonische Rolle:
+ * - Composition Root der Frontend-Anwendung.
+ * - Zentralisiert Route-Definitionen.
+ * - Injiziert globale Services (AuthContext).
  */
 
 export default function App() {
@@ -24,14 +24,14 @@ export default function App() {
         <AuthProvider>
             <BrowserRouter>
                 <Routes>
-                    {/* Redirect root path to login */}
+                    {/* Leitet den Root-Pfad zum Login weiter */}
                     <Route path="/" element={<Navigate to="/login"/>}/>
-                    {/* Authentication routes */}
+                    {/* Authentifizierungs-Routen */}
                     <Route path="/login" element={<LoginPage/>}/>
-                    {/* Main application routes */}
+                    {/* Hauptanwendungs-Routen */}
                     <Route path="/main" element={<MainPage/>}/>
                     <Route path="/register" element={<RegisterPage/>}/>
-                    {/* Fallback for unknown routes */}
+                    {/* Fallback für unbekannte Routen */}
                     <Route path="*" element={<h1>404 - Not Found</h1>}/>
                     <Route path="/user/:username" element={<UserPage/>}/>
                 </Routes>

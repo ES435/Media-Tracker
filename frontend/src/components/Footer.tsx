@@ -1,15 +1,14 @@
-
 /**
- * Footer component.
+ * Footer-Komponente.
  *
- * Responsibility:
- * - Defines the footer section of the application layout.
- * - Acts as a structural layout element.
+ * Verantwortlichkeit:
+ * - Definiert den Footer-Bereich des Anwendungslayouts.
+ * - Dient als strukturelles Layout-Element.
  *
- * Architectural Role:
- * - Pure presentation component.
- * - Contains no business logic or state.
- * - Can be extended in the future without affecting other layers.
+ * Architektonische Rolle:
+ * - Reine Präsentationskomponente.
+ * - Enthält keine Geschäftslogik oder Zustände.
+ * - Kann künftig erweitert werden, ohne andere Schichten zu beeinflussen.
  */
 
 export default function Footer(){

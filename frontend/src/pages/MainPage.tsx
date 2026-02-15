@@ -6,32 +6,32 @@ import type {MediaItem, MediaType} from "../components/types.ts";
 import {useAuth} from "../service/AuthContext.tsx";
 
 /**
- * MainPage handles page-level state and coordinates search functionality.
- * It connects UI components with backend communication.
+ * MainPage verwaltet den seitenweiten State und koordiniert die Suchfunktionalität.
+ * Sie verbindet UI-Komponenten mit der Backend-Kommunikation.
  */
 
 export default function MainPage() {
-    // Stores search results returned from backend
+    // Speichert Suchergebnisse, die vom Backend zurückgegeben werden
     const [items, setItems] = useState<MediaItem[]>([]);
 
-    // Controls loading indicator during async operations
+    // Steuert die Ladeanzeige während asynchroner Operationen
     const [loading, setLoading] = useState(true);
 
-    // Current search input value
+    // Aktueller Wert der Such-Eingabe
     const [query, setQuery] = useState("");
 
-    // Selected media filter type
+    // Ausgewählter Medien-Filtertyp
     const [selectedType, setSelectedType] = useState<MediaType>("anime");
 
-    // Optional backend limit parameter
+    // Optionaler Backend-Limit-Parameter
     const limit = "";
 
-    // Retrieves authenticated user for Navbar display
+    // Holt den authentifizierten Nutzer für die Anzeige in der Navbar
     const {user: loggedInUser} = useAuth();
 
     /**
-     * Applies page-specific styling by modifying body classes.
-     * Ensures proper layout separation between login and main view.
+     * Wendet seiten-spezifisches Styling an, indem Body-Klassen angepasst werden.
+     * Stellt eine saubere Layout-Trennung zwischen Login- und Hauptansicht sicher.
      */
     useEffect(() => {
         document.body.classList.add("main-page");
@@ -40,19 +40,19 @@ export default function MainPage() {
     }, []);
 
     /**
-     * Executes a search request to the backend API.
+     * Führt eine Suchanfrage an die Backend-API aus.
      *
-     * @param query - User input search string.
-     * @param type - Selected media type filter.
+     * @param query - Suchbegriff des Nutzers.
+     * @param type - Ausgewählter Medien-Filtertyp.
      *
-     * Handles loading state and error fallback.
+     * Behandelt Ladezustand und Fehler-Fallback.
      */
 
     async function search(query: string, type: MediaType) {
         try {
             setLoading(true);
 
-            // Encode parameters to avoid malformed URLs
+            // Kodiert Parameter, um fehlerhafte URLs zu vermeiden
             const url = `http://localhost:8080/api/search?q=${encodeURIComponent(query)}&types=${encodeURIComponent(type)}&limit=${encodeURIComponent(limit)}`;
 
             const response = await fetch(url, {
@@ -74,16 +74,16 @@ export default function MainPage() {
         }
     }
     /**
-     * Triggers an initial search on component mount.
-     * Designed to load default results.
+     * Löst eine initiale Suche beim Mounten der Komponente aus.
+     * Dient dazu, Standardergebnisse zu laden.
      */
     useEffect(() => {
         search(query, selectedType);
     }, []);
 
     /**
-     * Triggers a new search after validating user input.
-     * Prevents empty or whitespace-only queries.
+     * Startet eine neue Suche nach Validierung der Nutzereingabe.
+     * Verhindert leere oder nur aus Leerzeichen bestehende Anfragen.
      */
 
     function handleSearch() {
@@ -94,8 +94,8 @@ export default function MainPage() {
     }
 
     /**
-     * Updates the selected media type and
-     * optionally triggers a new search if a query exists.
+     * Aktualisiert den ausgewählten Medientyp und
+     * löst optional eine neue Suche aus, falls eine Suchanfrage existiert.
      */
 
     function handleTypeChange(newType: MediaType) {

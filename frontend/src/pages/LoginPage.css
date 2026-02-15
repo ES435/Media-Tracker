@@ -1,15 +1,14 @@
-
 /**
- * Login page styling.
+ * Styling für die Login-Seite.
  *
- * Defines layout and visual appearance for the login view.
- * Uses page-specific body class (.login-page) to isolate styles
- * from other application layouts.
+ * Definiert Layout und visuelles Erscheinungsbild der Login-Ansicht.
+ * Verwendet eine seiten-spezifische Body-Klasse (.login-page),
+ * um Styles von anderen Anwendungs-Layouts zu isolieren.
  *
- * Focus:
- * - Centered authentication layout
- * - Dark theme styling
- * - Form input and button design
+ * Fokus:
+ * - Zentriertes Authentifizierungs-Layout
+ * - Dunkles Theme
+ * - Gestaltung von Formularfeldern und Buttons
  */
 
 * {

@@ -3,17 +3,17 @@ import MediaCard from "./MediaCard";
 import type { UserMedia, UserMediaSortOption, UserMediaStatus } from "./types";
 
 /**
- * UserPageContent component.
+ * UserPageContent-Komponente.
  *
- * Responsibility:
- * - Renders the user's media library as a grid of MediaCards.
- * - Provides client-side filtering by media type, status, and title search.
- * - Manages local UI selection state for expanded cards.
+ * Verantwortlichkeit:
+ * - Rendert die Medienbibliothek des Nutzers als Grid aus MediaCards.
+ * - Bietet client-seitige Filterung nach Medientyp, Status und Titelsuche.
+ * - Verwaltet lokalen UI-Auswahlzustand für aufgeklappte Karten.
  *
- * Architectural Role:
- * - Presentation layer component.
- * - Receives data and filter state via props.
- * - Performs in-memory filtering (no backend communication).
+ * Architektonische Rolle:
+ * - Komponente der Präsentationsschicht.
+ * - Erhält Daten und Filter-State über Props.
+ * - Führt In-Memory-Filterung aus (keine Backend-Kommunikation).
  */
 
 type Props = {
@@ -34,18 +34,18 @@ export default function UserPageContent({
                                             onMediaStatusChange,
                                         }: Props) {
 
-    // Tracks which library entry is currently selected/expanded
+    // Verfolgt, welcher Bibliotheks-Eintrag aktuell ausgewählt/aufgeklappt ist
     const [selectedId, setSelectedId] = useState<string | null>(null);
 
 
     /**
-     * Computes the filtered list of user media entries based on:
-     * - selected media type (sort filter)
-     * - selected status filter
-     * - search query matching against media title
+     * Berechnet die gefilterte Liste der Nutzer-Medieneinträge basierend auf:
+     * - ausgewähltem Medientyp (Sort-/Typ-Filter)
+     * - ausgewähltem Status-Filter
+     * - Suchanfrage (Abgleich mit dem Medientitel)
      *
-     * Memoized to avoid recalculating filters on every re-render
-     * when dependencies have not changed.
+     * Memoisiert, um die Filter nicht bei jedem Re-Render neu zu berechnen,
+     * wenn sich die Abhängigkeiten nicht verändert haben.
      */
     const filtered = useMemo(() => {
         const q = searchQuery.trim().toLowerCase();
@@ -68,7 +68,7 @@ export default function UserPageContent({
     return (
         <>
             <div className="sort-options">
-                {/* Media type filter */}
+                {/* Medientyp-Filter */}
                 <select
                     className="sort-button"
                     value={selectedSortType}
@@ -98,7 +98,7 @@ export default function UserPageContent({
                 </select>
             </div>
 
-            // Empty-state feedback when no entries match the current filters
+            // Empty-State-Feedback, wenn keine Einträge zu den aktuellen Filtern passen
             {filtered.length === 0 ? (
                 <div className="content-loading">
                     No entries match your filters.
