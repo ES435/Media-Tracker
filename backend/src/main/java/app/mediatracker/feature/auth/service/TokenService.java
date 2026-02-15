@@ -19,7 +19,9 @@ public class TokenService {
     private final long accessTokenExpirationInMillis;
     private final long refreshTokenExpirationInMillis;
 
-    public TokenService(@Value("${app.jwt.secret}") String secretKey, @Value("${app.jwt.access-token-expiration-in-seconds}") long accessTokenExpirationInMillis, @Value("${app.jwt.refresh-token-expiration-in-seconds}") long refreshTokenExpirationInMillis) {
+    public TokenService(@Value("${app.jwt.secret}") String secretKey,
+                        @Value("${app.jwt.access-token-expiration-in-seconds}") long accessTokenExpirationInMillis,
+                        @Value("${app.jwt.refresh-token-expiration-in-seconds}") long refreshTokenExpirationInMillis) {
         this.algorithm = Algorithm.HMAC256(secretKey);
         this.verifier = JWT.require(algorithm).build();
         this.accessTokenExpirationInMillis = accessTokenExpirationInMillis * 1000;
@@ -57,7 +59,7 @@ public class TokenService {
      * Validiert den Token und prüft, ober er für den angegebenen Benutzer gilt.
      *
      * @param token JWT-Token
-     * @return true, wenn Token gültig für den Benutzer ist
+     * @return User-ID (Subject) als String, wenn Token gültig ist
      */
     public String verifyTokenAndGetUserId(String token) {
         return JWT.require(algorithm)
@@ -67,14 +69,16 @@ public class TokenService {
     }
 
     /**
-     * liest den username aus einem Token aus
-     * @param token JWT-Token
-     * @return username
+     * Liest den username aus einem Token aus.
+     * Korrigiert: Liest jetzt den Claim "username" statt dem Subject (ID).
+     * * @param token JWT-Token
+     * @return username oder null bei Fehler
      */
     public String extractUsername(String token) {
         try {
             DecodedJWT decodedJWT = verifier.verify(token);
-            return decodedJWT.getSubject();
+            // KORREKTUR: Wir lesen den expliziten Claim "username", nicht das Subject (das ist die ID)
+            return decodedJWT.getClaim("username").asString();
         } catch (JWTVerificationException e) {
             return null;
         }

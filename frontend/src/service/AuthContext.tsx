@@ -8,7 +8,7 @@ interface AuthContextType {
     logout: () => void;
     fetchWithRefresh: (url: string, options?: RequestInit) => Promise<Response>;
     isLoading: boolean;
-    refreshUser: () => Promise<void>; // Neue Funktion zum Aktualisieren
+    refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -28,7 +28,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             try {
                 await refreshToken();
                 response = await fetch(url, { ...options, credentials: "include" });
-            } catch (exception) {
+            } catch {
+                // Removed unused 'exception' var
                 await logout();
                 throw new Error("Session expired");
             }
@@ -46,7 +47,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             } else {
                 setUser(null);
             }
-        } catch (err) {
+        } catch {
+            // Removed unused 'err' var
             setUser(null);
         } finally {
             setIsLoading(false);

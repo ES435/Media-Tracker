@@ -1,9 +1,9 @@
 package app.mediatracker.feature.library.controller;
 
+import app.mediatracker.feature.auth.service.TokenService;
 import app.mediatracker.feature.library.service.LibraryService;
-import app.mediatracker.feature.auth.service.JwtService;
+import app.mediatracker.feature.user.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -24,7 +24,10 @@ class LibraryControllerSecurityTest {
     private LibraryService libraryService;
 
     @MockBean
-    private JwtService jwtService;
+    private TokenService tokenService;
+
+    @MockBean
+    private UserService userService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -32,13 +35,13 @@ class LibraryControllerSecurityTest {
     @Test
     void getLibrary_withoutToken_shouldReturnForbidden() throws Exception {
         mockMvc.perform(get("/api/library"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
     void getLibraryPage_withoutToken_shouldReturnForbidden() throws Exception {
         mockMvc.perform(get("/api/library/page"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -71,4 +74,3 @@ class LibraryControllerSecurityTest {
                 .andExpect(status().isForbidden());
     }
 }
-

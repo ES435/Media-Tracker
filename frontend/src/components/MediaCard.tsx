@@ -17,17 +17,17 @@ export default function MediaCard({ item, selected, onSelect }: MediaCardProps){
     const [saving, setSaving] = useState(false);
     const [added, setAdded] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const coverSrc = item?.imageUrl?.trim() ? item.imageUrl : "/assets/profile-picture.png"; // HIER MUSS ANDERES COVER
-    //const { user: loggedInUser, fetchWithRefresh } = useAuth(); //TODO: user: loggedInUser wr rot und da stnad wird nie benutzt, hab es man auskommentiert faslls es einen sinn hatte warum es dort war, schaut es euch mal an wenn es geht ansonsten löscht die Zeile
+    const coverSrc = item?.imageUrl?.trim() ? item.imageUrl : "/assets/profile-picture.png";
     const { fetchWithRefresh } = useAuth();
 
     async function addToLibrary() {
         const searchResultPayload = {
             ...item,
-            id: item.id || (item as any).mediaId || (item as any).externalId
+            // Resolved: removed 'as any' casts because types.ts now supports these fields
+            id: item.id || item.mediaId || item.externalId
         };
 
-        const payload: any = {
+        const payload = {
             status,
             notes,
             searchResult: searchResultPayload,
@@ -150,8 +150,12 @@ export default function MediaCard({ item, selected, onSelect }: MediaCardProps){
                                 try {
                                     await addToLibrary();
                                     setAdded(true);
-                                } catch (err: any) {
-                                    setError(err?.message ?? "Failed");
+                                } catch (err: unknown) {
+                                    if (err instanceof Error) {
+                                        setError(err.message);
+                                    } else {
+                                        setError("An unknown error occurred");
+                                    }
                                 } finally {
                                     setSaving(false);
                                 }

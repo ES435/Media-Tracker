@@ -1,7 +1,7 @@
 package app.mediatracker.feature.auth.service;
 
 import app.mediatracker.feature.auth.exception.InvalidPasswordException;
-import app.mediatracker.feature.auth.exception.UsernameAlreadyExists;
+import app.mediatracker.feature.auth.exception.UsernameAlreadyExistsException;
 import app.mediatracker.feature.user.exception.UserNotFoundException;
 import app.mediatracker.feature.user.model.User;
 import app.mediatracker.feature.user.repo.UserRepository;
@@ -84,7 +84,8 @@ class AuthServiceTest {
         when(passwordEncoder.encode("pw"))
                 .thenReturn("hashed");
 
-        authService.register("new", "pw");
+        // Call with 3 parameters: username, password, passwordRepeat
+        authService.register("new", "pw", "pw");
 
         verify(userRepository).insert(any(User.class));
     }
@@ -94,12 +95,11 @@ class AuthServiceTest {
         when(userRepository.existsByUsername("taken"))
                 .thenReturn(true);
 
-        assertThrows(UsernameAlreadyExists.class, () -> {
-            authService.register("taken", "pw");
+        // Call with 3 parameters
+        assertThrows(UsernameAlreadyExistsException.class, () -> {
+            authService.register("taken", "pw", "pw");
         });
 
-        verify(userRepository, never()).insert(Collections.singleton(any()));
+        verify(userRepository, never()).insert(any(User.class));
     }
 }
-
-
