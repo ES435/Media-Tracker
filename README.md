@@ -19,4 +19,4 @@ Run one of the following commands to create a local copy of this project:
 ### Run the Tests
 To execute the tests:
 1. Navigate to /backend.
-2. Run `mvn clean test`.
+2. Run `./mvnw clean test`.
