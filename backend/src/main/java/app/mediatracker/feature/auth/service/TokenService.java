@@ -70,14 +70,12 @@ public class TokenService {
 
     /**
      * Liest den username aus einem Token aus.
-     * Korrigiert: Liest jetzt den Claim "username" statt dem Subject (ID).
      * * @param token JWT-Token
      * @return username oder null bei Fehler
      */
     public String extractUsername(String token) {
         try {
             DecodedJWT decodedJWT = verifier.verify(token);
-            // KORREKTUR: Wir lesen den expliziten Claim "username", nicht das Subject (das ist die ID)
             return decodedJWT.getClaim("username").asString();
         } catch (JWTVerificationException e) {
             return null;
