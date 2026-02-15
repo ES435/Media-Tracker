@@ -3,9 +3,9 @@ spring:
     mongodb:
       database: mediatracker_test
       host: localhost
-      port: 0 # 0 = Zufälliger Port für die Embedded DB
+      port: 0 # 0 = Random port for the Embedded DB to avoid conflicts
 
-# HIER IST DER FIX: Wir müssen die Version explizit angeben
+# FIX: We must specify the MongoDB version explicitly for Flapdoodle
 de:
   flapdoodle:
     mongodb:
@@ -18,7 +18,7 @@ app:
     access-token-expiration-in-seconds: 600
     refresh-token-expiration-in-seconds: 3600
 
-# Feature-Flags für Tests aktivieren
+# Enable all Feature Flags for testing purposes
 search:
   anime:
     enabled: true

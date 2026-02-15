@@ -29,18 +29,18 @@ public class JikanAnimeClient {
     }
 
     /**
-     * Sucht Anime bei Jikan und liefert die rohe JSON-Antwort.
+     * Searches for anime on Jikan and returns the raw JSON response.
      *
-     * Hinweis: Blockiert den aufrufenden Thread bis zur Antwort (vereinfachte Nutzung).
+     * Note: Blocks the calling thread until the response is received (simplified usage).
      *
-     * @param query Suchbegriff
-     * @return JSON als String
+     * @param query the search term
+     * @return JSON response as a String
      */
     public String searchAnime(String query) {
         return web.get()
                 .uri(u -> u.path("/anime").queryParam("q", query).build())
                 .retrieve()
                 .bodyToMono(String.class)
-                .block(); // simpel halten
+                .block(); // keep it simple
     }
 }

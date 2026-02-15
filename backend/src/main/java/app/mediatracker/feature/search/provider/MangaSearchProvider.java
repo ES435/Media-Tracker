@@ -15,10 +15,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Such-Provider für Manga-Inhalte (MangaDex API).
- * Zweck: Ruft die MangaDex-API auf und übersetzt die Ergebnisse in das interne
- * {@link SearchResult}-Format.
- * Aktivierung: Wird nur geladen, wenn "search.manga.enabled=true" gesetzt ist.
+ * Search provider for manga content (Jikan API / MyAnimeList).
+ *
+ * Purpose: Calls the Jikan API and translates the results into the internal
+ * {@link SearchResult} format.
+ *
+ * Activation: Only loaded if "search.manga.enabled=true" is set.
  */
 @Slf4j
 @Component

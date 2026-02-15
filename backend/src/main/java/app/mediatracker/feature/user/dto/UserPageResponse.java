@@ -7,9 +7,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+
 /**
- * API-Response für eine einzelne User-Page inklusive zugehöriger MediaItem-Daten 
- * (falls die Liste auf Public gestellt ist).
+ * API response for a single user page including associated MediaItem data
+ * (if the list is set to public).
  */
 @Data
 @Builder

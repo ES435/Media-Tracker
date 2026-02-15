@@ -13,13 +13,23 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Integration test for the UserController.
+ * This test verifies the interaction between the Web layer, Service layer, and MongoDB.
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 class UserControllerIntegrationTest {
 
-    @Autowired MockMvc mockMvc;
-    @Autowired UserRepository userRepository;
+    @Autowired
+    private MockMvc mockMvc;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    /**
+     * Clears the database and creates a fresh test user before each test execution.
+     */
     @BeforeEach
     void setUp() {
         userRepository.deleteAll();
@@ -31,9 +41,15 @@ class UserControllerIntegrationTest {
         userRepository.save(u);
     }
 
+    /**
+     * Tests the search functionality by simulating a GET request.
+     * Verified that the database record is correctly retrieved and mapped to the JSON response.
+     */
     @Test
     void searchUser_shouldReturnUser_whenFoundInDB() throws Exception {
+        // Act: Execute the search request with a query parameter
         mockMvc.perform(get("/api/user/search").param("partName", "Test"))
+                // Assert: Ensure HTTP 200 and verify the content of the returned UserSearchResponse
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.users[0].username").value("TestUser123"));
     }

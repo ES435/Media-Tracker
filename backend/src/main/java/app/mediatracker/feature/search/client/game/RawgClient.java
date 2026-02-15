@@ -5,12 +5,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 /**
- * Minimaler HTTP-Client für die rawg game Search API.
+ * Minimal HTTP client for the RAWG Game Search API.
  *
- * Zweck: Stellt eine Methode bereit, um Game-Titel anhand eines Suchbegriffs
- * als rohe JSON-Antwort abzurufen.
+ * Purpose: Provides a method to retrieve game titles based on a search term
+ * as a raw JSON response.
  *
- * Konfiguration: Basis-URL kann über "rawg.base-url" überschrieben werden.
+ * Configuration: Base URL can be overridden via "rawg.base-url".
  */
 @Component
 public class RawgClient {
@@ -19,34 +19,35 @@ public class RawgClient {
     private final String apiKey;
 
     /**
-     * Erstellt den Client mit vordefinierter Basis-URL.
+     * Creates the client with a predefined base URL.
      *
-     * @param builder von Spring bereitgestellter {@link WebClient.Builder}
-     * @param baseUrl Basis-URL der rawg-API (Default: https://rawg.io/api)
+     * @param builder Spring-provided {@link WebClient.Builder}
+     * @param baseUrl Base URL of the RAWG API (default: https://rawg.io/api)
+     * @param apiKey  API Key for authentication
      */
     public RawgClient(WebClient.Builder builder,
-                        @Value("${rawg.base-url:https://rawg.io/api}") String baseUrl,
-                        @Value("${rawg.api-key:}") String apiKey ) {
+                      @Value("${rawg.base-url:https://rawg.io/api}") String baseUrl,
+                      @Value("${rawg.api-key:}") String apiKey ) {
         this.web = builder.baseUrl(baseUrl).build();
         this.apiKey = apiKey;
     }
 
     /**
-     * Sucht Games bei Rawg und liefert die rohe JSON-Antwort.
+     * Searches for games on RAWG and returns the raw JSON response.
      *
-     * Hinweis: 
+     * Note: Blocks the calling thread until the response is received.
      *
-     * @param query Suchbegriff
-     * @return JSON als String
+     * @param query the search term
+     * @return JSON response as a String
      */
     public String searchGame(String query) {
         return web.get()
                 .uri(u -> u.path("/games")
-                    .queryParam("search", query)
-                    .queryParam("key", apiKey)
-                    .build())
+                        .queryParam("search", query)
+                        .queryParam("key", apiKey)
+                        .build())
                 .retrieve()
                 .bodyToMono(String.class)
-                .block(); // simpel halten
+                .block(); // keep it simple
     }
 }

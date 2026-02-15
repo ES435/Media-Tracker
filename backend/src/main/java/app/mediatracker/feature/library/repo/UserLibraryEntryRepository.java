@@ -11,10 +11,10 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Spring Data Repository für {@link UserLibraryEntry}.
+ * Spring Data Repository for {@link UserLibraryEntry}.
  * <p>
- * Stellt CRUD-Operationen bereit und enthält abgeleitete Query-Methoden zum Filtern nach User und
- * eindeutigem Medium (definiert über Typ + externe ID).
+ * Provides CRUD operations and contains derived query methods to filter by user and
+ * unique media item (defined via type + external ID).
  * </p>
  */
 public interface UserLibraryEntryRepository extends MongoRepository<UserLibraryEntry, String> {

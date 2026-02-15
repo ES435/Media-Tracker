@@ -14,10 +14,10 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 /**
- * API-Response für einen einzelnen Bibliothekseintrag inklusive zugehöriger MediaItem-Daten.
+ * API response for a single library entry including the associated media snapshot.
  * <p>
- * Dieses DTO ist für die Darstellung im Frontend optimiert. Es fasst die Daten des User-Eintrags und
- * eine schlanke Ansicht des verknüpften Mediums ({@link MediaItemSummary}) zusammen.
+ * This DTO is optimized for frontend rendering. It combines the user-specific entry data and
+ * a compact view of the linked media ({@link MediaItemSummary}).
  * </p>
  */
 @Data

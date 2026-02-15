@@ -14,25 +14,41 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+/**
+ * Unit test for RefreshTokenService.
+ * Focuses on the lifecycle of refresh tokens, specifically the replacement of old tokens.
+ */
 @ExtendWith(MockitoExtension.class)
 class RefreshTokenServiceTest {
 
-    @Mock RefreshTokenRepository refreshTokenRepository;
-    @Mock TokenService tokenService;
-    @InjectMocks RefreshTokenService refreshTokenService;
+    @Mock
+    private RefreshTokenRepository refreshTokenRepository;
+
+    @Mock
+    private TokenService tokenService;
+
+    @InjectMocks
+    private RefreshTokenService refreshTokenService;
 
     @Test
     void createAndStore_shouldDeleteOldAndSaveNew() {
+        // Arrange
         ObjectId userId = new ObjectId();
         String newToken = "new.refresh.token";
 
         when(tokenService.generateRefreshToken(userId)).thenReturn(newToken);
 
+        // Act
         String result = refreshTokenService.createAndStore(userId);
 
+        // Assert
         assertEquals(newToken, result);
-        // Important: Old tokens must be deleted for this user
+
+        // Important security aspect: verify that old tokens are deleted for this user
+        // to prevent multiple active refresh sessions (Token Rotation).
         verify(refreshTokenRepository).deleteAllByUserId(userId);
+
+        // Verify that the new token is persisted in the database
         verify(refreshTokenRepository).save(any(RefreshToken.class));
     }
 }

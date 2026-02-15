@@ -33,8 +33,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Controller test for Library operations.
+ * Uses WebMvcTest to isolate the web layer and AutoConfigureMockMvc to disable security filters.
+ */
 @WebMvcTest(LibraryController.class)
-@AutoConfigureMockMvc(addFilters = false) // Security Filter deaktivieren
+@AutoConfigureMockMvc(addFilters = false) // Disable Security Filters for this test suite
 class LibraryControllerTest {
 
     @Autowired
@@ -58,13 +62,12 @@ class LibraryControllerTest {
     @BeforeEach
     void setUp() {
         testUserId = new ObjectId();
-        // Der Principal Name MUSS der Hex-String der ObjectId sein!
+        // The Principal Name MUST be the Hex string of the ObjectId to match our JwtFilter logic!
         String userIdString = testUserId.toHexString();
         testPrincipal = () -> userIdString;
 
-        // Wenn der Controller getUserById(new ObjectId(...)) aufruft,
-        // müssen wir sicherstellen, dass Mockito das matcht.
-        // Da ObjectId.equals() funktioniert, können wir eq() nutzen oder any().
+        // Ensure that when the controller calls getUserById(new ObjectId(...)),
+        // Mockito correctly matches the ID.
         User mockUser = User.builder().id(testUserId).username("test-user").build();
         when(userService.getUserById(eq(testUserId))).thenReturn(mockUser);
     }
@@ -103,9 +106,11 @@ class LibraryControllerTest {
 
     @Test
     void getLibrary_shouldReturnOkAndList() throws Exception {
+        // Arrange
         when(libraryService.getLibraryForUser(eq(testUserId)))
                 .thenReturn(List.of(new LibraryEntryResponse()));
 
+        // Act & Assert
         mockMvc.perform(get("/api/library").principal(testPrincipal))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
@@ -115,11 +120,12 @@ class LibraryControllerTest {
 
     @Test
     void addOrUpdateEntry_validRequest_shouldReturnOk() throws Exception {
+        // Arrange
         AddLibraryEntryRequest request = validAddRequest();
-
         when(libraryService.addOrUpdateEntryFromSearchResult(any(), any(), any(), any(), any()))
                 .thenReturn(new LibraryEntryResponse());
 
+        // Act & Assert
         mockMvc.perform(post("/api/library")
                         .principal(testPrincipal)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -129,11 +135,12 @@ class LibraryControllerTest {
 
     @Test
     void addManualEntry_validRequest_shouldReturnOk() throws Exception {
+        // Arrange
         ManualEntryRequest request = validManualRequest();
-
         when(libraryService.addManualEntry(any(ManualEntryCommand.class)))
                 .thenReturn(new LibraryEntryResponse());
 
+        // Act & Assert
         mockMvc.perform(post("/api/library/manualEntry")
                         .principal(testPrincipal)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -143,11 +150,12 @@ class LibraryControllerTest {
 
     @Test
     void updateManualEntry_shouldReturnOk() throws Exception {
+        // Arrange
         ManualEntryRequest request = validManualRequest();
-
         when(libraryService.updateManualEntry(any(), any()))
                 .thenReturn(new LibraryEntryResponse());
 
+        // Act & Assert
         mockMvc.perform(patch("/api/library/manualEntry/{id}", "123")
                         .principal(testPrincipal)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -157,6 +165,7 @@ class LibraryControllerTest {
 
     @Test
     void removeEntry_shouldReturnNoContent() throws Exception {
+        // Act & Assert
         mockMvc.perform(delete("/api/library/{id}", "123").principal(testPrincipal))
                 .andExpect(status().isNoContent());
 

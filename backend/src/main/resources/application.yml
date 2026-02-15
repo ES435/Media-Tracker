@@ -13,11 +13,11 @@ server:
 # ---- App Config (Security) ----
 app:
   jwt:
-    # Dies ist ein Default-Key für die Entwicklung.
-    # In Produktion sollte dieser Wert lang, zufällig und geheim sein!
+    # This is a default key for development purposes.
+    # In production, this value should be long, random, and secret!
     secret: "secret_key_fuer_das_development_das_muss_spaeter_geendert_werden_wenn_das_projekt_irgedwann_fertig_ist_zu_irged_einem_sicherer_key_davor_war_das_hier_hardcoded_in_JwtService"
-    access-token-expiration-in-seconds: 900 # 15 Minuten
-    refresh-token-expiration-in-seconds: 1209600 # 14 Tage
+    access-token-expiration-in-seconds: 900 # 15 minutes
+    refresh-token-expiration-in-seconds: 1209600 # 14 days
 
 # ---- API Feature Toggles ----
 search:
@@ -45,6 +45,7 @@ itunes:
 
 rawg:
   base-url: https://rawg.io/api
+  # Uses environment variable if present, otherwise defaults to the hardcoded key
   api-key: "${RAWG_API_KEY:ff51c125cfc14b7abce7c70740910d24}"
 
 openlibrary:

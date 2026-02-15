@@ -15,24 +15,26 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Such-Provider für Game-Inhalte (Rawg API).*
- * Zweck: Ruft die Rawg-API auf und übersetzt die Ergebnisse in das interne
- * {@link SearchResult}-Format, damit das Frontend sie einheitlich darstellen kann.
-
- * Aktivierung: Wird nur geladen, wenn "search.game.enabled=true" gesetzt ist.
+ * Search provider for game content (RAWG API).
+ *
+ * Purpose: Calls the RAWG API and translates the results into the internal
+ * {@link SearchResult} format so the frontend can display them uniformly.
+ *
+ * Activation: Only loaded if "search.game.enabled=true" is set.
  */
 @Slf4j
 @Component
-@ConditionalOnProperty(prefix = "search.anime", name = "enabled", havingValue = "true")
+@ConditionalOnProperty(prefix = "search.game", name = "enabled", havingValue = "true")
 public class GameSearchProvider implements SearchProvider {
 
     private final RawgClient rawg;
-    private final ObjectMapper mapper; // von Spring Boot bereitgestellt
+    private final ObjectMapper mapper; // provided by Spring Boot
 
     /**
-     * Konstruktor mit Abhängigkeiten.
+     * Constructor with dependencies.
      *
-     * @param mapper Jackson-Mapper zum Parsen der JSON-Antworten
+     * @param rawg   HTTP client for the RAWG API
+     * @param mapper Jackson Mapper for parsing JSON responses
      */
     public GameSearchProvider(RawgClient rawg, ObjectMapper mapper) {
         this.rawg = rawg;
@@ -40,20 +42,21 @@ public class GameSearchProvider implements SearchProvider {
     }
 
     /**
-     * Liefert den Typnamen dieses Providers.
+     * Returns the type name of this provider.
      *
      * @return "game"
      */
     @Override public String getType() { return "game"; }
 
     /**
-     * Sucht Games über die Rawg-API.*
-     * Verhalten: Parst die Antwort, extrahiert relevante Felder und liefert
-     * eine normalisierte Liste. Fehler werden geloggt und führen zu einer leeren Liste.
+     * Searches for games via the RAWG API.
      *
-     * @param searchQuery     Suchbegriff
-     * @param limit maximale Anzahl der Treffer
-     * @return Liste von {@link SearchResult}
+     * Behavior: Parses the response, extracts relevant fields, and returns
+     * a normalized list. Errors are logged and result in an empty list.
+     *
+     * @param searchQuery the search term
+     * @param limit       maximum number of results
+     * @return List of {@link SearchResult}
      */
     @Override
     public List<SearchResult> search(String searchQuery, int limit) {
@@ -67,7 +70,7 @@ public class GameSearchProvider implements SearchProvider {
                 String title = gameNode.path("name").asText("");
                 String imageUrl   = gameNode.path("background_image").asText("");
 
-                // optionale Extras in meta
+                // optional extras in meta
                 Map<String,Object> meta = new HashMap<>();
                 if (gameNode.hasNonNull("platforms")) meta.put("platforms", gameNode.get("platforms"));
                 if (gameNode.hasNonNull("released"))     meta.put("released", gameNode.get("released"));
@@ -85,7 +88,7 @@ public class GameSearchProvider implements SearchProvider {
             return out;
         } catch (Exception e) {
             log.warn("Game search failed: {}", e.getMessage());
-            return List.of(); // robust bleiben
+            return List.of(); // fail gracefully
         }
     }
 }

@@ -23,10 +23,10 @@ public class MovieSearchProvider implements SearchProvider {
     private final ObjectMapper mapper;
 
     /**
-     * Konstruktor mit Abhängigkeiten.
+     * Constructor with dependencies.
      *
-     * @param imdb  HTTP-Client für die IMDbAPI
-     * @param mapper Jackson-Mapper zum Parsen der JSON-Antworten
+     * @param imdb   HTTP client for the IMDb API
+     * @param mapper Jackson Mapper for parsing JSON responses
      */
     public MovieSearchProvider(IMDbClient imdb, ObjectMapper mapper) {
         this.imdb = imdb;
@@ -34,7 +34,7 @@ public class MovieSearchProvider implements SearchProvider {
     }
 
     /**
-     * Liefert den Typnamen dieses Providers.
+     * Returns the type name of this provider.
      *
      * @return "movie"
      */
@@ -44,13 +44,14 @@ public class MovieSearchProvider implements SearchProvider {
     }
 
     /**
-     * Sucht Filme über die IMDbAPI.
-     * Verhalten: Parst die Antwort, extrahiert relevante Felder und liefert
-     * eine normalisierte Liste. Fehler werden geloggt und führen zu einer leeren Liste.
+     * Searches for movies via the IMDb API.
      *
-     * @param searchQuery     Suchbegriff
-     * @param limit maximale Anzahl der Treffer
-     * @return Liste von {@link SearchResult}
+     * Behavior: Parses the response, extracts relevant fields, and returns
+     * a normalized list. Errors are logged and result in an empty list.
+     *
+     * @param searchQuery the search term
+     * @param limit       maximum number of results
+     * @return List of {@link SearchResult}
      */
     @Override
     public List<SearchResult> search(String searchQuery, int limit) {
@@ -66,7 +67,7 @@ public class MovieSearchProvider implements SearchProvider {
                     String img   = movieNode.path("primaryImage").path("url").asText("");
                     String url   = "https://www.imdb.com/title/" + id;
 
-                    // optionale Extras in meta
+                    // optional extras in meta
                     Map<String,Object> meta = new HashMap<>();
                     if (movieNode.hasNonNull("startYear")) meta.put("year", movieNode.get("startYear").asInt());
 

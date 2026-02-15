@@ -21,6 +21,11 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * Unit tests for SearchController.
+ * This class tests the mapping of search requests to the SearchService and
+ * verifies the JSON structure of the returned results.
+ */
 @WebMvcTest(SearchController.class)
 @ContextConfiguration(classes = {SearchController.class, TestSecurityConfig.class})
 class SearchControllerTest {
@@ -33,6 +38,7 @@ class SearchControllerTest {
 
     @Test
     void testSearchReturnsResults() throws Exception {
+        // Arrange: Setup a mock search result with metadata
         SearchResult result = new SearchResult();
         result.setId("1");
         result.setType("anime");
@@ -44,6 +50,7 @@ class SearchControllerTest {
         Mockito.when(searchService.search(anyString(), anySet(), anyInt()))
                 .thenReturn(List.of(result));
 
+        // Act & Assert: Verify that parameters are passed and JSON path mapping is correct
         mockMvc.perform(get("/api/search")
                         .param("q", "Naruto")
                         .param("types", "anime")
@@ -57,9 +64,11 @@ class SearchControllerTest {
 
     @Test
     void testSearchEmptyResults() throws Exception {
+        // Arrange: Mock an empty response from the service
         Mockito.when(searchService.search(anyString(), anySet(), anyInt()))
                 .thenReturn(List.of());
 
+        // Act & Assert: Verify that an empty JSON array is returned
         mockMvc.perform(get("/api/search")
                         .param("q", "Unknown")
                         .accept(MediaType.APPLICATION_JSON))
@@ -69,6 +78,7 @@ class SearchControllerTest {
 
     @Test
     void testSearchWithNoTypesParameter() throws Exception {
+        // Arrange: Setup a generic search result
         SearchResult result = new SearchResult();
         result.setId("2");
         result.setType("movie");
@@ -77,6 +87,7 @@ class SearchControllerTest {
         Mockito.when(searchService.search(anyString(), anySet(), anyInt()))
                 .thenReturn(List.of(result));
 
+        // Act & Assert: Ensure the search works even if 'types' is missing
         mockMvc.perform(get("/api/search")
                         .param("q", "Inception")
                         .accept(MediaType.APPLICATION_JSON))
@@ -87,6 +98,7 @@ class SearchControllerTest {
 
     @Test
     void testSearchWithEmptyTypes() throws Exception {
+        // Arrange
         SearchResult result = new SearchResult();
         result.setId("3");
         result.setType("anime");
@@ -95,6 +107,7 @@ class SearchControllerTest {
         Mockito.when(searchService.search(anyString(), anySet(), anyInt()))
                 .thenReturn(List.of(result));
 
+        // Act & Assert: Verify handling of empty string in the types parameter
         mockMvc.perform(get("/api/search")
                         .param("q", "Bleach")
                         .param("types", "")

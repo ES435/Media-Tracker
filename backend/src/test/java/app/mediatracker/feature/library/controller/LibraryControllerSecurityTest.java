@@ -14,6 +14,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Security tests for the LibraryController.
+ * Ensures that protected library endpoints are not accessible without valid authentication.
+ */
 @WebMvcTest(app.mediatracker.feature.library.controller.LibraryController.class)
 class LibraryControllerSecurityTest {
 
@@ -33,19 +37,22 @@ class LibraryControllerSecurityTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void getLibrary_withoutToken_shouldReturnForbidden() throws Exception {
+    void getLibrary_withoutToken_shouldReturnUnauthorized() throws Exception {
+        // Verifies that fetching the raw library list requires authentication
         mockMvc.perform(get("/api/library"))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    void getLibraryPage_withoutToken_shouldReturnForbidden() throws Exception {
+    void getLibraryPage_withoutToken_shouldReturnUnauthorized() throws Exception {
+        // Verifies that fetching the UI-optimized library page requires authentication
         mockMvc.perform(get("/api/library/page"))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     void addOrUpdateEntry_withoutToken_shouldReturnForbidden() throws Exception {
+        // Verifies that adding/updating synced API entries requires authentication
         mockMvc.perform(post("/api/library")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
@@ -54,6 +61,7 @@ class LibraryControllerSecurityTest {
 
     @Test
     void addManualEntry_withoutToken_shouldReturnForbidden() throws Exception {
+        // Verifies that creating a new manual entry requires authentication
         mockMvc.perform(post("/api/library/manualEntry")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
@@ -62,6 +70,7 @@ class LibraryControllerSecurityTest {
 
     @Test
     void updateManualEntry_withoutToken_shouldReturnForbidden() throws Exception {
+        // Verifies that updating an existing manual entry requires authentication
         mockMvc.perform(patch("/api/library/manualEntry/{id}", "123")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
@@ -70,6 +79,7 @@ class LibraryControllerSecurityTest {
 
     @Test
     void removeEntry_withoutToken_shouldReturnForbidden() throws Exception {
+        // Verifies that deleting an entry requires authentication
         mockMvc.perform(delete("/api/library/{id}", "123"))
                 .andExpect(status().isForbidden());
     }

@@ -23,6 +23,10 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * Unit test for AuthController using WebMvcTest.
+ * Filters are disabled to test the controller logic without the security filter chain.
+ */
 @WebMvcTest(AuthController.class)
 @AutoConfigureMockMvc(addFilters = false)
 class AuthControllerTest {
@@ -36,7 +40,6 @@ class AuthControllerTest {
     @MockBean
     private TokenService tokenService;
 
-    // The controller now requires these services as well
     @MockBean
     private RefreshTokenService refreshTokenService;
 
@@ -48,43 +51,44 @@ class AuthControllerTest {
 
     @Test
     void login_validCredentials_shouldReturnOkAndSetCookies() throws Exception {
-        // Arrange
+        // Arrange: Setup request data and mock user
         LoginRequest request = new LoginRequest("user", "password", false);
 
         User user = new User();
-        user.setId(new ObjectId()); // Important: Set ID for token generation
+        user.setId(new ObjectId()); // Essential: Set ID for successful token generation
         user.setUsername("user");
 
+        // Mock successful login call
         when(authService.login("user", "password")).thenReturn(user);
 
-        // Mock access token generation (requires ID and username)
+        // Mock token generation (requires User ID and username)
         when(tokenService.generateAccessToken(any(ObjectId.class), anyString()))
                 .thenReturn("fake-access-token");
 
-        // Mock refresh token generation
+        // Mock refresh token generation and storage
         when(refreshTokenService.createAndStore(any(ObjectId.class)))
                 .thenReturn("fake-refresh-token");
 
-        // Act & Assert
+        // Act & Assert: Execute POST and verify HTTP status and resulting cookies
         mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                // Verify that cookies are set correctly
+                // Verify that HTTP-only cookies are correctly set in the response
                 .andExpect(cookie().value("accessToken", "fake-access-token"))
                 .andExpect(cookie().value("refreshToken", "fake-refresh-token"));
     }
 
     @Test
     void login_invalidCredentials_shouldReturnBadRequest() throws Exception {
-        // Arrange
+        // Arrange: Setup request with incorrect password
         LoginRequest request = new LoginRequest("user", "wrongpassword", false);
 
-        // Simulate failed login
+        // Simulate a business logic exception for invalid credentials
         when(authService.login("user", "wrongpassword"))
                 .thenThrow(new IllegalArgumentException("Invalid credentials"));
 
-        // Act & Assert
+        // Act & Assert: Verify that the error is handled and returns a 400 Bad Request
         mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -93,17 +97,17 @@ class AuthControllerTest {
 
     @Test
     void register_validRequest_shouldReturnOk() throws Exception {
-        // Arrange
+        // Arrange: Setup registration data
         RegistrationRequest request = new RegistrationRequest("user", "password", "password");
 
-        // Act & Assert
+        // Act & Assert: Verify registration success message
         mockMvc.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Registration successful."));
 
-        // Verify that register is called with 3 arguments (username, password, passwordRepeat)
+        // Verify that the auth service was actually called with the correct parameters
         verify(authService).register("user", "password", "password");
     }
 }

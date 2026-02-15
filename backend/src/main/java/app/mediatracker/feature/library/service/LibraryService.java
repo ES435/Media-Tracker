@@ -20,23 +20,53 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Service for managing the user's personal media library.
+ * <p>
+ * Handles business logic for adding, updating, retrieving, and removing
+ * library entries (both from search results and manual entries).
+ * </p>
+ */
 @Service
 @RequiredArgsConstructor
 public class LibraryService {
 
     private final UserLibraryEntryRepository userLibraryEntryRepository;
 
+    /**
+     * Retrieves the complete library for a specific user.
+     *
+     * @param userId the ID of the user
+     * @return a list of library entry responses
+     */
     public List<LibraryEntryResponse> getLibraryForUser(ObjectId userId) {
         List<UserLibraryEntry> entries = userLibraryEntryRepository.findByUserId(userId);
         return entries.stream().map(this::toResponse).toList();
     }
 
+    /**
+     * Retrieves a paginated view of the user's library.
+     *
+     * @param userId   the ID of the user
+     * @param pageable pagination information
+     * @return a page of library entry responses
+     */
     public Page<LibraryEntryResponse> getLibraryForUser(ObjectId userId, Pageable pageable) {
         Page<UserLibraryEntry> page = userLibraryEntryRepository.findByUserId(userId, pageable);
         List<LibraryEntryResponse> content = page.getContent().stream().map(this::toResponse).toList();
         return new PageImpl<>(content, pageable, page.getTotalElements());
     }
 
+    /**
+     * Adds a new entry based on a search result or updates an existing one if it already exists.
+     *
+     * @param userId       the ID of the user
+     * @param searchResult the selected search result
+     * @param status       the status (e.g., PLANNED, COMPLETED)
+     * @param rating       optional rating
+     * @param notes        optional notes
+     * @return the saved library entry response
+     */
     public LibraryEntryResponse addOrUpdateEntryFromSearchResult(
             ObjectId userId,
             SearchResult searchResult,
@@ -50,6 +80,7 @@ public class LibraryService {
 
         updateEntryUserFields(entry, status, rating, notes);
 
+        // Always update media details in case they changed in the source
         entry.setTitle(searchResult.getTitle());
         entry.setImageUrl(searchResult.getImageUrl());
         entry.setSourceUrl(searchResult.getSourceUrl());
@@ -57,11 +88,17 @@ public class LibraryService {
         return toResponse(userLibraryEntryRepository.save(entry));
     }
 
+    /**
+     * Adds a manually created entry to the library.
+     *
+     * @param command the command object containing manual entry details
+     * @return the saved library entry response
+     */
     public LibraryEntryResponse addManualEntry(ManualEntryCommand command) {
-        // ID Generierung für manuelle Einträge
+        // ID generation for manual entries
         String manualId = "manual-" + UUID.randomUUID();
 
-        // Prüfen ob Entry schon existiert (unwahrscheinlich bei random UUID, aber sicher ist sicher)
+        // Check if entry already exists (unlikely with random UUID, but safety first)
         UserLibraryEntry entry = userLibraryEntryRepository
                 .findByUserIdAndMediaTypeAndExternalId(command.getUserId(), command.getType(), manualId)
                 .orElseGet(() -> newUserLibraryEntryFromCommand(command, manualId));
@@ -71,7 +108,14 @@ public class LibraryService {
         return toResponse(userLibraryEntryRepository.save(entry));
     }
 
-
+    /**
+     * Updates an existing manual entry.
+     *
+     * @param entryId the ID of the entry to update
+     * @param command the command object containing updated details
+     * @return the updated library entry response
+     * @throws ResponseStatusException if the entry is not found, not manual, or belongs to another user
+     */
     public LibraryEntryResponse updateManualEntry(String entryId, ManualEntryCommand command) {
         UserLibraryEntry entry = userLibraryEntryRepository.findById(entryId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Entry not found"));
@@ -98,6 +142,12 @@ public class LibraryService {
         return toResponse(userLibraryEntryRepository.save(entry));
     }
 
+    /**
+     * Removes an entry from the library, ensuring ownership.
+     *
+     * @param userId  the ID of the requesting user
+     * @param entryId the ID of the entry to remove
+     */
     public void removeEntry(ObjectId userId, String entryId) {
         userLibraryEntryRepository.findById(entryId).ifPresent(entry -> {
             if (userId.equals(entry.getUserId())) {
@@ -107,6 +157,7 @@ public class LibraryService {
     }
 
 
+    // --- Helper Methods ---
 
     private void updateEntryUserFields(UserLibraryEntry entry, LibraryEntryStatus status, Integer rating, String notes) {
         if (status != null) entry.setStatus(status);

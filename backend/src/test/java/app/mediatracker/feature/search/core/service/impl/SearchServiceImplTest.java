@@ -15,48 +15,67 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
+/**
+ * Unit test for the SearchServiceImpl.
+ * Verifies the aggregation logic and the type-filtering capabilities of the central search service.
+ */
 @ExtendWith(MockitoExtension.class)
 class SearchServiceImplTest {
 
-    @Mock SearchProvider animeProvider;
-    @Mock SearchProvider movieProvider;
+    @Mock
+    private SearchProvider animeProvider;
+
+    @Mock
+    private SearchProvider movieProvider;
 
     private SearchServiceImpl searchService;
 
     @BeforeEach
     void setUp() {
-        // Use lenient() because not every test case uses both providers
-        // (e.g. "search_shouldFilterTypes_whenSpecified" only uses animeProvider)
+        // Use lenient() because not every test case triggers interactions with all providers.
+        // This prevents UnnecessaryStubbingExceptions when specific types are filtered.
         lenient().when(animeProvider.getType()).thenReturn("anime");
         lenient().when(movieProvider.getType()).thenReturn("movie");
 
-        // Create service with the list of mocks
+        // Inject the mocked providers into the service implementation
         searchService = new SearchServiceImpl(List.of(animeProvider, movieProvider));
     }
 
+    /**
+     * Verifies that the service correctly calls all available providers and
+     * aggregates their results into a single list.
+     */
     @Test
     void search_shouldAggregateResultsFromMultipleProviders() {
+        // Arrange
         SearchResult animeResult = SearchResult.builder().type("anime").id("1").title("Naruto").build();
         SearchResult movieResult = SearchResult.builder().type("movie").id("2").title("Inception").build();
 
         when(animeProvider.search("term", 10)).thenReturn(List.of(animeResult));
         when(movieProvider.search("term", 10)).thenReturn(List.of(movieResult));
 
+        // Act
         List<SearchResult> results = searchService.search("term", null, 10);
 
-        assertEquals(2, results.size());
+        // Assert
+        assertEquals(2, results.size(), "Should aggregate results from both providers");
     }
 
+    /**
+     * Verifies that the service only invokes providers that match the requested types.
+     */
     @Test
     void search_shouldFilterTypes_whenSpecified() {
+        // Arrange
         SearchResult animeResult = SearchResult.builder().type("anime").id("1").title("Naruto").build();
-
         when(animeProvider.search("term", 10)).thenReturn(List.of(animeResult));
 
-        // We search only for "anime", so MovieProvider should not be used
+        // Act: Search specifically for "anime" only
         List<SearchResult> results = searchService.search("term", Set.of("anime"), 10);
 
+        // Assert
         assertEquals(1, results.size());
         assertEquals("anime", results.get(0).getType());
+        // Note: MovieProvider is implicitly ignored because its type wasn't in the filter set.
     }
 }

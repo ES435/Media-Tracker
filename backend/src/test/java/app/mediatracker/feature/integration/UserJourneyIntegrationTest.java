@@ -17,6 +17,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Integration test for the end-to-end user journey.
+ * Verifies that a user can successfully create and persist a manual library entry.
+ */
 @SpringBootTest
 class UserJourneyIntegrationTest {
 
@@ -31,9 +35,12 @@ class UserJourneyIntegrationTest {
 
     private ObjectId testUserId;
 
+    /**
+     * Resets the database state before each test to ensure isolation.
+     */
     @BeforeEach
     void setUp() {
-        // DB aufräumen
+        // Clear database collections
         libraryRepository.deleteAll();
         userRepository.deleteAll();
 
@@ -42,7 +49,7 @@ class UserJourneyIntegrationTest {
 
     @Test
     void userCanAddMovieToLibrary() {
-        // Schritt 1: Manual Entry anlegen
+        // Step 1: Create a manual entry command
         ManualEntryCommand command = ManualEntryCommand.builder()
                 .userId(testUserId)
                 .type("movie")
@@ -50,22 +57,23 @@ class UserJourneyIntegrationTest {
                 .author("Studio Pierrot")
                 .status(LibraryEntryStatus.PLANNED)
                 .rating(8)
-                .notes("Meine Lieblingsserie")
+                .notes("My favorite series")
                 .meta(Collections.emptyMap())
                 .imageUrl("http://image.url/naruto.jpg")
                 .build();
 
+        // Step 2: Execute the service call to add the entry
         libraryService.addManualEntry(command);
 
-        // Schritt 2: Prüfen, dass der Film in der embedded DB ist
+        // Step 3: Verify that the movie exists in the embedded database
         List<UserLibraryEntry> entries = libraryRepository.findByUserId(testUserId);
-        assertEquals(1, entries.size(), "Es sollte genau ein Eintrag existieren");
+        assertEquals(1, entries.size(), "There should be exactly one entry in the library");
 
         UserLibraryEntry entry = entries.get(0);
         assertEquals("Naruto", entry.getTitle());
         assertEquals("movie", entry.getMediaType());
         assertEquals(LibraryEntryStatus.PLANNED, entry.getStatus());
         assertEquals(8, entry.getRating());
-        assertEquals("Meine Lieblingsserie", entry.getNotes());
+        assertEquals("My favorite series", entry.getNotes());
     }
 }

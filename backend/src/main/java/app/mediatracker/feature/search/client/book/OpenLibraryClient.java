@@ -20,10 +20,10 @@ public class OpenLibraryClient {
     private final ObjectMapper mapper = new ObjectMapper();
 
     /**
-     * Erstellt einen Client mit vordefinierter Basis-URL.
+     * Creates a client with a predefined base URL.
      *
-     * @param builder von Spring bereitgestellter {@link WebClient.Builder}
-     * @param baseUrl Basis-URL der OpenLibrary API (Default: https://openlibrary.org)
+     * @param builder Spring-provided {@link WebClient.Builder}
+     * @param baseUrl base URL of the OpenLibrary API (default: https://openlibrary.org)
      */
     public OpenLibraryClient(WebClient.Builder builder,
                              @Value("${openlibrary.base-url:https://openlibrary.org}") String baseUrl) {
@@ -31,7 +31,7 @@ public class OpenLibraryClient {
     }
 
     /**
-     * Sucht Bücher nach Titel, optional Autor und ISBN, mit Limit.
+     * Searches for books by title, optional author, and ISBN, with a limit.
      */
     public String searchBook(String query, int limit) {
         return webClient.get()

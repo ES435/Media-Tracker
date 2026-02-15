@@ -10,20 +10,22 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 /**
- * Request-Payload zum Anlegen oder Aktualisieren eines Bibliothekseintrags auf Basis eines SearchResult.
+ * Request payload to create or update a library entry based on a SearchResult.
  * <p>
- * Das Frontend sendet diesen Typ an den POST-Endpunkt der Bibliothek. Enthält den gewünschten Status,
- * eine optionale Bewertung sowie freie Notizen und das ausgewählte Suchergebnis.
+ * Sent by the frontend to the library POST endpoint. Includes the desired status,
+ * an optional rating, free-form notes, and the selected search result.
  * </p>
  */
 @Data
 public class AddLibraryEntryRequest {
 
     /**
-     * Technischer Benutzer-Identifikator. Kann später durch Informationen
-     * aus dem authentifizierten Principal ersetzt werden.
+     * Technical user identifier.
+     * <p>
+     * This field is handled via the authenticated Principal (Security Context)
+     * and does not need to be provided in the request body.
+     * </p>
      */
-    //private String userId; für später wenn mehrere User
 
     @NotNull
     private LibraryEntryStatus status;
@@ -36,7 +38,7 @@ public class AddLibraryEntryRequest {
     private String notes;
 
     /**
-     * Das ausgewählte Suchergebnis, das in der Bibliothek gespeichert werden soll.
+     * The selected search result to be saved in the library.
      */
     @NotNull
     @Valid

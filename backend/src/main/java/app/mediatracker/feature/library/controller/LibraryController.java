@@ -116,12 +116,12 @@ public class LibraryController {
     }
 
     /**
-     * Lässt den User einen bestehenden Manual Entry bearbeiten.
-     * Nutzt das Clean Code Command Pattern.
+     * Allows the user to edit an existing manual entry.
+     * Uses the Clean Code Command Pattern.
      *
-     * @param request Payload mit den aktualisierten Daten
-     * @param entryId ID des Eintrags
-     * @return 200 OK mit dem aktualisierten Eintrag
+     * @param request payload with the updated data
+     * @param entryId entry identifier
+     * @return 200 OK with the updated entry
      */
     @PatchMapping("/manualEntry/{entryId}")
     public ResponseEntity<LibraryEntryResponse> updateManualEntry(
@@ -148,9 +148,9 @@ public class LibraryController {
     }
 
     /**
-     * Entfernt einen Bibliothekseintrag des aktuellen Users.
+     * Removes a library entry of the current user.
      *
-     * @param entryId technische ID des Eintrags (MongoDB-ID)
+     * @param entryId technical ID of the entry (MongoDB ID)
      * @return 204 No Content
      */
     @DeleteMapping("/{entryId}")
@@ -165,7 +165,7 @@ public class LibraryController {
     }
 
     /**
-     * Hilfsmethode zum Laden des aktuellen Users aus dem Security Context.
+     * Helper to load the current user from the security context.
      */
     private User getCurrentUser(Principal principal) {
         return userService.getUserById(new ObjectId(principal.getName()));

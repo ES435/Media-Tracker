@@ -17,10 +17,10 @@ import java.io.IOException;
 import java.util.Collections;
 
 /**
- * Filter für die JWT-basierte Authentifizierung.
+ * Filter for JWT-based authentication.
  * <p>
- * Dieser Filter prüft eingehende Requests auf gültige JWT-Tokens in den Cookies
- * und setzt bei erfolgreicher Validierung den Security-Context.
+ * This filter checks incoming requests for valid JWT tokens within cookies
+ * and sets the Security Context upon successful validation.
  * </p>
  */
 @Component
@@ -33,17 +33,17 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     /**
-     * Verarbeitet die eingehende HTTP-Anfrage.
+     * Processes the incoming HTTP request.
      * <p>
-     * Extrahiert das JWT-Token aus den Cookies, validiert es und setzt bei
-     * erfolgreicher Validierung den Security-Context mit den Benutzerinformationen.
+     * Extracts the JWT token from cookies, validates it, and sets the
+     * Security Context with user information upon successful validation.
      * </p>
      *
-     * @param request     Die HTTP-Anfrage
-     * @param response    Die HTTP-Antwort
-     * @param filterChain Die Filter-Kette zur Weiterverarbeitung
-     * @throws ServletException Bei Fehlern in der Servlet-Verarbeitung
-     * @throws IOException      Bei Ein-/Ausgabefehlern
+     * @param request     The HTTP request
+     * @param response    The HTTP response
+     * @param filterChain The filter chain for further processing
+     * @throws ServletException In case of errors during servlet processing
+     * @throws IOException      In case of I/O errors
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -53,6 +53,8 @@ public class JwtFilter extends OncePerRequestFilter {
             try {
                 String userId = tokenService.verifyTokenAndGetUserId(token);
                 ObjectId userIdObjectId = new ObjectId(userId);
+
+                // Set the authentication object in the security context
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userIdObjectId, null, Collections.emptyList());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (JWTVerificationException e) {
@@ -64,6 +66,12 @@ public class JwtFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    /**
+     * Defines which paths should skip this filter.
+     *
+     * @param request The HTTP request
+     * @return true if the path starts with /auth/, false otherwise
+     */
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getServletPath();
@@ -71,15 +79,15 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     /**
-     * Extrahiert das JWT-Token aus den Cookies der Anfrage.
+     * Extracts the JWT token from the request cookies.
      *
-     * @param request Die HTTP-Anfrage
-     * @return Das JWT-Token oder null, wenn kein Token gefunden wurde
+     * @param request The HTTP request
+     * @return The JWT token string or null if no token was found
      */
     private String extractAccessTokenFromCookies(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
 
-        // BUGFIX: Null-Check hinzugefügt.
+        // BUGFIX: Added null check for cookies array.
         if (cookies == null) {
             return null;
         }

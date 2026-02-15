@@ -16,11 +16,11 @@ public class RefreshTokenService {
     private final TokenService tokenService;
 
     /**
-     * Erstellt einen neuen Refresh-Token für den angegebenen Benutzer, löscht alle zuvor gespeicherten
-     * Refresh-Token des Benutzers und speichert den neuen Token im Repository.
+     * Creates a new refresh token for the given user, deletes any previously stored
+     * refresh tokens for this user, and persists the new token in the repository.
      *
-     * @param userId die eindeutige Kennung des Benutzers, für den der Refresh-Token generiert wird
-     * @return der neu erstellte Refresh-Token als String
+     * @param userId the unique identifier of the user for whom the refresh token is generated
+     * @return the newly created refresh token as a String
      */
     public String createAndStore(ObjectId userId) {
 
@@ -39,19 +39,19 @@ public class RefreshTokenService {
     }
 
     /**
-     * Ruft eine RefreshToken-Entität basierend auf dem bereitgestellten Token-String ab.
+     * Retrieves a RefreshToken entity based on the provided token string.
      *
-     * @param token der Token-String, nach dem in der Datenquelle gesucht werden soll
-     * @return ein Optional, das den entsprechenden RefreshToken enthält, falls gefunden, andernfalls ein leeres Optional
+     * @param token the token string to look up in the data source
+     * @return an Optional containing the corresponding RefreshToken if found; otherwise empty
      */
     public Optional<RefreshToken> findByToken(String token) {
         return refreshTokenRepository.findByToken(token);
     }
 
     /**
-     * Löscht einen gegebenen Refresh-Token aus dem Repository.
+     * Deletes the given refresh token from the repository.
      *
-     * @param refreshToken die zu löschende RefreshToken-Instanz
+     * @param refreshToken the RefreshToken instance to delete
      */
     public void deleteToken(RefreshToken refreshToken) {
         refreshTokenRepository.delete(refreshToken);

@@ -29,10 +29,11 @@ public class TokenService {
     }
 
     /**
-     * Generiert einen AccessToken für den angegebenen username
-     * @param username Benutzername
-     * @param userId Besitzer des Tokens
-     * @return JWT-Token als String
+     * Generates an access token for the specified username.
+     *
+     * @param userId   the owner of the token
+     * @param username the username to be included as a claim
+     * @return the generated JWT access token as a String
      */
     public String generateAccessToken(ObjectId userId, String username) {
         return JWT.create()
@@ -43,9 +44,10 @@ public class TokenService {
     }
 
     /**
-     * Generiert einen RefreshToken für die userId
-     * @param userId Besitzer des Tokens
-     * @return JWT-Token als String
+     * Generates a refresh token for the specified user ID.
+     *
+     * @param userId the owner of the token
+     * @return the generated JWT refresh token as a String
      */
     public String generateRefreshToken(ObjectId userId) {
         return JWT.create()
@@ -56,10 +58,10 @@ public class TokenService {
 
 
     /**
-     * Validiert den Token und prüft, ober er für den angegebenen Benutzer gilt.
+     * Validates the token and extracts the User ID.
      *
-     * @param token JWT-Token
-     * @return User-ID (Subject) als String, wenn Token gültig ist
+     * @param token the JWT token to verify
+     * @return the User ID (Subject) as a String, if the token is valid
      */
     public String verifyTokenAndGetUserId(String token) {
         return JWT.require(algorithm)
@@ -69,9 +71,10 @@ public class TokenService {
     }
 
     /**
-     * Liest den username aus einem Token aus.
-     * * @param token JWT-Token
-     * @return username oder null bei Fehler
+     * Extracts the username from a token.
+     *
+     * @param token the JWT token
+     * @return the username or null if verification fails
      */
     public String extractUsername(String token) {
         try {
