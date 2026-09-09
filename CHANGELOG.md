@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+###  Changed
+- **CI/CD:** Replaced the GitLab pipeline with **GitHub Actions** (`.github/workflows/ci.yml`) after the move of the repository. The job order stays the same: Lint -> Test -> Build -> Package.
+    - **Runtimes:** `setup-java` (Temurin 21) and `setup-node` (Node 22) replace the `maven` and `node` container images. Both actions cache the Maven repository and the npm downloads, which covers the old `cache:` block.
+    - **Docker:** The Docker-in-Docker service and the wait loop around it are gone. GitHub runners come with a running Docker daemon, so `docker build` works without a service container.
+    - **Trigger:** Push builds run on `main` and `develop`, every other branch is covered by the build of its pull request. That replaces the `workflow: rules:` block which kept branch and merge request pipelines from running twice.
+
+###  Removed
+- **`.gitlab-ci.yml`:** Deleted together with the `deploy` stage, which never held a job.
+- **`allow_failure` on the image builds:** The flag worked around the flaky dind setup on the old runners. A broken image build now fails the pipeline.
+
+###  Fixed
+- **Integration tests on current Linux:** Swapped `de.flapdoodle.embed.mongo.spring30x` 4.11.0 for `de.flapdoodle.embed.mongo.spring3x` 4.20.0. The old artifact resolves a MongoDB download package only up to Ubuntu 23.10, so the three integration tests failed to start their embedded database on Ubuntu 24.04.
+- **Maven Wrapper:** `backend/mvnw` carries the executable bit, so `./mvnw` runs on a fresh clone and in the pipeline.
+
+###  Known limitation
+- GitHub Actions has no counterpart to GitLab's `reports: junit:`. The Surefire XML files are uploaded as a build artifact instead, so a failed test shows up in the job log and in the downloadable report.
+
+
 ## [1.0.0] - 2026-02-15
 
 ###  Added
