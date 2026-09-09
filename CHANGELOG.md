@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 - **`allow_failure` on the image builds:** The flag worked around the flaky dind setup on the old runners. A broken image build now fails the pipeline.
 
 ###  Fixed
+- **Integration tests on current Linux:** Swapped `de.flapdoodle.embed.mongo.spring30x` 4.11.0 for `de.flapdoodle.embed.mongo.spring3x` 4.20.0. The old artifact resolves a MongoDB download package only up to Ubuntu 23.10, so the three integration tests failed to start their embedded database on Ubuntu 24.04.
 - **Maven Wrapper:** `backend/mvnw` carries the executable bit, so `./mvnw` runs on a fresh clone and in the pipeline.
 
 ###  Known limitation
