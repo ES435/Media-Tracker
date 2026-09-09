@@ -73,6 +73,14 @@ jobs:
           java-version: 21
           cache: maven
 
+      # Flapdoodle downloads the mongod binary for the embedded database once
+      # and keeps it in ~/.embedmongo.
+      - name: Cache embedded MongoDB
+        uses: actions/cache@v4
+        with:
+          path: ~/.embedmongo
+          key: embedmongo-${{ runner.os }}-7.0.0
+
       # The integration tests start an embedded MongoDB (Flapdoodle),
       # so the job needs no database service.
       - name: Run tests
