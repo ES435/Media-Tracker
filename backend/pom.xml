@@ -84,10 +84,13 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- spring30x 4.11.0 knows MongoDB download packages only up to Ubuntu 23.10,
+             which breaks the integration tests on current Linux. spring3x is the
+             maintained artifact for Spring Boot 3.x and covers Ubuntu 24.04. -->
         <dependency>
             <groupId>de.flapdoodle.embed</groupId>
-            <artifactId>de.flapdoodle.embed.mongo.spring30x</artifactId>
-            <version>4.11.0</version>
+            <artifactId>de.flapdoodle.embed.mongo.spring3x</artifactId>
+            <version>4.20.0</version>
             <scope>test</scope>
         </dependency>
 
